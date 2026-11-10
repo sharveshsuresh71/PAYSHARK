@@ -2,14 +2,11 @@
   "name": "payshark",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": ">=20.9.0"
-  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
@@ -18,7 +15,7 @@
     "@neondatabase/serverless": "^1.2.0",
     "@paypal/react-paypal-js": "^8.8.3",
     "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.0",
+    "clsx": "^2.1.1",
     "decimal.js": "^10.5.0",
     "groq-sdk": "^1.6.0",
     "lucide-react": "^0.468.0",

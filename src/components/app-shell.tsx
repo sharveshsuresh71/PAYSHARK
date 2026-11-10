@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
-import { allNavItems, isActivePath } from "./nav-config";
 import { Topbar } from "./topbar";
 import { useCardTilt } from "./use-card-tilt";
 import { Toaster } from "./toast";
@@ -78,15 +77,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Close the drawer on navigation
   useEffect(() => setMobileOpen(false), [pathname]);
-
-  // Give each workspace page its own calm ambient palette. The palette changes
-  // are intentionally subtle so the dashboard remains readable.
-  useEffect(() => {
-    const moods = ["morning", "noon", "dusk", "snowy", "night"] as const;
-    const pageIndex = allNavItems.findIndex(item => isActivePath(pathname, item.href));
-    const mood = moods[(Math.max(0, pageIndex)) % moods.length];
-    document.documentElement.dataset.atmosphere = mood;
-  }, [pathname]);
 
   // Restore the visual-effects preference
   useEffect(() => { applyEffectsPreference(); }, []);

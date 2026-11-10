@@ -213,7 +213,7 @@ export function PagePager({ className }: { className?: string }) {
 /* pull its subject into the portal at the same time.                           */
 /* -------------------------------------------------------------------------- */
 export const guideState = { pull: 0 };
-const PULL_DISTANCE = 150; // lower threshold: page hand-off should feel effortless
+const PULL_DISTANCE = 520; // px of wheel travel past the end of the page
 
 /** Can `el` (or an ancestor below the page) scroll further vertically in the direction of `dy`? */
 function canScrollY(start: EventTarget | null, dy: number) {
@@ -295,7 +295,7 @@ export function NextPageGuide() {
     const onTouchMove = (e: TouchEvent) => {
       if (touchStartY === null) return;
       const dy = touchStartY - e.touches[0].clientY;
-      if (dy > 0) { cancelAnimationFrame(raf); set(dy * 1.1); }
+      if (dy > 0) { cancelAnimationFrame(raf); set(dy * 3); }
     };
     const onTouchEnd = () => {
       if (touchStartY === null) return;

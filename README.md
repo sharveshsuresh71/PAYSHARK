@@ -82,13 +82,6 @@ npx vitest run
 
 ---
 
-## 🔐 Security maintenance
-
-- Next.js is pinned to `15.5.29`, the patched 15.x maintenance release for the November 3, 2026 advisories.
-- `eslint-config-next` is pinned to the matching version.
-- After cloning this updated source, run `npm install` (or `pnpm install`) once to generate a fresh lockfile, then commit that lockfile.
-- Run `npm audit` and `npm run typecheck` before deploying.
-
 ## 📦 Quick Start
 
 1. Install dependencies:
@@ -112,8 +105,3 @@ npx vitest run
 
 4. (Optional) Run database migration on Neon:
    Execute `neon/schema.sql` followed by `neon/seed.sql` in your Neon Console SQL Editor.
-
-
-## Project root and deployment
-
-The Next.js project root is the directory containing `package.json`, `next.config.ts`, and `src/app`. In Vercel, set **Root Directory** to that directory (`.` if these files are at repository top level). See [DEPLOYMENT.md](./DEPLOYMENT.md) for setup and environment-variable guidance.
