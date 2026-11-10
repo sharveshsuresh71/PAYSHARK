@@ -8,7 +8,7 @@ import { useCardTilt } from "./use-card-tilt";
 import { Toaster } from "./toast";
 import { AiAssistant } from "./ai-assistant";
 import { SceneBackdrop } from "./scene-backdrop";
-import { SwipeNavigator } from "./swipe-nav";
+import { NextPageGuide, SwipeNavigator } from "./swipe-nav";
 import { cn } from "@/lib/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -171,6 +171,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Topbar onOpenMobileNav={openMobile} mobileNavOpen={mobileOpen} />
         <main ref={mainRef} id="main-content" tabIndex={-1} className="page-container flex-1 focus-visible:shadow-none">
           {children}
+          <NextPageGuide />
         </main>
       </div>
 

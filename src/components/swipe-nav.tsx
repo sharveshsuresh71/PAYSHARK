@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { allNavItems, isActivePath } from "./nav-config";
 import { cn } from "@/lib/cn";
 
@@ -32,10 +32,11 @@ function neighbour(index: number, dir: Dir) {
   return PAGES[(index + (dir === "next" ? 1 : -1) + PAGES.length) % PAGES.length];
 }
 
-/** Slide the current page out, then navigate; the new page slides in (CSS keyed off html[data-swipe]). */
+/** Slide the current page out, then navigate; the new page slides in (CSS keyed off html[data-swipe]).
+ *  "down" is used by the scroll guide: the page lifts away and the next one rises in. */
 export function useSwipeNavigate() {
   const router = useRouter();
-  return useCallback((href: string, dir: Dir) => {
+  return useCallback((href: string, dir: Dir | "down") => {
     const root = document.documentElement;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches || root.dataset.effects === "reduced";
     if (reduced) { router.push(href); return; }
@@ -202,5 +203,143 @@ export function PagePager({ className }: { className?: string }) {
         <ChevronRight size={16} />
       </button>
     </nav>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Scroll guide: at the end of every page, "Up next" leads to the next page.    */
+/* Keep scrolling past the bottom and the line fills; when full, the page lifts */
+/* away and the next one rises in. The 3D backdrop reads `guideState.pull` to   */
+/* pull its subject into the portal at the same time.                           */
+/* -------------------------------------------------------------------------- */
+export const guideState = { pull: 0 };
+const PULL_DISTANCE = 520; // px of wheel travel past the end of the page
+
+/** Can `el` (or an ancestor below the page) scroll further vertically in the direction of `dy`? */
+function canScrollY(start: EventTarget | null, dy: number) {
+  let el = start instanceof Element ? start : null;
+  while (el && el !== document.body && el !== document.documentElement) {
+    const style = getComputedStyle(el);
+    if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight + 1) {
+      const max = el.scrollHeight - el.clientHeight;
+      if ((dy > 0 && el.scrollTop < max - 1) || (dy < 0 && el.scrollTop > 1)) return true;
+    }
+    el = el.parentElement;
+  }
+  return false;
+}
+
+export function NextPageGuide() {
+  const pathname = usePathname();
+  const navigate = useSwipeNavigate();
+  const index = currentIndex(pathname);
+  const nextIndex = (index + 1) % PAGES.length;
+  const next = PAGES[nextIndex];
+  const [pull, setPull] = useState(0);
+
+  useEffect(() => {
+    let acc = 0;
+    let locked = false;
+    let releaseTimer = 0;
+    let raf = 0;
+    let lastWheel = 0;
+    let gestureAtBottom = false;
+    let touchStartY: number | null = null;
+
+    const atBottom = () =>
+      window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+    const blocked = (t: EventTarget | null, dy: number) =>
+      document.body.style.overflow === "hidden" || isFormField(t) || canScrollY(t, dy);
+
+    const set = (value: number) => {
+      acc = Math.max(0, Math.min(PULL_DISTANCE, value));
+      const p = acc / PULL_DISTANCE;
+      guideState.pull = p;
+      setPull(p);
+      if (p >= 1 && !locked) {
+        locked = true;
+        navigate(next.href, "down");
+      }
+    };
+    // let go → the line drains back
+    const release = () => {
+      cancelAnimationFrame(raf);
+      const step = () => {
+        if (locked) return;
+        set(acc < 4 ? 0 : acc * 0.82);
+        if (acc > 0) raf = requestAnimationFrame(step);
+      };
+      raf = requestAnimationFrame(step);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (locked || e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
+      const now = performance.now();
+      // A new gesture only counts if it starts at the bottom, so momentum from
+      // scrolling down the page doesn't carry straight into the next page.
+      if (now - lastWheel > 180) gestureAtBottom = atBottom();
+      lastWheel = now;
+      const dy = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
+      if (blocked(e.target, dy)) return;
+      if (dy < 0) { if (acc > 0) { cancelAnimationFrame(raf); set(acc + dy * 2); } return; }
+      if (!gestureAtBottom || !atBottom()) return;
+      cancelAnimationFrame(raf);
+      set(acc + Math.min(dy, 80));
+      window.clearTimeout(releaseTimer);
+      releaseTimer = window.setTimeout(release, 260);
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = !locked && e.touches.length === 1 && atBottom() && !blocked(e.target, 1) ? e.touches[0].clientY : null;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (touchStartY === null) return;
+      const dy = touchStartY - e.touches[0].clientY;
+      if (dy > 0) { cancelAnimationFrame(raf); set(dy * 3); }
+    };
+    const onTouchEnd = () => {
+      if (touchStartY === null) return;
+      touchStartY = null;
+      if (!locked) release();
+    };
+
+    window.addEventListener("wheel", onWheel, { passive: true });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(releaseTimer);
+      guideState.pull = 0;
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [navigate, next.href]);
+
+  const Icon = next.icon;
+  return (
+    <section
+      className="next-guide"
+      aria-label="Next page"
+      data-pulling={pull > 0.02 ? "true" : undefined}
+      style={{ "--pull": pull } as React.CSSProperties}
+    >
+      <span className="next-guide-line" aria-hidden><i /></span>
+      <span className="next-guide-kicker">
+        Up next · {String(nextIndex + 1).padStart(2, "0")} / {String(PAGES.length).padStart(2, "0")}
+      </span>
+      <button type="button" className="next-guide-title" onClick={() => navigate(next.href, "down")}>
+        <Icon size={24} strokeWidth={1.5} aria-hidden />
+        <span>{next.label}</span>
+        <ArrowRight size={20} strokeWidth={1.75} aria-hidden className="next-guide-arrow" />
+      </button>
+      <p className="next-guide-desc">{next.description}</p>
+      <span className="next-guide-hint" aria-hidden>
+        <ChevronDown size={14} />
+        {pull > 0.02 ? "Keep scrolling" : "Scroll to continue"}
+      </span>
+    </section>
   );
 }
