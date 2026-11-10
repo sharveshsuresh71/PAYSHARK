@@ -6,14 +6,16 @@ import { cn } from "@/lib/cn";
 
 /*
  * Live 3D background (WebGL, no dependencies).
- * A fragment shader ray-marches a cluster of liquid-chrome blobs that merge and
- * flow into each other, lit by a dark studio environment (soft top light, cool
- * key light, white rim). The cluster:
- *  - slowly turns toward the cursor,
- *  - morphs as you scroll the page,
- *  - takes a different arrangement, size and position on each page.
+ * A fragment shader ray-marches a floating glass payment card (holographic sheen,
+ * gold chip, card-number dots, contactless mark, engraving) with gold coins
+ * orbiting and spinning around it, over a flowing navy-blue liquid current.
+ * The scene:
+ *  - leans toward the cursor; the current bends away from it,
+ *  - moves the coins and current as you scroll,
+ *  - takes a different timing, size and position on each page.
  * Rendered at reduced resolution (it's a soft background) and paused while the
- * tab is hidden. Reduced motion / "Reduce visual effects" render one still frame.
+ * tab is hidden. The system reduced-motion preference slows it down; Settings →
+ * "Reduce visual effects" renders one still frame.
  * If WebGL is unavailable, the CSS glow layers underneath remain as a fallback.
  */
 
@@ -60,37 +62,50 @@ float fbm(vec2 p) {
   return v;
 }
 
-float smin(float a, float b, float k) {
-  float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
-  return mix(b, a, h) - k * h * (1.0 - h);
+float T; // scene time (set in main)
+
+float sdRoundBox(vec3 p, vec3 b, float r) {
+  vec3 q = abs(p) - b + r;
+  return length(max(q, 0.0)) + min(max(q.x, max(q.y, q.z)), 0.0) - r;
+}
+float sdCoin(vec3 p, float r, float h) {
+  vec2 d = abs(vec2(length(p.xz), p.y)) - vec2(r, h);
+  return min(max(d.x, d.y), 0.0) + length(max(d, 0.0)) - 0.012;
 }
 
-float map(vec3 p) {
+// world → card space: the card floats, sways and leans toward the cursor
+vec3 toCard(vec3 p) {
+  p.y -= sin(T * 0.6) * 0.08;
+  p.xz *= rot(sin(T * 0.35 + uSeed) * 0.55 + uMouse.x * 0.5);
+  p.yz *= rot(0.32 + sin(T * 0.27) * 0.14 - uMouse.y * 0.3);
+  p.xy *= rot(-0.12);
+  return p;
+}
+
+// x = distance, y = material (1 card, 2 coin)
+vec2 map(vec3 p) {
   p /= uScale;
-  p.xz *= rot(uMouse.x * 0.6 + uTime * 0.18);
-  p.yz *= rot(-uMouse.y * 0.35 + sin(uTime * 0.21) * 0.25);
-  float d = 1e5;
-  float t0 = uTime * 0.55 + uScroll * 0.0015 + uSeed;
-  for (int i = 0; i < 6; i++) {
+  vec2 res = vec2(sdRoundBox(toCard(p), vec3(1.35, 0.85, 0.03), 0.12), 1.0);
+  for (int i = 0; i < 5; i++) {
     float fi = float(i);
-    float t = t0 + fi * 1.73;
-    vec3 c = vec3(
-      sin(t * 0.9 + fi * 0.7) * 1.25,
-      cos(t * 0.7 + fi * 2.1) * 0.85,
-      sin(t * 0.55 + fi * 1.3) * 0.9
-    );
-    float r = 0.48 + 0.16 * sin(fi * 2.7 + uSeed);
-    d = smin(d, length(p - c) - r, 0.65);
+    float a = T * 0.45 + fi * 1.2566 + uSeed + uScroll * 0.0015;
+    vec3 c = vec3(cos(a) * 2.1, sin(a * 1.3 + fi) * 0.55, sin(a) * 1.25);
+    vec3 q = p - c;
+    q.xy *= rot(1.2 + fi);
+    q.yz *= rot(T * 1.6 + fi * 2.0);
+    float dc = sdCoin(q, 0.3, 0.032);
+    if (dc < res.x) res = vec2(dc, 2.0);
   }
-  return d * uScale;
+  res.x *= uScale;
+  return res;
 }
 
 vec3 calcNormal(vec3 p) {
   vec2 e = vec2(0.0015, 0.0);
   return normalize(vec3(
-    map(p + e.xyy) - map(p - e.xyy),
-    map(p + e.yxy) - map(p - e.yxy),
-    map(p + e.yyx) - map(p - e.yyx)
+    map(p + e.xyy).x - map(p - e.xyy).x,
+    map(p + e.yxy).x - map(p - e.yxy).x,
+    map(p + e.yyx).x - map(p - e.yyx).x
   ));
 }
 
@@ -106,7 +121,57 @@ vec3 env(vec3 r) {
   return col;
 }
 
+// the card's face: holographic navy glass with engraving, chip, number dots and a contactless mark
+vec3 shadeCard(vec3 p, vec3 n, vec3 r, float fres) {
+  vec3 lp = toCard(p / uScale);
+  vec2 cuv = lp.xy;                       // ≈ -1.35..1.35 × -0.85..0.85
+  float front = step(0.0, lp.z);
+  vec3 refl = env(r);
+
+  vec3 holo = 0.5 + 0.5 * cos(6.2831 * (fres * 0.8 + cuv.x * 0.12 + cuv.y * 0.08 + T * 0.04) + vec3(0.0, 1.8, 3.6));
+  holo = mix(holo, vec3(0.3, 0.5, 1.0), 0.45);
+  vec3 c = vec3(0.03, 0.06, 0.15) + refl * 0.55 + holo * (0.15 + fres * 0.6);
+
+  // fine banknote-style engraving
+  float g = abs(sin(cuv.x * 9.0 + sin(cuv.y * 6.0 + T * 0.3) * 1.5));
+  c += vec3(0.3, 0.5, 1.0) * smoothstep(0.07, 0.0, g) * 0.14 * front;
+
+  // gold chip
+  vec2 chip = abs(cuv - vec2(-0.82, 0.16)) - vec2(0.22, 0.17);
+  float inChip = step(max(chip.x, chip.y), 0.0) * front;
+  vec3 gold = vec3(0.98, 0.8, 0.47) * (0.25 + refl * 0.9);
+  float chipLines = smoothstep(0.012, 0.0, abs(cuv.y - 0.16)) + smoothstep(0.012, 0.0, abs(cuv.x + 0.82));
+  c = mix(c, gold * (1.0 - 0.35 * chipLines), inChip);
+
+  // card number: four groups of four dots
+  float gx = cuv.x + 1.1;
+  float cell = fract(gx * 7.0) - 0.5;
+  float inRow = step(0.0, gx) * step(gx, 2.27) * step(0.12, fract(gx * 1.75));
+  float dots = smoothstep(0.32, 0.18, length(vec2(cell, (cuv.y + 0.32) * 7.0))) * inRow * front;
+  c += vec3(0.85, 0.9, 1.0) * dots * 0.75;
+
+  // contactless mark
+  vec2 cm = cuv - vec2(0.98, 0.5);
+  float arcs = 0.0;
+  for (int k = 1; k <= 3; k++) {
+    float rr = 0.06 * float(k);
+    arcs += smoothstep(0.012, 0.0, abs(length(cm) - rr)) * step(0.0, cm.x) * step(abs(cm.y), cm.x * 1.2);
+  }
+  c += vec3(0.8, 0.88, 1.0) * arcs * 0.7 * front;
+
+  // glowing edge
+  float edge = smoothstep(0.08, 0.0, min(1.35 - abs(cuv.x), 0.85 - abs(cuv.y)));
+  c += vec3(0.35, 0.6, 1.0) * edge * 0.35;
+  return c;
+}
+
+vec3 shadeCoin(vec3 r, float fres) {
+  vec3 gold = vec3(1.0, 0.82, 0.5);
+  return gold * (env(r) * 0.95 + 0.05) * (0.65 + 0.6 * fres);
+}
+
 void main() {
+  T = uTime;
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
   vec2 q = uv - uShift;
 
@@ -124,19 +189,19 @@ void main() {
   current += vec3(0.35, 0.6, 1.0) * pow(smoothstep(0.62, 0.95, f), 3.0) * 0.55;   // bright silk crests
   col = mix(col, current, 0.75);
 
-  // blue halo behind the chrome cluster + a second pool bottom-left
+  // blue halo behind the card + a second pool bottom-left
   col += vec3(0.12, 0.28, 0.65) * exp(-dot(q, q) * 2.6) * 0.45;
   col += vec3(0.05, 0.12, 0.32) * exp(-dot(uv + vec2(0.6, 0.5), uv + vec2(0.6, 0.5)) * 2.0) * 0.5;
 
   vec3 ro = vec3(0.0, 0.0, 6.5);
   vec3 rd = normalize(vec3(q, -1.9));
   float t = 0.0;
-  float d = 0.0;
+  vec2 h = vec2(0.0);
   bool hit = false;
-  for (int i = 0; i < 80; i++) {
-    d = map(ro + rd * t);
-    if (d < 0.0015) { hit = true; break; }
-    t += d;
+  for (int i = 0; i < 96; i++) {
+    h = map(ro + rd * t);
+    if (h.x < 0.0012) { hit = true; break; }
+    t += h.x;
     if (t > 14.0) break;
   }
 
@@ -145,9 +210,7 @@ void main() {
     vec3 n = calcNormal(p);
     vec3 r = reflect(rd, n);
     float fres = pow(1.0 - max(0.0, dot(n, -rd)), 3.0);
-    float ao = clamp(map(p + n * 0.25) / 0.25, 0.0, 1.0);
-    vec3 metal = env(r) * mix(0.55, 1.15, fres) * (0.55 + 0.45 * ao);
-    col = metal + vec3(0.01, 0.02, 0.05);
+    col = h.y < 1.5 ? shadeCard(p, n, r, fres) : shadeCoin(r, fres);
   }
 
   // tone + vignette
