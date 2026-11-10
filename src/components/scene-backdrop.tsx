@@ -47,6 +47,19 @@ uniform float uSeed;
 
 mat2 rot(float a) { float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
 
+// value noise + fbm for the flowing liquid current
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float noise(vec2 p) {
+  vec2 i = floor(p), f = fract(p);
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+float fbm(vec2 p) {
+  float v = 0.0, a = 0.5;
+  for (int i = 0; i < 4; i++) { v += a * noise(p); p = p * 2.03 + vec2(1.7, 9.2); a *= 0.5; }
+  return v;
+}
+
 float smin(float a, float b, float k) {
   float h = clamp(0.5 + 0.5 * (b - a) / k, 0.0, 1.0);
   return mix(b, a, h) - k * h * (1.0 - h);
@@ -54,10 +67,10 @@ float smin(float a, float b, float k) {
 
 float map(vec3 p) {
   p /= uScale;
-  p.xz *= rot(uMouse.x * 0.6 + uTime * 0.05);
-  p.yz *= rot(-uMouse.y * 0.35);
+  p.xz *= rot(uMouse.x * 0.6 + uTime * 0.18);
+  p.yz *= rot(-uMouse.y * 0.35 + sin(uTime * 0.21) * 0.25);
   float d = 1e5;
-  float t0 = uTime * 0.32 + uScroll * 0.0012 + uSeed;
+  float t0 = uTime * 0.55 + uScroll * 0.0015 + uSeed;
   for (int i = 0; i < 6; i++) {
     float fi = float(i);
     float t = t0 + fi * 1.73;
@@ -97,10 +110,23 @@ void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
   vec2 q = uv - uShift;
 
-  // backdrop: midnight-navy gradient with a blue halo behind the cluster
+  // backdrop: midnight-navy gradient
   vec3 col = mix(vec3(0.02, 0.04, 0.10), vec3(0.05, 0.10, 0.21), smoothstep(-0.6, 0.6, uv.y));
-  col += vec3(0.12, 0.28, 0.65) * exp(-dot(q, q) * 2.6) * 0.55;
-  col += vec3(0.05, 0.12, 0.32) * exp(-dot(uv + vec2(0.6, 0.5), uv + vec2(0.6, 0.5)) * 2.0) * 0.6;
+
+  // flowing liquid current across the whole screen (domain-warped noise), drifting
+  // continuously and bending away from the cursor
+  float ft = uTime * 0.09 + uScroll * 0.0004 + uSeed * 0.3;
+  vec2 fp = uv * 1.5 + uMouse * vec2(-0.25, 0.18);
+  vec2 w1 = vec2(fbm(fp + vec2(0.0, ft)), fbm(fp + vec2(5.2, 1.3) - ft));
+  vec2 w2 = vec2(fbm(fp + 3.0 * w1 + vec2(1.7, 9.2) + ft * 1.3), fbm(fp + 3.0 * w1 + vec2(8.3, 2.8) - ft));
+  float f = fbm(fp + 3.5 * w2);
+  vec3 current = mix(vec3(0.03, 0.07, 0.18), vec3(0.10, 0.28, 0.70), smoothstep(0.35, 0.85, f));
+  current += vec3(0.35, 0.6, 1.0) * pow(smoothstep(0.62, 0.95, f), 3.0) * 0.55;   // bright silk crests
+  col = mix(col, current, 0.75);
+
+  // blue halo behind the chrome cluster + a second pool bottom-left
+  col += vec3(0.12, 0.28, 0.65) * exp(-dot(q, q) * 2.6) * 0.45;
+  col += vec3(0.05, 0.12, 0.32) * exp(-dot(uv + vec2(0.6, 0.5), uv + vec2(0.6, 0.5)) * 2.0) * 0.5;
 
   vec3 ro = vec3(0.0, 0.0, 6.5);
   vec3 rd = normalize(vec3(q, -1.9));
@@ -179,9 +205,12 @@ export function SceneBackdrop({ className }: { className?: string }) {
     const layout = layoutFor(pathname);
     gl.uniform1f(uSeed, layout.seed);
 
-    const still =
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      document.documentElement.dataset.effects === "reduced";
+    // Only the app's own "Reduce visual effects" switch freezes the scene; the
+    // system reduced-motion preference slows it right down instead.
+    let savedReduced = false;
+    try { savedReduced = localStorage.getItem("payshark:effects") === "reduced"; } catch {}
+    const still = document.documentElement.dataset.effects === "reduced" || savedReduced;
+    const speed = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0.35 : 1;
 
     let w = 0, h = 0;
     const resize = () => {
@@ -214,7 +243,7 @@ export function SceneBackdrop({ className }: { className?: string }) {
     const frame = (now: number) => {
       mx += (tx - mx) * 0.04;
       my += (ty - my) * 0.04;
-      gl.uniform1f(uTime, still ? 6 : (now - start) / 1000);
+      gl.uniform1f(uTime, still ? 6 : ((now - start) / 1000) * speed);
       gl.uniform1f(uScroll, window.scrollY);
       gl.uniform2f(uMouse, mx, my);
       gl.drawArrays(gl.TRIANGLES, 0, 3);

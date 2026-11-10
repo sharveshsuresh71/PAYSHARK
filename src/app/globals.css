@@ -740,8 +740,8 @@ html[data-effects="reduced"] .popover { -webkit-backdrop-filter: none; backdrop-
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, rgb(6 12 28 / .55) 0%, rgb(6 12 28 / .3) 45%, rgb(6 12 28 / .05) 75%, transparent 100%),
-    linear-gradient(180deg, rgb(6 12 28 / .25) 0%, transparent 25%);
+    linear-gradient(90deg, rgb(6 12 28 / .4) 0%, rgb(6 12 28 / .2) 45%, rgb(6 12 28 / .03) 75%, transparent 100%),
+    linear-gradient(180deg, rgb(6 12 28 / .2) 0%, transparent 25%);
 }
 @media (max-width: 767px) {
   .scene-veil { background: linear-gradient(180deg, transparent 0%, rgb(6 12 28 / .45) 45%, rgb(6 12 28 / .6) 100%); }
