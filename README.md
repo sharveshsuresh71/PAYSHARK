@@ -112,3 +112,8 @@ npx vitest run
 
 4. (Optional) Run database migration on Neon:
    Execute `neon/schema.sql` followed by `neon/seed.sql` in your Neon Console SQL Editor.
+
+
+## Project root and deployment
+
+The Next.js project root is the directory containing `package.json`, `next.config.ts`, and `src/app`. In Vercel, set **Root Directory** to that directory (`.` if these files are at repository top level). See [DEPLOYMENT.md](./DEPLOYMENT.md) for setup and environment-variable guidance.

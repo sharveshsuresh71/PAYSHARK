@@ -108,6 +108,7 @@ html[data-atmosphere="night"] {
   --ps-accent: 129 140 248;
   --ps-accent-hover: 165 173 255;
 }
+
 /* Italic serif accent word inside headlines ("a focused *two-week* sprint") */
 .serif-accent {
   font-family: var(--ps-font-serif);
