@@ -10,7 +10,7 @@ import { ShieldCheck, Link2, Fingerprint } from "lucide-react";
  */
 const SLICES = 16;
 
-export function HeroSculpture() {
+export function HeroSculpture({ chips = true }: { chips?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -53,14 +53,14 @@ export function HeroSculpture() {
   return (
     <div ref={ref} className="sculpture-stage relative mx-auto aspect-square w-[min(480px,86vw)]" aria-hidden>
       {/* Volumetric light + reflective floor */}
-      <div className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(32_200_120/.32),rgb(18_61_40/.18)_55%,transparent)] blur-2xl" />
-      <div className="absolute -bottom-[6%] left-1/2 h-[14%] w-[70%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgb(32_200_120/.45),transparent)] blur-xl" />
+      <div className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(closest-side,rgb(52_150_255/.32),rgb(30_46_72/.18)_55%,transparent)] blur-2xl" />
+      <div className="absolute -bottom-[6%] left-1/2 h-[14%] w-[70%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgb(52_150_255/.45),transparent)] blur-xl" />
 
       <div className="sculpture absolute inset-[12%]">
         <div className="sculpture-sway absolute inset-0">
           {/* Orbit rings */}
           {[
-            { inset: "-22%", tilt: "rotateX(74deg) rotateY(8deg)", dur: "16s", color: "rgb(32 200 120 / .45)", dot: "#B6F36A" },
+            { inset: "-22%", tilt: "rotateX(74deg) rotateY(8deg)", dur: "16s", color: "rgb(52 150 255 / .45)", dot: "#60D6FF" },
             { inset: "-34%", tilt: "rotateX(68deg) rotateY(-22deg)", dur: "26s", color: "rgb(54 217 245 / .28)", dot: "#36D9F5" }
           ].map((o, i) => (
             <div key={i} className="preserve-3d absolute" style={{ inset: o.inset, transform: o.tilt }}>
@@ -82,7 +82,7 @@ export function HeroSculpture() {
                 className="absolute inset-0 rounded-full"
                 style={{
                   transform: `translateZ(${z}px)`,
-                  background: "linear-gradient(90deg,#062114 0%,#1E8F5A 30%,#C8F7DB 50%,#1E8F5A 70%,#062114 100%)",
+                  background: "linear-gradient(90deg,#0B111C 0%,#2A6FC0 30%,#DCEBFF 50%,#2A6FC0 70%,#0B111C 100%)",
                   filter: `brightness(${0.55 + (i / SLICES) * 0.35})`
                 }}
               />
@@ -92,26 +92,26 @@ export function HeroSculpture() {
           {/* Back face */}
           <div
             className="absolute inset-0 rounded-full"
-            style={{ transform: `translateZ(${-SLICES * 1.1 - 1}px) rotateY(180deg)`, background: "radial-gradient(circle at 60% 35%,#3FAE78,#0B3D25 55%,#041309)" }}
+            style={{ transform: `translateZ(${-SLICES * 1.1 - 1}px) rotateY(180deg)`, background: "radial-gradient(circle at 60% 35%,#4F8FD8,#1E2E48 55%,#0B111C)" }}
           />
 
           {/* Front face */}
           <div className="absolute inset-0 overflow-hidden rounded-full" style={{ transform: `translateZ(${SLICES * 1.1 + 1}px)` }}>
-            <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 34% 28%,#F2FFE6 0%,#9BF0C2 10%,#2DBB78 30%,#0F5536 62%,#05190F 100%)" }} />
+            <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 34% 28%,#F4F9FF 0%,#A9D2FF 10%,#3496FF 30%,#1D4F8F 62%,#0B111C 100%)" }} />
             {/* chrome sheen */}
             <div className="absolute inset-0 opacity-50 mix-blend-overlay" style={{ background: "conic-gradient(from 210deg,transparent 0deg,#fff 40deg,transparent 90deg,transparent 200deg,#fff 240deg,transparent 290deg)" }} />
             {/* recessed inner ring */}
             <div className="absolute inset-[9%] rounded-full shadow-[inset_0_6px_14px_rgb(0_0_0/.55),inset_0_-2px_6px_rgb(255_255_255/.25)]" />
-            <div className="absolute inset-[22%] rounded-full bg-[radial-gradient(circle_at_40%_30%,#2FCB82,#0C3D27_70%)] shadow-[inset_0_2px_0_rgb(255_255_255/.35),inset_0_-10px_20px_rgb(0_0_0/.5),0_10px_24px_rgb(0_0_0/.45)]" />
+            <div className="absolute inset-[22%] rounded-full bg-[radial-gradient(circle_at_40%_30%,#6FB4FF,#1E2E48_70%)] shadow-[inset_0_2px_0_rgb(255_255_255/.35),inset_0_-10px_20px_rgb(0_0_0/.5),0_10px_24px_rgb(0_0_0/.45)]" />
 
             {/* engraved text + emblem */}
             <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full">
               <defs>
                 <path id="coin-text" d="M100,100 m-76,0 a76,76 0 1,1 152,0 a76,76 0 1,1 -152,0" />
                 <linearGradient id="fin-g" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0" stopColor="#F5FFEC" />
-                  <stop offset=".55" stopColor="#B6F36A" />
-                  <stop offset="1" stopColor="#20C878" />
+                  <stop offset="0" stopColor="#F4F9FF" />
+                  <stop offset=".55" stopColor="#60D6FF" />
+                  <stop offset="1" stopColor="#3496FF" />
                 </linearGradient>
               </defs>
               <text fontSize="8.2" letterSpacing="3.2" fill="rgb(3 25 14 / .7)" fontWeight="700" fontFamily="var(--ps-font-display)">
@@ -119,14 +119,14 @@ export function HeroSculpture() {
               </text>
               <g transform="translate(62 58) scale(3.1)" filter="drop-shadow(0 1.2px 0.6px rgb(0 0 0 / .55))">
                 <path d="M3 17.5c3.2-.4 6-1.9 8.3-4.6C13.4 10.4 14.6 7 14.9 3c2.9 3.2 4.6 7.5 4.6 11.6 0 1.1-.1 2-.3 2.9H3Z" fill="url(#fin-g)" />
-                <path d="M3 19.5h18v1.5H3z" fill="#B6F36A" opacity=".7" />
+                <path d="M3 19.5h18v1.5H3z" fill="#60D6FF" opacity=".7" />
               </g>
             </svg>
             <div className="absolute inset-0 rounded-full shadow-[inset_0_0_0_1.5px_rgb(255_255_255/.35),inset_0_-18px_40px_rgb(0_0_0/.45)]" />
           </div>
 
           {/* Floating verification chips (depth layers) */}
-          {[
+          {chips && [
             { icon: ShieldCheck, text: "Policy · 13/13 checks", pos: "left-[-26%] top-[8%]", z: 110, tone: "text-accent" },
             { icon: Fingerprint, text: "Human approval bound", pos: "right-[-30%] top-[42%]", z: 150, tone: "text-volt" },
             { icon: Link2, text: "SHA-256 chain intact", pos: "left-[-12%] bottom-[2%]", z: 90, tone: "text-cyan" }

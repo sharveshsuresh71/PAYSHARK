@@ -116,15 +116,15 @@ export default function Demo() {
                   className={cn(
                     "group flex w-full items-center gap-3 rounded-[12px] border p-3 text-left transition-all duration-300",
                     active
-                      ? "translate-x-1 border-accent/40 bg-[linear-gradient(90deg,rgb(32_200_120/.12),rgb(14_122_74/.04))] shadow-[inset_0_1px_0_rgb(255_255_255/.05),0_10px_24px_-14px_rgb(32_200_120/.5)]"
+                      ? "translate-x-1 border-accent/40 bg-[linear-gradient(90deg,rgb(52_150_255/.12),rgb(29_79_143/.04))] shadow-[inset_0_1px_0_rgb(255_255_255/.05),0_10px_24px_-14px_rgb(52_150_255/.5)]"
                       : "border-transparent hover:border-white/[0.07] hover:bg-white/[0.03]"
                   )}
                 >
                   <span
                     className={cn(
-                      "grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-display text-[15px] font-semibold transition-all duration-300",
+                      "grid h-10 w-10 shrink-0 place-items-center rounded-[4px] font-display text-[15px] font-semibold transition-all duration-300",
                       active
-                        ? "bg-[linear-gradient(145deg,#B6F36A,#20C878_40%,#0E7A4A)] text-accent-fg shadow-[inset_0_1px_0_rgb(255_255_255/.5),0_6px_14px_-6px_rgb(32_200_120/.8)]"
+                        ? "bg-[linear-gradient(145deg,#60D6FF,#3496FF_40%,#1D4F8F)] text-accent-fg shadow-[inset_0_1px_0_rgb(255_255_255/.5),0_6px_14px_-6px_rgb(52_150_255/.8)]"
                         : "border border-white/[0.08] bg-canvas/60 text-fg-muted group-hover:text-fg"
                     )}
                   >
@@ -153,20 +153,20 @@ export default function Demo() {
               <svg viewBox="0 0 200 200" className="h-full w-full opacity-70">
                 <defs>
                   <radialGradient id="holo-core" cx="50%" cy="50%" r="50%">
-                    <stop offset="0" stopColor="#20C878" stopOpacity=".25" />
-                    <stop offset="1" stopColor="#20C878" stopOpacity="0" />
+                    <stop offset="0" stopColor="#3496FF" stopOpacity=".25" />
+                    <stop offset="1" stopColor="#3496FF" stopOpacity="0" />
                   </radialGradient>
                 </defs>
                 <circle cx="100" cy="100" r="90" fill="url(#holo-core)" />
                 <g className="motion-safe:animate-[ps-orb-spin_24s_linear_infinite]" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
-                  <circle cx="100" cy="100" r="78" fill="none" stroke="#20C878" strokeOpacity=".35" strokeDasharray="2 8" />
+                  <circle cx="100" cy="100" r="78" fill="none" stroke="#3496FF" strokeOpacity=".35" strokeDasharray="2 8" />
                 </g>
                 <g className="motion-safe:animate-[ps-orb-spin_14s_linear_infinite_reverse]" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
                   <circle cx="100" cy="100" r="60" fill="none" stroke="#36D9F5" strokeOpacity=".4" strokeDasharray="40 14" />
                 </g>
-                <circle cx="100" cy="100" r="42" fill="none" stroke="#20C878" strokeOpacity=".25" />
+                <circle cx="100" cy="100" r="42" fill="none" stroke="#3496FF" strokeOpacity=".25" />
               </svg>
-              <ShieldAlert className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent drop-shadow-[0_0_14px_rgb(32_200_120/.7)]" size={34} />
+              <ShieldAlert className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent drop-shadow-[0_0_14px_rgb(52_150_255/.7)]" size={34} />
             </div>
 
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">Scenario {item[0]} threat profile</span>
@@ -184,14 +184,14 @@ export default function Demo() {
               <div className="space-y-3" aria-busy="true">
                 <div className="flex items-center gap-2 text-[12.5px] text-fg-muted"><Cpu size={14} className="animate-pulse text-accent" /> Running deterministic checks…</div>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  {Array.from({ length: 6 }, (_, i) => <div key={i} className="skeleton h-10 rounded-[10px]" />)}
+                  {Array.from({ length: 6 }, (_, i) => <div key={i} className="skeleton h-10 rounded-[4px]" />)}
                 </div>
               </div>
             )}
 
             {!loading && !result && (
               <div className="flex items-center gap-3 text-[13px] text-fg-subtle">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] border border-white/[0.08] bg-white/[0.03]"><ShieldCheck size={16} /></span>
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[4px] border border-white/[0.08] bg-white/[0.03]"><ShieldCheck size={16} /></span>
                 Run the scenario to see how each enforcement rule responds.
               </div>
             )}
@@ -230,7 +230,7 @@ export default function Demo() {
                         <li
                           key={c.code}
                           className={cn(
-                            "flex items-start gap-2.5 rounded-[10px] border p-2.5 text-[12px] [animation:ps-rise_.4s_cubic-bezier(.16,1,.3,1)_backwards]",
+                            "flex items-start gap-2.5 rounded-[4px] border p-2.5 text-[12px] [animation:ps-rise_.4s_cubic-bezier(.16,1,.3,1)_backwards]",
                             c.passed ? "border-white/[0.06] bg-canvas/50 text-fg-muted" : "border-danger/35 bg-danger/[0.08] font-medium text-fg"
                           )}
                           style={{ animationDelay: `${i * 35}ms` }}

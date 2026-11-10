@@ -15,24 +15,24 @@ const config: Config = {
         panel: "#111c2e",
         cyan: "rgb(var(--ps-cyan) / <alpha-value>)",
         /*
-         * Brand neutrals: the slate scale is re-tuned to PAYSHARK's green-tinted
+         * Brand neutrals: the slate scale is re-tuned to PAYSHARK's cool steel
          * greys so every page that uses slate-* inherits the identity.
          */
         slate: {
-          50: "#F5F8F5",
-          100: "#E4ECE6",
-          200: "#C9D6CD",
-          300: "#AEBFB4",
-          400: "#91A49A",
-          500: "#6E8278",
-          600: "#4E5F56",
-          700: "#33433A",
-          800: "#1E2B24",
-          900: "#131C17",
-          950: "#0B110E"
+          50: "#F4F7FB",
+          100: "#E3E9F1",
+          200: "#C9D3E0",
+          300: "#A9B6C8",
+          400: "#8494AA",
+          500: "#63738A",
+          600: "#48566B",
+          700: "#323E50",
+          800: "#1E2836",
+          900: "#131A25",
+          950: "#0B1018"
         },
         volt: "rgb(var(--ps-lime) / <alpha-value>)",
-        forest: "#123D28",
+        forest: "#1E2E48",
         // design system
         canvas: "rgb(var(--ps-canvas) / <alpha-value>)",
         sidebar: "rgb(var(--ps-sidebar) / <alpha-value>)",
@@ -63,8 +63,8 @@ const config: Config = {
       borderRadius: {
         sm: "8px",
         md: "10px",
-        lg: "12px",
-        xl: "14px"
+        lg: "14px",
+        xl: "18px"
       },
       boxShadow: {
         glow: "0 0 0 1px rgb(54 191 250 / .10), 0 8px 24px -12px rgb(0 0 0 / .6)",

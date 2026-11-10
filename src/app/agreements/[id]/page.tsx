@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use, Suspense } from "react";
+import { useCallback, useEffect, useState, use, Suspense } from "react";
 import { AppShell } from "@/components/app-shell";
 import { ArrowLeft, CheckCircle2, ShieldCheck, UserCheck, AlertTriangle, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -16,7 +16,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
   const [confirming, setConfirming] = useState(false);
   const [msg, setMsg] = useState("");
 
-  async function load() {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch(`/api/agreements/${id}`);
@@ -29,11 +29,11 @@ function AgreementDetailsContent({ id }: { id: string }) {
     } finally {
       setLoading(false);
     }
-  }
+  }, [id]);
 
   useEffect(() => {
     load();
-  }, [id]);
+  }, [load]);
 
   async function confirmVersion() {
     if (!data?.latestVersion) return;
@@ -74,8 +74,8 @@ function AgreementDetailsContent({ id }: { id: string }) {
         <div className="skeleton h-4 w-40 rounded-md" />
         <div className="skeleton mt-3 h-9 w-2/3 max-w-md rounded-lg" />
         <div className="grid lg:grid-cols-[1.3fr_.7fr] gap-6 mt-8">
-          <div className="skeleton h-72 rounded-[18px]" />
-          <div className="skeleton h-56 rounded-[18px]" />
+          <div className="skeleton h-72 rounded-[16px]" />
+          <div className="skeleton h-56 rounded-[16px]" />
         </div>
       </div>
     );
