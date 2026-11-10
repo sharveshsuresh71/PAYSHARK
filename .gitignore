@@ -6,3 +6,8 @@ out
 .vercel
 coverage
 .DS_Store
+
+# Generated files
+.next/
+node_modules/
+tsconfig.tsbuildinfo

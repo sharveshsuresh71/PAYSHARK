@@ -1,9 +1,0 @@
-{
-  "/api/auth/session/route": "app/api/auth/session/route.js",
-  "/api/policies/route": "app/api/policies/route.js",
-  "/api/audit/route": "app/api/audit/route.js",
-  "/api/agreements/route": "app/api/agreements/route.js",
-  "/api/agents/route": "app/api/agents/route.js",
-  "/page": "app/page.js",
-  "/dashboard/page": "app/dashboard/page.js"
-}
