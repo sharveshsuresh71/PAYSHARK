@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin:0; background:#080e19; color:#e7eef8; font-family:'DM Sans',sans-serif; }
+button,input,textarea,select { font:inherit; }
+::selection { background:rgba(66,214,208,.25); }
+.shell { min-height:100vh; background:radial-gradient(ellipse at 75% -10%,rgba(32,111,129,.18),transparent 38%),#080e19; }
+.card { background:linear-gradient(145deg,rgba(18,30,48,.94),rgba(12,21,35,.96)); border:1px solid rgba(148,163,184,.13); border-radius:18px; }
+.muted { color:#8fa1b8; }
+.kicker { color:#55d8d1; font-size:11px; letter-spacing:.18em; text-transform:uppercase; font-weight:700; }
+.btn { border-radius:10px; padding:11px 16px; font-weight:600; transition:.2s; }
+.btn-primary { background:#42d6d0; color:#06141b; }
+.btn-primary:hover { background:#70e8df; transform:translateY(-1px); }
+.btn-secondary { border:1px solid #31435a; color:#d8e5f4; background:#142237; }
+.field { width:100%; background:#0a1423; border:1px solid #2a3b52; border-radius:10px; padding:12px 13px; color:#e7eef8; outline:none; }
+.field:focus { border-color:#42d6d0; box-shadow:0 0 0 3px rgba(66,214,208,.1); }
