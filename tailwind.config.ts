@@ -13,7 +13,26 @@ const config: Config = {
         // legacy aliases (kept so existing markup keeps compiling)
         ink: "#0b1220",
         panel: "#111c2e",
-        cyan: "#42d6d0",
+        cyan: "rgb(var(--ps-cyan) / <alpha-value>)",
+        /*
+         * Brand neutrals: the slate scale is re-tuned to PAYSHARK's green-tinted
+         * greys so every page that uses slate-* inherits the identity.
+         */
+        slate: {
+          50: "#F5F8F5",
+          100: "#E4ECE6",
+          200: "#C9D6CD",
+          300: "#AEBFB4",
+          400: "#91A49A",
+          500: "#6E8278",
+          600: "#4E5F56",
+          700: "#33433A",
+          800: "#1E2B24",
+          900: "#131C17",
+          950: "#0B110E"
+        },
+        volt: "rgb(var(--ps-lime) / <alpha-value>)",
+        forest: "#123D28",
         // design system
         canvas: "rgb(var(--ps-canvas) / <alpha-value>)",
         sidebar: "rgb(var(--ps-sidebar) / <alpha-value>)",

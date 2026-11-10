@@ -17,8 +17,8 @@ export function BrandMark({ className }: { className?: string }) {
       aria-hidden
       className={cn(
         "brand-mark relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-[10px] text-accent-fg",
-        "bg-[linear-gradient(145deg,#8DEBFF_0%,#35D9FF_38%,#1677FF_100%)]",
-        "shadow-[inset_0_1px_0_rgb(255_255_255/.55),inset_0_-3px_6px_rgb(4_20_60/.35),0_8px_18px_-8px_rgb(53_217_255/.75)]",
+        "bg-[linear-gradient(145deg,#C8F78A_0%,#20C878_45%,#0E7A4A_100%)]",
+        "shadow-[inset_0_1px_0_rgb(255_255_255/.55),inset_0_-3px_6px_rgb(3_30_15/.35),0_8px_18px_-8px_rgb(32_200_120/.75)]",
         className
       )}
     >
@@ -113,18 +113,18 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
             aria-hidden
             className={cn(
               "pointer-events-none absolute left-3 right-3 rounded-[10px]",
-              "bg-[linear-gradient(90deg,rgb(53_217_255/.16),rgb(22_119_255/.06))]",
-              "shadow-[inset_0_0_0_1px_rgb(53_217_255/.18),inset_0_1px_0_rgb(255_255_255/.06),0_8px_20px_-12px_rgb(53_217_255/.55)]",
+              "bg-[linear-gradient(90deg,rgb(32_200_120/.14),rgb(18_61_40/.1))]",
+              "shadow-[inset_0_0_0_1px_rgb(32_200_120/.18),inset_0_1px_0_rgb(255_255_255/.06),0_8px_20px_-12px_rgb(32_200_120/.55)]",
               animateIndicator && "transition-[transform,height] duration-500 ease-out"
             )}
             style={{ top: 0, height: indicator.height, transform: `translateY(${indicator.top}px)` }}
           >
-            <span className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-accent shadow-[0_0_12px_rgb(53_217_255/.9)]" />
+            <span className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-accent shadow-[0_0_12px_rgb(32_200_120/.9)]" />
           </span>
         )}
 
         {navGroups.map((group, gi) => (
-          <div key={group.label} className={cn(gi > 0 && "mt-6")}>
+          <div key={group.label} className={cn(gi > 0 && (isCollapsed ? "mt-3" : "mt-5"))}>
             {isCollapsed ? (
               gi > 0 && <div className="mx-2 mb-3 h-px bg-white/[0.06]" aria-hidden />
             ) : (
@@ -144,7 +144,7 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
                       aria-label={isCollapsed ? label : undefined}
                       onClick={variant === "mobile" ? onClose : undefined}
                       className={cn(
-                        "relative flex h-10 items-center gap-3 rounded-[10px] text-[13.5px] font-medium transition-colors duration-200",
+                        "relative flex h-9 items-center gap-3 rounded-[10px] text-[13.5px] font-medium transition-colors duration-200",
                         isCollapsed ? "justify-center px-0" : "px-3",
                         active ? "text-fg" : "text-fg-muted hover:bg-white/[0.035] hover:text-fg"
                       )}
@@ -153,7 +153,7 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
                         className={cn(
                           "grid h-7 w-7 shrink-0 place-items-center rounded-lg transition-all duration-300",
                           active
-                            ? "bg-accent/15 text-accent shadow-[0_0_14px_-2px_rgb(53_217_255/.55)]"
+                            ? "bg-accent/15 text-accent shadow-[0_0_14px_-2px_rgb(32_200_120/.55)]"
                             : "text-fg-subtle group-hover/item:text-fg-muted group-hover/item:[transform:perspective(200px)_rotateY(-14deg)_translateY(-1px)]"
                         )}
                       >
@@ -193,12 +193,12 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
         {/* Profile */}
         <div
           className={cn(
-            "relative flex items-center gap-2.5 rounded-[12px] border border-white/[0.07] bg-[linear-gradient(180deg,rgb(24_43_70/.55),rgb(16_26_45/.6))] shadow-[inset_0_1px_0_rgb(255_255_255/.05)]",
+            "relative flex items-center gap-2.5 rounded-[12px] border border-white/[0.07] bg-[linear-gradient(180deg,rgb(18_61_40/.35),rgb(21_31_25/.7))] shadow-[inset_0_1px_0_rgb(255_255_255/.05)]",
             isCollapsed ? "justify-center p-1.5" : "p-2.5"
           )}
           title={isCollapsed && user ? `${displayName(user)} · ${user.role}` : undefined}
         >
-          <span className="relative shrink-0 rounded-full bg-[conic-gradient(from_200deg,#35D9FF,#1677FF,#795CFF,#35D9FF)] p-[1.5px]">
+          <span className="relative shrink-0 rounded-full bg-[conic-gradient(from_200deg,#B6F36A,#20C878,#36D9F5,#B6F36A)] p-[1.5px]">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-sidebar text-[11px] font-semibold text-fg">
               {user ? initials(user) : <span className="skeleton h-4 w-4 rounded-full" />}
             </span>

@@ -19,24 +19,58 @@ interface Message {
   from: "user" | "assistant";
   text: string;
   source?: "verified" | "info";
+  action?: { href: string; label: string };
 }
 
 const SUGGESTIONS = [
   "What needs my review?",
+  "Any anomalies?",
   "Why were payments blocked?",
   "What's my success rate?",
   "What's my largest payment?"
 ];
 
+function median(nums: number[]) {
+  if (!nums.length) return 0;
+  const s = [...nums].sort((x, y) => x - y);
+  const m = Math.floor(s.length / 2);
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
 function answer(q: string, a: PaymentAnalytics, rows: PaymentRequest[]): Omit<Message, "id" | "from"> {
   const t = q.toLowerCase();
   const n = a.total;
-  if (!n) return { text: "There are no payment requests yet. Run a scenario in the Security Demo or submit one from an agent to populate analytics.", source: "info" };
+  if (!n) return { text: "There are no payment requests yet. Run a scenario in the Attack Simulator or submit one from an agent to populate analytics.", source: "info", action: { href: "/demo", label: "Open Attack Simulator" } };
+
+  // Anomaly detection: high risk scores or amounts far above the typical request
+  if (/anomal|unusual|suspicious|outlier|fraud|weird/.test(t)) {
+    const med = median(rows.filter(r => r.currency === a.currency).map(amountOf));
+    const flagged = rows.filter(r => (r.risk_score ?? 0) > 50 || (med > 0 && r.currency === a.currency && amountOf(r) > med * 3));
+    if (!flagged.length) return { text: `No anomalies found. No request scored above 50 risk or exceeded 3× the typical amount (${formatMoney(med, a.currency)}).`, source: "verified" };
+    const list = flagged.slice(0, 4).map(r => {
+      const why = [(r.risk_score ?? 0) > 50 ? `risk ${r.risk_score}` : null, med > 0 && amountOf(r) > med * 3 ? `${(amountOf(r) / med).toFixed(1)}× typical amount` : null].filter(Boolean).join(", ");
+      return `• ${r.merchant}: ${formatMoney(amountOf(r), r.currency)} (${why}) · ${statusLabel(r)}`;
+    }).join("\n");
+    return { text: `${flagged.length} request${flagged.length === 1 ? "" : "s"} flagged:\n${list}`, source: "verified", action: { href: "/transactions", label: "Inspect in Transactions" } };
+  }
+
+  // Natural-language merchant search: "payments to Acme", "show blocked payments for X"
+  const merchantHit = [...new Set(rows.map(r => r.merchant))].find(m => t.includes(m.toLowerCase()));
+  if (merchantHit) {
+    const mr = rows.filter(r => r.merchant === merchantHit);
+    const vol = mr.filter(r => r.currency === a.currency).reduce((s, r) => s + amountOf(r), 0);
+    const by = (s: string) => mr.filter(r => statusLabel(r) === s).length;
+    return {
+      text: `${merchantHit}: ${mr.length} request${mr.length === 1 ? "" : "s"}, ${formatMoney(vol, a.currency)} requested. Blocked: ${mr.filter(r => r.decision === "BLOCKED").length} · Captured: ${by("Captured")}.`,
+      source: "verified",
+      action: { href: "/transactions", label: "Open Transactions" }
+    };
+  }
 
   if (/review|pending|approv|attention|queue/.test(t)) {
     if (!a.needsAttention.length) return { text: "Nothing is waiting on you. Every payment request has been captured or blocked.", source: "verified" };
     const list = a.needsAttention.slice(0, 3).map(r => `• ${r.merchant} — ${formatMoney(amountOf(r), r.currency)} (${statusLabel(r)})`).join("\n");
-    return { text: `${a.needsAttention.length} request${a.needsAttention.length === 1 ? "" : "s"} pending:\n${list}${a.needsAttention.length > 3 ? "\n…open the Review Center for the rest." : ""}`, source: "verified" };
+    return { text: `${a.needsAttention.length} request${a.needsAttention.length === 1 ? "" : "s"} pending:\n${list}${a.needsAttention.length > 3 ? "\n…and more." : ""}`, source: "verified", action: { href: "/approvals", label: "Open Review Center" } };
   }
   if (/block|fail|reject|why|reason/.test(t)) {
     if (!a.counts.blocked) return { text: "No payments have been blocked.", source: "verified" };
@@ -62,7 +96,7 @@ function answer(q: string, a: PaymentAnalytics, rows: PaymentRequest[]): Omit<Me
     return { text: `${formatMoney(a.requestedVolume, a.currency)} requested across ${n} payment requests, ${formatMoney(a.capturedVolume, a.currency)} captured.${a.otherCurrencies.length ? ` (Other currencies not included: ${a.otherCurrencies.join(", ")}.)` : ""}`, source: "verified" };
   }
   return {
-    text: "I can answer questions about your review queue, blocked payments, success rate, risk, volume and largest payments. Try one of the suggestions below.",
+    text: "I can answer questions about your review queue, anomalies, blocked payments, success rate, risk, volume, the largest payment, or a specific merchant by name. Try one of the suggestions below.",
     source: "info"
   };
 }
@@ -152,7 +186,7 @@ export function AiAssistant() {
         >
           {/* Header */}
           <div className="relative flex items-center gap-3 border-b border-white/[0.07] px-4 py-3.5">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_100%_at_0%_0%,rgb(53_217_255/.12),transparent_70%)]" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_100%_at_0%_0%,rgb(32_200_120/.12),transparent_70%)]" aria-hidden />
             <span className="ai-orb h-9 w-9 shrink-0" aria-hidden />
             <div className="relative min-w-0 flex-1">
               <h2 id={titleId} className="text-[14px] font-semibold text-fg">PAYSHARK Assistant</h2>
@@ -197,11 +231,20 @@ export function AiAssistant() {
                   className={cn(
                     "max-w-[88%] whitespace-pre-line rounded-[14px] px-3.5 py-2.5 text-[13px] leading-[1.55]",
                     m.from === "user"
-                      ? "rounded-br-[4px] bg-[linear-gradient(135deg,#35D9FF,#1677FF)] text-accent-fg shadow-[0_8px_20px_-12px_rgb(53_217_255/.8)]"
+                      ? "rounded-br-[4px] bg-[linear-gradient(135deg,#B6F36A,#20C878)] text-accent-fg shadow-[0_8px_20px_-12px_rgb(32_200_120/.8)]"
                       : "rounded-bl-[4px] border border-white/[0.08] bg-surface-2/60 text-fg"
                   )}
                 >
                   {m.text}
+                  {m.action && (
+                    <Link
+                      href={m.action.href}
+                      onClick={() => setOpen(false)}
+                      className="mt-2.5 inline-flex items-center gap-1 rounded-lg border border-accent/30 bg-accent/10 px-2.5 py-1 text-[11.5px] font-semibold text-accent transition-colors hover:bg-accent/20"
+                    >
+                      {m.action.label} →
+                    </Link>
+                  )}
                   {m.source === "verified" && (
                     <div className="mt-2 flex items-center gap-1 border-t border-white/[0.06] pt-1.5 text-[10.5px] font-medium text-success/90">
                       <ShieldCheck size={11} /> Verified data · computed, not AI-generated
@@ -258,7 +301,7 @@ export function AiAssistant() {
               onClick={() => setOpen(false)}
               className="mt-2.5 flex items-center gap-2 rounded-[10px] border border-iris/25 bg-iris/[0.08] px-3 py-2 text-[12px] text-fg-muted transition-colors hover:border-iris/45 hover:text-fg"
             >
-              <span className="inline-flex items-center gap-1 rounded-md bg-iris/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#B6A6FF]">
+              <span className="inline-flex items-center gap-1 rounded-md bg-iris/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9FEBF8]">
                 <Sparkles size={10} /> AI
               </span>
               Analyze an agreement with generative AI →

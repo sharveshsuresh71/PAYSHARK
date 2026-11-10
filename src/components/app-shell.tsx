@@ -34,6 +34,25 @@ function subscribe(l: () => void) {
   return () => listeners.delete(l);
 }
 
+/** Sidebar collapse preference, shared with Settings. */
+export function useSidebarCollapsed() {
+  const value = useSyncExternalStore(subscribe, readCollapsed, () => false);
+  return [value, setCollapsed] as const;
+}
+
+/* Visual effects preference ("full" | "reduced"), applied as <html data-effects>. */
+const EFFECTS_KEY = "payshark:effects";
+export function applyEffectsPreference(mode?: "full" | "reduced") {
+  try {
+    const value = mode ?? (localStorage.getItem(EFFECTS_KEY) === "reduced" ? "reduced" : "full");
+    if (mode) localStorage.setItem(EFFECTS_KEY, mode);
+    document.documentElement.dataset.effects = value;
+    return value;
+  } catch {
+    return "full";
+  }
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const collapsed = useSyncExternalStore(subscribe, readCollapsed, () => false);
   const toggleCollapsed = useCallback(() => setCollapsed(!readCollapsed()), []);
@@ -56,6 +75,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   // Close the drawer on navigation
   useEffect(() => setMobileOpen(false), [pathname]);
+
+  // Restore the visual-effects preference
+  useEffect(() => { applyEffectsPreference(); }, []);
 
   // Ctrl/⌘ + B toggles the desktop sidebar
   useEffect(() => {

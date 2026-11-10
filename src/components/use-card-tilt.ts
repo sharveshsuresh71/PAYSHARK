@@ -40,7 +40,7 @@ export function useCardTilt(rootRef: RefObject<HTMLElement | null>) {
         const r = el.getBoundingClientRect();
         const px = (e.clientX - r.left) / r.width;
         const py = (e.clientY - r.top) / r.height;
-        const flat = el.hasAttribute("data-no-tilt") || !!el.querySelector("input, textarea, select");
+        const flat = el.hasAttribute("data-no-tilt") || document.documentElement.dataset.effects === "reduced" || !!el.querySelector("input, textarea, select");
         const maxDeg = flat ? 0 : Math.max(0.8, Math.min(7, 1600 / Math.max(r.width, r.height)));
         el.setAttribute("data-tilt", "on");
         el.style.setProperty("--rx", `${((0.5 - py) * maxDeg).toFixed(2)}deg`);

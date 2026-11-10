@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { PaymentCard } from "@/components/dashboard/payment-card";
 import { VolumeChart, DistributionRing, SuccessGauge } from "@/components/dashboard/charts";
 import { TransactionsPanel } from "@/components/dashboard/transactions";
+import { PaymentNetwork, SystemStatus, RecentActivity, type AuditLite } from "@/components/dashboard/ops";
 import { toast } from "@/components/toast";
 import { refreshSession } from "@/lib/client/session-store";
 import { analyze, formatMoney, type PaymentRequest } from "@/lib/client/payments";
@@ -30,12 +31,12 @@ function Sparkline({ values, className }: { values: number[]; className?: string
     <svg viewBox="0 0 100 30" preserveAspectRatio="none" className={cn("h-10 w-full", className)} aria-hidden>
       <defs>
         <linearGradient id="spark-fill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stopColor="#35D9FF" stopOpacity=".28" />
-          <stop offset="1" stopColor="#35D9FF" stopOpacity="0" />
+          <stop offset="0" stopColor="#20C878" stopOpacity=".28" />
+          <stop offset="1" stopColor="#20C878" stopOpacity="0" />
         </linearGradient>
       </defs>
       <polygon points={`0,30 ${pts} 100,30`} fill="url(#spark-fill)" />
-      <polyline points={pts} pathLength={1} fill="none" stroke="#35D9FF" strokeWidth="1.6" className="chart-line" />
+      <polyline points={pts} pathLength={1} fill="none" stroke="#20C878" strokeWidth="1.6" className="chart-line" />
     </svg>
   );
 }
@@ -48,6 +49,10 @@ export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [counts, setCounts] = useState({ agreements: 0, policies: 0, activePolicies: 0, agents: 0, audit: 0 });
   const [payments, setPayments] = useState<PaymentRequest[]>([]);
+  const [agentList, setAgentList] = useState<{ id: string; agent_name: string; status?: string }[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLite[]>([]);
+  const [chainValid, setChainValid] = useState<boolean | null>(null);
+  const [apiOk, setApiOk] = useState(true);
   const [loading, setLoading] = useState(true);
   const [switching, setSwitching] = useState(false);
   const [greeting, setGreeting] = useState("Welcome back");
@@ -81,6 +86,10 @@ export default function Dashboard() {
         audit: aud.ok ? aud.data.logs.length : 0
       });
       setPayments(pay.ok ? pay.data : []);
+      setAgentList(agt.ok ? agt.data : []);
+      setAuditLogs(aud.ok ? aud.data.logs : []);
+      setChainValid(aud.ok ? Boolean(aud.data.chainIntegrityValid) : null);
+      setApiOk([sess, agr, pol, agt, aud, pay].every(j => j.ok));
     } catch (err) {
       console.error(err);
       toast("Couldn’t refresh workspace data", { tone: "error" });
@@ -135,15 +144,15 @@ export default function Dashboard() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-[linear-gradient(135deg,rgb(24_43_70/.55),rgb(10_16_32/.75))] shadow-[inset_0_1px_0_rgb(255_255_255/.06),0_40px_80px_-40px_rgb(0_0_0/.9)]">
+      <section className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-[linear-gradient(135deg,rgb(18_61_40/.55),rgb(16_23_19/.85))] shadow-[inset_0_1px_0_rgb(255_255_255/.06),0_40px_80px_-40px_rgb(0_0_0/.9)]">
         {/* Atmosphere */}
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute -right-20 -top-32 h-[420px] w-[420px] rounded-full bg-[radial-gradient(closest-side,rgb(22_119_255/.35),transparent)] motion-safe:animate-[ps-float_9s_ease-in-out_infinite]" />
-          <div className="absolute -bottom-40 left-1/3 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,rgb(121_92_255/.16),transparent)]" />
+          <div className="absolute -right-20 -top-32 h-[420px] w-[420px] rounded-full bg-[radial-gradient(closest-side,rgb(32_200_120/.3),transparent)] motion-safe:animate-[ps-float_9s_ease-in-out_infinite]" />
+          <div className="absolute -bottom-40 left-1/3 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,rgb(182_243_106/.08),transparent)]" />
           <svg className="absolute inset-0 h-full w-full opacity-[.18]" aria-hidden>
             <defs>
               <pattern id="hero-dots" width="22" height="22" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="1" fill="#91A4C2" />
+                <circle cx="1" cy="1" r="1" fill="#91A49A" />
               </pattern>
               <radialGradient id="hero-dots-mask-g" cx="80%" cy="20%" r="70%">
                 <stop offset="0" stopColor="#fff" />
@@ -162,7 +171,7 @@ export default function Dashboard() {
             <h1 className="mt-3 font-display text-[clamp(28px,3.6vw,42px)] font-semibold leading-[1.08] tracking-[-0.02em]">
               <span className="text-fg">{greeting}{firstName ? "," : ""}</span>{" "}
               {firstName ? (
-                <span className="bg-gradient-to-r from-[#9BEFFF] via-accent to-ocean bg-clip-text text-transparent">{firstName}</span>
+                <span className="bg-gradient-to-r from-volt via-accent to-cyan bg-clip-text text-transparent">{firstName}</span>
               ) : (
                 <span className="skeleton inline-block h-8 w-32 align-middle" />
               )}
@@ -232,7 +241,7 @@ export default function Dashboard() {
               <div className="text-[12.5px] font-medium text-fg-muted">Total payment volume</div>
               <div className="text-[11px] text-fg-subtle">Captured · {a.currency}</div>
             </div>
-            <span className="grid h-9 w-9 place-items-center rounded-[10px] border border-accent/20 bg-accent/10 text-accent shadow-[0_0_20px_-6px_rgb(53_217_255/.6)]">
+            <span className="grid h-9 w-9 place-items-center rounded-[10px] border border-accent/20 bg-accent/10 text-accent shadow-[0_0_20px_-6px_rgb(32_200_120/.6)]">
               <Activity size={17} />
             </span>
           </div>
@@ -289,7 +298,7 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center gap-3 text-[11.5px] text-fg-muted">
               <span className="flex items-center gap-1.5"><span className="h-0.5 w-3 rounded bg-accent" /> Requested</span>
-              <span className="flex items-center gap-1.5"><span className="h-0 w-3 border-t border-dashed border-success" /> Captured</span>
+              <span className="flex items-center gap-1.5"><span className="h-0 w-3 border-t border-dashed border-cyan" /> Captured</span>
             </div>
           </div>
           {loading ? <div className="skeleton h-[200px] w-full rounded-[12px]" /> : <VolumeChart data={a.daily} currency={a.currency} />}
@@ -301,6 +310,25 @@ export default function Dashboard() {
           {loading ? <div className="skeleton h-[220px] w-full rounded-[12px]" /> : (
             <SuccessGauge rate={a.successRate} captured={a.counts.captured} blocked={a.counts.blocked} reasons={a.topBlockReasons} />
           )}
+        </section>
+      </div>
+
+      {/* Operations: network + system status */}
+      <div className="mt-4 grid gap-4 lg:grid-cols-3">
+        <section className="card p-5 lg:col-span-2" data-no-tilt aria-labelledby="net-h">
+          <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
+            <div>
+              <h2 id="net-h" className="text-[15px] font-semibold text-fg">Payment network</h2>
+              <p className="text-[12px] text-fg-subtle">Agents → PAYSHARK → merchants · hover a merchant for its outcomes</p>
+            </div>
+            <span className="pill text-cyan">Live from requests</span>
+          </div>
+          {loading ? <div className="skeleton h-[280px] w-full rounded-[12px]" /> : <PaymentNetwork rows={payments} agents={agentList} currency={a.currency} />}
+        </section>
+        <section className="card p-5" aria-labelledby="sys-h">
+          <h2 id="sys-h" className="text-[15px] font-semibold text-fg">System status</h2>
+          <p className="mb-4 text-[12px] text-fg-subtle">Derived from live API responses</p>
+          <SystemStatus apiOk={apiOk} chainValid={chainValid} auditCount={counts.audit} agentCount={counts.agents} loading={loading} />
         </section>
       </div>
 
@@ -327,31 +355,10 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="card p-5 md:col-span-2 lg:col-span-1" aria-labelledby="sec-h">
-          <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-[10px] border border-success/25 bg-success/10 text-success">
-              <ShieldCheck size={16} />
-            </span>
-            <h2 id="sec-h" className="text-[15px] font-semibold text-fg">Security posture</h2>
-          </div>
-          <ul className="mt-4 space-y-2.5">
-            {[
-              "AI has no direct payment execution tools",
-              "Policy engine is pure and deterministic",
-              "Scenario D: Purpose mismatch BLOCKED + REVIEW",
-              "Neon PostgreSQL schema active",
-              "Audit logs protected by SHA-256 hash chain",
-              "Single-use cryptographic human approval binding"
-            ].map(x => (
-              <li key={x} className="flex items-start gap-2.5 text-[12.5px] text-fg-muted">
-                <CheckCircle2 size={14} className="mt-0.5 shrink-0 text-success" />
-                <span>{x}</span>
-              </li>
-            ))}
-          </ul>
-          <Link href="/demo" className="btn btn-secondary mt-5 w-full text-[12.5px]">
-            Open Red-Team Attack Simulator →
-          </Link>
+        <section className="card p-5 md:col-span-2 lg:col-span-1" aria-labelledby="act-h">
+          <h2 id="act-h" className="text-[15px] font-semibold text-fg">Recent activity</h2>
+          <p className="mb-4 text-[12px] text-fg-subtle">Latest hash-chained audit events</p>
+          <RecentActivity logs={auditLogs} loading={loading} />
         </section>
       </div>
 
@@ -363,7 +370,7 @@ export default function Dashboard() {
       </div>
 
       {/* ------------------------------------------------------------------ */}
-      {/* Enforcement pipeline                                                 */}
+      {/* Enforcement pipeline + security posture                              */}
       {/* ------------------------------------------------------------------ */}
       <section className="mt-6" aria-labelledby="pipe-h">
         <div className="mb-3 flex items-center justify-between">
@@ -372,7 +379,7 @@ export default function Dashboard() {
             View Audit Trail →
           </Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {[
             ["01", "Agreement & Global Counterparty Binding", "Agreements identify counterparties by normalized email. Single-use invitation tokens bind verified accounts atomically before activation."],
             ["02", "Deterministic Policy Engine (13 Rules)", "Evaluates per-transaction ceilings, merchant allowlists, and currency precision. Purpose mismatches (Scenario D) are strictly BLOCKED and routed to human review."],
@@ -387,6 +394,33 @@ export default function Dashboard() {
               <p className="mt-1.5 text-[12px] leading-[1.6] text-fg-muted">{d}</p>
             </div>
           ))}
+
+          <div className="card p-5">
+            <div className="flex items-center gap-2">
+              <span className="grid h-8 w-8 place-items-center rounded-[10px] border border-success/25 bg-success/10 text-success">
+                <ShieldCheck size={16} />
+              </span>
+              <h3 className="text-[13.5px] font-semibold text-fg">Security posture</h3>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {[
+                "AI has no direct payment execution tools",
+                "Policy engine is pure and deterministic",
+                "Scenario D: Purpose mismatch BLOCKED + REVIEW",
+                "Neon PostgreSQL schema active",
+                "Audit logs protected by SHA-256 hash chain",
+                "Single-use cryptographic human approval binding"
+              ].map(x => (
+                <li key={x} className="flex items-start gap-2 text-[12px] text-fg-muted">
+                  <CheckCircle2 size={13} className="mt-0.5 shrink-0 text-success" />
+                  <span>{x}</span>
+                </li>
+              ))}
+            </ul>
+            <Link href="/demo" className="btn btn-secondary mt-4 w-full text-[12px]">
+              Open Red-Team Attack Simulator →
+            </Link>
+          </div>
         </div>
       </section>
     </AppShell>

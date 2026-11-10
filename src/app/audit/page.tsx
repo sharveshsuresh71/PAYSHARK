@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Fingerprint, ShieldCheck, AlertTriangle, Loader2, Hash, Clock } from "lucide-react";
+import { PageHeader, HeaderStat, EmptyState } from "@/components/page-header";
 
 export default function Audit() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -30,76 +31,95 @@ export default function Audit() {
 
   return (
     <AppShell>
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="kicker">TAMPER-EVIDENT HISTORY · SHA-256 HASH CHAIN</div>
-          <h1 className="text-3xl font-semibold mt-2">Audit trail</h1>
-          <p className="muted mt-2">
-            Append-only ledger. Every security-sensitive transition is chained to the previous block's SHA-256 hash.
-          </p>
-        </div>
+      <PageHeader
+        kicker="TAMPER-EVIDENT HISTORY · SHA-256 HASH CHAIN"
+        title="Audit trail"
+        description="Append-only ledger. Every security-sensitive transition is chained to the previous block's SHA-256 hash."
+        actions={!loading ? <HeaderStat label="Events" value={logs.length} tone="text-accent" /> : undefined}
+      />
 
-        {valid !== null && (
-          <div
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold ${
-              valid
-                ? "bg-emerald-400/10 text-emerald-300 border border-emerald-400/30"
-                : "bg-rose-400/10 text-rose-300 border border-rose-400/30"
+      {valid !== null && (
+        <div
+          role="status"
+          className={`mt-6 flex items-center gap-4 rounded-[14px] border p-4 sm:p-5 ${
+            valid ? "border-success/30 bg-success/[0.08] text-success" : "border-danger/30 bg-danger/[0.08] text-danger"
+          }`}
+        >
+          <span
+            className={`grid h-10 w-10 shrink-0 place-items-center rounded-[12px] border ${
+              valid ? "border-success/30 bg-success/10" : "border-danger/30 bg-danger/10"
             }`}
           >
-            {valid ? <ShieldCheck size={18} /> : <AlertTriangle size={18} />}
-            {valid ? "CHAIN INTEGRITY: VERIFIED" : "CHAIN INTEGRITY COMPROMISED"}
+            {valid ? <ShieldCheck size={20} /> : <AlertTriangle size={20} />}
+          </span>
+          <div className="min-w-0">
+            <div className="text-[13px] font-semibold uppercase tracking-[0.12em]">
+              {valid ? "CHAIN INTEGRITY: VERIFIED" : "CHAIN INTEGRITY COMPROMISED"}
+            </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {loading ? (
-        <div className="py-20 text-center">
-          <Loader2 className="mx-auto animate-spin text-accent" size={32} />
-          <p className="muted mt-3">Verifying hash chain...</p>
+        <div className="mt-8 space-y-3" aria-busy="true">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="skeleton h-[140px] rounded-[18px]" />
+          ))}
+          <p className="sr-only">Verifying hash chain...</p>
         </div>
       ) : logs.length === 0 ? (
-        <div className="card mt-8 p-12 text-center">
-          <Fingerprint className="mx-auto text-slate-500" size={32} />
-          <h2 className="font-semibold mt-4">No audit logs recorded yet</h2>
-          <p className="muted text-sm mt-2">Create an agreement or evaluate a payment to generate events.</p>
+        <div className="mt-8">
+          <EmptyState
+            icon={<Fingerprint size={22} />}
+            title="No audit logs recorded yet"
+            description="Create an agreement or evaluate a payment to generate events."
+          />
         </div>
       ) : (
-        <div className="mt-8 space-y-3">
+        <ol className="relative mt-8 space-y-4 pl-7 sm:pl-9">
+          <span aria-hidden className="absolute left-[9px] sm:left-[13px] top-2 bottom-2 w-px bg-white/[0.08]" />
           {logs.map((log, idx) => (
-            <div key={log.id} className="card p-5 space-y-2 hover:border-slate-700 transition">
-              <div className="flex flex-wrap justify-between items-center gap-2">
-                <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-mono text-accent bg-accent/10 px-2 py-0.5 rounded">
-                    #{idx + 1}
-                  </span>
-                  <span className="font-semibold text-white text-sm">{log.action}</span>
-                  <span className="text-xs text-slate-500 uppercase tracking-wider font-mono">
-                    [{log.entity_type}]
-                  </span>
+            <li key={log.id} className="relative">
+              <span
+                aria-hidden
+                className="absolute -left-7 sm:-left-9 top-6 grid h-[19px] w-[19px] sm:h-[27px] sm:w-[27px] place-items-center rounded-full border border-accent/30 bg-canvas"
+              >
+                <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgb(32_200_120/.6)]" />
+              </span>
+              <div className="card p-4 sm:p-5 space-y-3 min-w-0">
+                <div className="flex flex-wrap justify-between items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2.5 min-w-0">
+                    <span className="font-mono text-[11px] text-accent bg-accent/10 border border-accent/30 px-2 py-0.5 rounded-md tabular-nums">
+                      #{idx + 1}
+                    </span>
+                    <span className="text-[14px] font-semibold text-fg break-words">{log.action}</span>
+                    <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-fg-subtle">
+                      [{log.entity_type}]
+                    </span>
+                  </div>
+                  <div className="text-[12px] text-fg-subtle flex items-center gap-1.5 tabular-nums">
+                    <Clock size={13} />
+                    {new Date(log.created_at).toLocaleString()}
+                  </div>
                 </div>
-                <div className="text-xs text-slate-500 flex items-center gap-1.5">
-                  <Clock size={13} />
-                  {new Date(log.created_at).toLocaleString()}
-                </div>
-              </div>
 
-              <div className="bg-canvas/70 p-3 rounded-lg border border-slate-800/80 text-xs text-slate-300 font-mono overflow-x-auto">
-                {JSON.stringify(log.event_data, null, 2)}
-              </div>
+                <pre className="well p-3 font-mono text-[11px] text-fg-muted overflow-x-auto">
+                  {JSON.stringify(log.event_data, null, 2)}
+                </pre>
 
-              <div className="flex flex-wrap justify-between items-center text-[11px] text-slate-500 font-mono pt-1 gap-2">
-                <div className="flex items-center gap-1.5">
-                  <Hash size={13} className="text-slate-600" />
-                  <span>Prev: {log.previous_event_hash ? log.previous_event_hash.slice(0, 16) + "..." : "GENESIS_BLOCK"}</span>
-                </div>
-                <div className="text-accent/80">
-                  Hash: {log.event_hash ? log.event_hash.slice(0, 24) + "..." : "N/A"}
+                <div className="flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:justify-between sm:items-center font-mono text-[11px] text-fg-subtle">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <Hash size={13} className="shrink-0 text-fg-subtle" />
+                    <span className="break-all">Prev: {log.previous_event_hash ? log.previous_event_hash.slice(0, 16) + "..." : "GENESIS_BLOCK"}</span>
+                  </div>
+                  <div className="text-accent/80 break-all">
+                    Hash: {log.event_hash ? log.event_hash.slice(0, 24) + "..." : "N/A"}
+                  </div>
                 </div>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ol>
       )}
     </AppShell>
   );

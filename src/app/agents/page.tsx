@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { Bot, KeyRound, Copy, Check, Plus, ShieldCheck, Loader2 } from "lucide-react";
+import { PageHeader, HeaderStat, EmptyState } from "@/components/page-header";
 
 export default function Agents() {
   const [agents, setAgents] = useState<any[]>([]);
@@ -69,24 +70,21 @@ export default function Agents() {
 
   return (
     <AppShell>
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="kicker">AGENT REGISTRY · REVOCABLE CREDENTIALS</div>
-          <h1 className="text-3xl font-semibold mt-2">AI agents</h1>
-          <p className="muted mt-2">
-            Issue high-entropy scoped API keys to autonomous agents. Only SHA-256 hashes are persisted.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        kicker="AGENT REGISTRY · REVOCABLE CREDENTIALS"
+        title="AI agents"
+        description="Issue high-entropy scoped API keys to autonomous agents. Only SHA-256 hashes are persisted."
+        actions={!loading ? <HeaderStat label="Registered" value={agents.length} tone="text-accent" /> : undefined}
+      />
 
       <div className="grid lg:grid-cols-[1fr_1.2fr] gap-6 mt-8">
-        <div className="card p-6 h-fit">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
+        <div className="card p-5 sm:p-6 h-fit min-w-0">
+          <h2 className="text-[15px] font-semibold text-fg flex items-center gap-2">
             <Plus size={18} className="text-accent" /> Register New Agent
           </h2>
-          <form onSubmit={registerAgent} className="mt-4 space-y-4">
-            <label className="block text-sm">
-              Agent name
+          <form onSubmit={registerAgent} className="mt-5 space-y-4">
+            <label className="block">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Agent name</span>
               <input
                 required
                 className="field mt-2"
@@ -97,7 +95,7 @@ export default function Agents() {
             </label>
 
             {error && (
-              <p className="text-sm text-rose-300 bg-rose-500/10 border border-rose-500/30 p-2.5 rounded-lg">
+              <p className="text-[13px] text-danger bg-danger/[0.08] border border-danger/30 px-3 py-2.5 rounded-[10px] break-words">
                 {error}
               </p>
             )}
@@ -109,19 +107,19 @@ export default function Agents() {
           </form>
 
           {newKey && (
-            <div className="mt-5 p-4 rounded-xl border border-amber-400/40 bg-amber-400/10 space-y-2">
-              <div className="text-xs text-amber-300 font-bold tracking-wider">SAVE YOUR AGENT API KEY NOW</div>
-              <p className="text-xs text-slate-300">
+            <div className="mt-5 p-4 rounded-[12px] border border-warning/30 bg-warning/[0.08] space-y-2">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-warning">SAVE YOUR AGENT API KEY NOW</div>
+              <p className="text-[13px] text-fg-muted">
                 This raw key is shown only once and cannot be retrieved again:
               </p>
-              <div className="flex gap-2 items-center mt-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:items-center mt-2">
                 <input
                   readOnly
-                  className="field text-xs font-mono text-emerald-300 bg-canvas/60"
+                  className="field min-w-0 text-xs font-mono text-success"
                   value={newKey}
                 />
-                <button onClick={copyKey} className="btn btn-secondary shrink-0 flex gap-1.5 items-center text-xs">
-                  {copied ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
+                <button onClick={copyKey} className="btn btn-secondary shrink-0 flex gap-1.5 items-center justify-center text-xs">
+                  {copied ? <Check size={14} className="text-success" /> : <Copy size={14} />}
                   {copied ? "Copied" : "Copy"}
                 </button>
               </div>
@@ -129,38 +127,45 @@ export default function Agents() {
           )}
         </div>
 
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
+        <div className="space-y-4 min-w-0">
+          <h2 className="text-[15px] font-semibold text-fg flex items-center gap-2">
             <Bot size={20} className="text-accent" /> Registered Agent Workspaces
           </h2>
 
           {loading ? (
-            <div className="card p-10 text-center">
-              <Loader2 className="mx-auto animate-spin text-accent" size={28} />
-              <p className="muted text-sm mt-2">Loading agents...</p>
+            <div className="space-y-3" aria-busy="true">
+              {[0, 1, 2].map(i => (
+                <div key={i} className="skeleton h-[76px] rounded-[14px]" />
+              ))}
+              <p className="sr-only">Loading agents...</p>
             </div>
           ) : agents.length === 0 ? (
-            <div className="card p-8 text-center text-slate-500">
-              No registered agents found. Use the form to issue credentials.
-            </div>
+            <EmptyState
+              icon={<Bot size={22} />}
+              title="No registered agents found"
+              description="Use the form to issue credentials."
+            />
           ) : (
-            agents.map(a => (
-              <div key={a.id} className="card p-5 flex items-center justify-between">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs px-2 py-0.5 rounded-full font-bold bg-emerald-400/10 text-emerald-300 border border-emerald-400/30">
-                      {a.status}
-                    </span>
-                    <span className="font-semibold text-slate-200">{a.agent_name}</span>
+            <div className="card p-3 space-y-2">
+              {agents.map(a => (
+                <div key={a.id} className="well p-4 flex flex-wrap items-center justify-between gap-3">
+                  <div className="min-w-0 space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="pill text-success">{a.status}</span>
+                      <span className="text-[14px] font-semibold text-fg break-words">{a.agent_name}</span>
+                    </div>
+                    <div className="font-mono text-[11px] text-fg-subtle break-all">ID: {a.id}</div>
                   </div>
-                  <div className="text-xs font-mono text-slate-500">ID: {a.id}</div>
+                  <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-fg-muted">
+                    <span className="text-fg-subtle">Scoped:</span>
+                    <span className="inline-flex items-center gap-1 rounded-md border border-accent/30 bg-accent/10 px-2 py-0.5 font-mono text-accent">
+                      <ShieldCheck size={12} />
+                      payment:request
+                    </span>
+                  </div>
                 </div>
-                <div className="text-xs text-slate-400 flex items-center gap-1.5">
-                  <ShieldCheck size={16} className="text-accent" />
-                  Scoped: payment:request
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>

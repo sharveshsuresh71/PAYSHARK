@@ -116,7 +116,7 @@ export default function Demo() {
                   className={cn(
                     "group flex w-full items-center gap-3 rounded-[12px] border p-3 text-left transition-all duration-300",
                     active
-                      ? "translate-x-1 border-accent/40 bg-[linear-gradient(90deg,rgb(53_217_255/.12),rgb(22_119_255/.04))] shadow-[inset_0_1px_0_rgb(255_255_255/.05),0_10px_24px_-14px_rgb(53_217_255/.5)]"
+                      ? "translate-x-1 border-accent/40 bg-[linear-gradient(90deg,rgb(32_200_120/.12),rgb(14_122_74/.04))] shadow-[inset_0_1px_0_rgb(255_255_255/.05),0_10px_24px_-14px_rgb(32_200_120/.5)]"
                       : "border-transparent hover:border-white/[0.07] hover:bg-white/[0.03]"
                   )}
                 >
@@ -124,7 +124,7 @@ export default function Demo() {
                     className={cn(
                       "grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-display text-[15px] font-semibold transition-all duration-300",
                       active
-                        ? "bg-[linear-gradient(145deg,#8DEBFF,#35D9FF_40%,#1677FF)] text-accent-fg shadow-[inset_0_1px_0_rgb(255_255_255/.5),0_6px_14px_-6px_rgb(53_217_255/.8)]"
+                        ? "bg-[linear-gradient(145deg,#B6F36A,#20C878_40%,#0E7A4A)] text-accent-fg shadow-[inset_0_1px_0_rgb(255_255_255/.5),0_6px_14px_-6px_rgb(32_200_120/.8)]"
                         : "border border-white/[0.08] bg-canvas/60 text-fg-muted group-hover:text-fg"
                     )}
                   >
@@ -153,20 +153,20 @@ export default function Demo() {
               <svg viewBox="0 0 200 200" className="h-full w-full opacity-70">
                 <defs>
                   <radialGradient id="holo-core" cx="50%" cy="50%" r="50%">
-                    <stop offset="0" stopColor="#35D9FF" stopOpacity=".25" />
-                    <stop offset="1" stopColor="#35D9FF" stopOpacity="0" />
+                    <stop offset="0" stopColor="#20C878" stopOpacity=".25" />
+                    <stop offset="1" stopColor="#20C878" stopOpacity="0" />
                   </radialGradient>
                 </defs>
                 <circle cx="100" cy="100" r="90" fill="url(#holo-core)" />
                 <g className="motion-safe:animate-[ps-orb-spin_24s_linear_infinite]" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
-                  <circle cx="100" cy="100" r="78" fill="none" stroke="#35D9FF" strokeOpacity=".35" strokeDasharray="2 8" />
+                  <circle cx="100" cy="100" r="78" fill="none" stroke="#20C878" strokeOpacity=".35" strokeDasharray="2 8" />
                 </g>
                 <g className="motion-safe:animate-[ps-orb-spin_14s_linear_infinite_reverse]" style={{ transformBox: "fill-box", transformOrigin: "center" }}>
-                  <circle cx="100" cy="100" r="60" fill="none" stroke="#795CFF" strokeOpacity=".4" strokeDasharray="40 14" />
+                  <circle cx="100" cy="100" r="60" fill="none" stroke="#36D9F5" strokeOpacity=".4" strokeDasharray="40 14" />
                 </g>
-                <circle cx="100" cy="100" r="42" fill="none" stroke="#35D9FF" strokeOpacity=".25" />
+                <circle cx="100" cy="100" r="42" fill="none" stroke="#20C878" strokeOpacity=".25" />
               </svg>
-              <ShieldAlert className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent drop-shadow-[0_0_14px_rgb(53_217_255/.7)]" size={34} />
+              <ShieldAlert className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent drop-shadow-[0_0_14px_rgb(32_200_120/.7)]" size={34} />
             </div>
 
             <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">Scenario {item[0]} threat profile</span>

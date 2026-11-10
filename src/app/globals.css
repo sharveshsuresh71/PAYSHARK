@@ -4,38 +4,41 @@
 @tailwind utilities;
 
 /* ==========================================================================
-   PAYSHARK design tokens — deep blue-black, electric cyan, spatial glass
+   PAYSHARK design tokens — deep black, forest green, emerald signature,
+   restrained electric-cyan highlights
    ========================================================================== */
 :root {
   color-scheme: dark;
 
   /* color (RGB channels so Tailwind can apply alpha) */
-  --ps-canvas: 6 9 20;           /* #060914 main background */
-  --ps-sidebar: 10 16 32;        /* #0A1020 secondary background */
-  --ps-surface: 16 26 45;        /* #101A2D surface */
-  --ps-surface-2: 24 43 70;      /* #182B46 elevated glass base */
-  --ps-line: 145 164 194;        /* borders, used at low alpha */
-  --ps-accent: 53 217 255;       /* #35D9FF electric cyan */
-  --ps-accent-hover: 128 232 255;
-  --ps-accent-fg: 3 16 30;
-  --ps-ocean: 22 119 255;        /* #1677FF */
-  --ps-violet: 121 92 255;       /* #795CFF */
-  --ps-success: 39 217 149;      /* #27D995 */
-  --ps-warning: 255 181 71;      /* #FFB547 */
-  --ps-danger: 255 84 112;       /* #FF5470 */
-  --ps-fg: 245 248 255;          /* #F5F8FF */
-  --ps-fg-muted: 145 164 194;    /* #91A4C2 */
-  --ps-fg-subtle: 96 114 145;
+  --ps-canvas: 8 12 11;          /* #080C0B background */
+  --ps-sidebar: 16 23 19;        /* #101713 secondary background */
+  --ps-surface: 21 31 25;        /* #151F19 card */
+  --ps-surface-2: 18 61 40;      /* #123D28 deep green (elevated tint) */
+  --ps-line: 150 220 170;        /* border rgba(150,220,170,.14) */
+  --ps-accent: 32 200 120;       /* #20C878 emerald — signature */
+  --ps-accent-hover: 72 222 150;
+  --ps-accent-fg: 3 20 11;
+  --ps-lime: 182 243 106;        /* #B6F36A */
+  --ps-cyan: 54 217 245;         /* #36D9F5 — restrained highlight */
+  --ps-ocean: 54 217 245;        /* legacy alias → cyan */
+  --ps-violet: 54 217 245;       /* legacy alias → cyan (no violet in this identity) */
+  --ps-success: 32 200 120;
+  --ps-warning: 245 190 80;
+  --ps-danger: 255 99 99;
+  --ps-fg: 245 248 245;          /* #F5F8F5 */
+  --ps-fg-muted: 145 164 154;    /* #91A49A */
+  --ps-fg-subtle: 98 116 106;
 
   /* glass */
-  --ps-glass: rgba(24, 43, 70, .72);
-  --ps-glass-soft: rgba(24, 43, 70, .42);
-  --ps-glass-edge: linear-gradient(180deg, rgb(255 255 255 / .14), rgb(53 217 255 / .07) 35%, rgb(255 255 255 / .02) 70%, rgb(255 255 255 / .05));
-  --ps-float-shadow: 0 1px 0 0 rgb(255 255 255 / .05) inset, 0 2px 4px -2px rgb(0 0 0 / .5), 0 18px 40px -24px rgb(0 0 0 / .85);
+  --ps-glass: rgba(21, 31, 25, .78);
+  --ps-glass-soft: rgba(21, 31, 25, .5);
+  --ps-glass-edge: linear-gradient(180deg, rgb(255 255 255 / .12), rgb(32 200 120 / .08) 35%, rgb(255 255 255 / .02) 70%, rgb(255 255 255 / .04));
+  --ps-float-shadow: 0 1px 0 0 rgb(255 255 255 / .04) inset, 0 2px 4px -2px rgb(0 0 0 / .6), 0 18px 40px -24px rgb(0 0 0 / .9);
 
   /* borders */
-  --ps-border: rgb(var(--ps-line) / .10);
-  --ps-border-strong: rgb(var(--ps-line) / .18);
+  --ps-border: rgb(var(--ps-line) / .14);
+  --ps-border-strong: rgb(var(--ps-line) / .2);
 
   /* radii (10–14px scale) */
   --ps-radius-sm: 8px;
@@ -161,8 +164,8 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
     position: relative;
     isolation: isolate;
     background:
-      linear-gradient(180deg, rgb(var(--ps-surface-2) / .55) 0%, rgb(var(--ps-surface) / .78) 55%, rgb(var(--ps-surface) / .86) 100%);
-    border: 1px solid rgb(var(--ps-line) / .09);
+      linear-gradient(180deg, rgb(var(--ps-surface-2) / .26) 0%, rgb(var(--ps-surface) / .82) 45%, rgb(var(--ps-surface) / .9) 100%);
+    border: 1px solid rgb(var(--ps-line) / .12);
     border-radius: var(--ps-radius-xl);
     box-shadow: var(--ps-float-shadow);
     transition: transform .6s var(--ps-ease), border-color .25s var(--ps-ease),
@@ -276,9 +279,9 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
     overflow: hidden;
     perspective: 520px;
     background:
-      radial-gradient(ellipse 50% 40% at 78% -6%, rgb(var(--ps-ocean) / .16), transparent 70%),
-      radial-gradient(ellipse 36% 30% at 22% 4%, rgb(var(--ps-accent) / .07), transparent 70%),
-      radial-gradient(ellipse 40% 35% at 100% 100%, rgb(var(--ps-violet) / .07), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 78% -6%, rgb(var(--ps-accent) / .13), transparent 70%),
+      radial-gradient(ellipse 36% 30% at 18% 0%, rgb(18 61 40 / .55), transparent 70%),
+      radial-gradient(ellipse 40% 35% at 100% 100%, rgb(var(--ps-cyan) / .04), transparent 70%),
       linear-gradient(180deg, rgb(var(--ps-sidebar)) 0%, rgb(var(--ps-canvas)) 60%);
   }
   .ps-backdrop-grid {
@@ -519,3 +522,55 @@ h1, h2, h3, h4 { letter-spacing: -0.015em; }
   .chart-line { stroke-dashoffset: 0; animation: none; }
   .ps-particles, .ps-particles::after, .ps-backdrop-grid, .ai-orb, .ai-orb::before { animation: none !important; }
 }
+
+/* ==========================================================================
+   Landing / editorial experience
+   ========================================================================== */
+@keyframes ps-sway {
+  0%, 100% { transform: rotateY(-14deg) rotateX(4deg); }
+  50% { transform: rotateY(14deg) rotateX(-2deg); }
+}
+@keyframes ps-marquee { to { transform: translateX(-50%); } }
+@keyframes ps-flow { to { stroke-dashoffset: -40; } }
+
+/* Scroll-triggered reveal (driven by <Reveal>) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(6px);
+  transition: opacity .9s var(--ps-ease), transform .9s var(--ps-ease), filter .9s var(--ps-ease);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-shown="true"] { opacity: 1; transform: none; filter: none; }
+
+/* 3D sculpture stage */
+.sculpture-stage { perspective: 1300px; }
+.sculpture {
+  transform-style: preserve-3d;
+  transform:
+    translateY(calc(var(--sy, 0) * -0.12px))
+    rotateX(calc(var(--py, 0) * -16deg))
+    rotateY(calc(var(--px, 0) * 26deg));
+}
+.sculpture-sway { transform-style: preserve-3d; animation: ps-sway 14s ease-in-out infinite; }
+.preserve-3d { transform-style: preserve-3d; }
+
+.marquee-track { animation: ps-marquee 38s linear infinite; }
+.flow-line { stroke-dasharray: 6 14; animation: ps-flow 1.6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+  .sculpture-sway, .marquee-track, .flow-line { animation: none !important; }
+}
+html[data-effects="reduced"] .sculpture-sway,
+html[data-effects="reduced"] .marquee-track { animation: none !important; }
+
+/* User preference: Settings → Reduce visual effects */
+html[data-effects="reduced"] .ps-particles,
+html[data-effects="reduced"] .ps-backdrop-grid { display: none; }
+html[data-effects="reduced"] .ai-orb,
+html[data-effects="reduced"] .ai-orb::before,
+html[data-effects="reduced"] [class*="ps-float"] { animation: none !important; }
+html[data-effects="reduced"] .card[data-tilt="on"] { transform: none; }
+html[data-effects="reduced"] .glass,
+html[data-effects="reduced"] .popover { -webkit-backdrop-filter: none; backdrop-filter: none; }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowDownUp, ChevronDown, ChevronUp, Copy, ExternalLink, Eye, MoreHorizontal, Search, X, ShieldCheck, ShieldAlert, Inbox } from "lucide-react";
+import { ArrowDownUp, ChevronDown, ChevronUp, Copy, Download, ExternalLink, Eye, MoreHorizontal, Search, X, ShieldCheck, ShieldAlert, Inbox } from "lucide-react";
 import {
   amountOf, categorize, categoryMeta, formatMoney, humanizeCode, statusLabel,
   type PaymentCategory, type PaymentRequest
@@ -33,6 +33,65 @@ function RiskMeter({ score }: { score: number | null }) {
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
+
+/** Lifecycle derived from the request's real status/decision — no invented steps. */
+function StatusTimeline({ r }: { r: PaymentRequest }) {
+  const blocked = r.decision === "BLOCKED" || r.status === "BLOCKED";
+  const rejected = r.status === "REJECTED_BY_USER";
+  const reached = (s: string[]) => s.includes(r.status);
+  const steps: { label: string; detail: string; state: "done" | "current" | "todo" | "fail" }[] = [
+    { label: "Request received", detail: fmtDate(r.created_at), state: "done" },
+    { label: "Policy evaluated", detail: humanizeCode(r.decision), state: blocked ? "fail" : "done" }
+  ];
+  if (blocked) {
+    steps.push({ label: "Blocked", detail: "Execution prevented by policy engine", state: "fail" });
+  } else if (rejected) {
+    steps.push({ label: "Rejected by human reviewer", detail: "No payment created", state: "fail" });
+  } else {
+    const approved = reached(["HUMAN_APPROVED", "PAYMENT_PENDING", "COMPLETED"]);
+    const ordered = reached(["PAYMENT_PENDING", "COMPLETED"]);
+    const captured = r.status === "COMPLETED";
+    steps.push(
+      { label: "Human authorization", detail: approved ? "Single-use approval bound" : "Awaiting reviewer", state: approved ? "done" : "current" },
+      { label: "PayPal order created", detail: ordered ? "Sandbox order" : "Pending authorization", state: ordered ? "done" : approved ? "current" : "todo" },
+      { label: "Captured", detail: captured ? "Funds captured (sandbox)" : "Not captured", state: captured ? "done" : ordered ? "current" : "todo" }
+    );
+  }
+  const dot = {
+    done: "bg-accent border-accent shadow-[0_0_10px_rgb(32_200_120/.7)]",
+    current: "bg-canvas border-warning",
+    todo: "bg-canvas border-slate-700",
+    fail: "bg-danger border-danger shadow-[0_0_10px_rgb(255_99_99/.6)]"
+  } as const;
+  return (
+    <ol className="relative space-y-3 before:absolute before:bottom-2 before:left-[6px] before:top-2 before:w-px before:bg-white/[0.08]" aria-label="Payment status timeline">
+      {steps.map(s => (
+        <li key={s.label} className="relative flex items-start gap-3">
+          <span className={cn("relative z-[1] mt-0.5 h-[13px] w-[13px] shrink-0 rounded-full border-2", dot[s.state])} />
+          <div className="min-w-0">
+            <div className={cn("text-[12.5px] font-medium", s.state === "todo" ? "text-fg-subtle" : s.state === "fail" ? "text-danger" : "text-fg")}>{s.label}</div>
+            <div className="text-[11.5px] text-fg-subtle">{s.detail}</div>
+          </div>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/** Export the currently visible rows as CSV (client-side, from real records). */
+function exportCsv(rows: PaymentRequest[]) {
+  const head = ["id", "created_at", "merchant", "merchant_id", "purpose", "amount", "currency", "decision", "status", "risk_score"];
+  const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const body = rows.map(r => [r.id, r.created_at, r.merchant, r.merchant_id, r.purpose, amountOf(r).toFixed(2), r.currency, r.decision, r.status, r.risk_score ?? ""].map(esc).join(","));
+  const blob = new Blob([[head.join(","), ...body].join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `payshark-transactions-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Export ready", { tone: "success", description: `${rows.length} transaction${rows.length === 1 ? "" : "s"} exported to CSV.` });
+}
 
 async function copyId(id: string) {
   try {
@@ -164,7 +223,7 @@ function DetailDrawer({ r, onClose }: { r: PaymentRequest; onClose: () => void }
 
   return createPortal(
     <div className="fixed inset-0 z-[66]">
-      <div className="absolute inset-0 animate-fade-in bg-[#020409]/70 backdrop-blur-[3px]" onClick={onClose} aria-hidden />
+      <div className="absolute inset-0 animate-fade-in bg-[#020604]/70 backdrop-blur-[3px]" onClick={onClose} aria-hidden />
       <div
         ref={panelRef}
         role="dialog"
@@ -181,12 +240,34 @@ function DetailDrawer({ r, onClose }: { r: PaymentRequest; onClose: () => void }
 
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5">
           {/* Hero amount */}
-          <div className="relative overflow-hidden rounded-[14px] border border-white/[0.08] bg-[radial-gradient(120%_120%_at_100%_0%,rgb(22_119_255/.22),transparent_60%)] p-5">
+          <div className="relative overflow-hidden rounded-[14px] border border-white/[0.08] bg-[radial-gradient(120%_120%_at_100%_0%,rgb(32_200_120/.16),transparent_60%)] p-5">
             <StatusPill r={r} />
             <div className="mt-3 font-display text-[32px] font-semibold leading-none tracking-tight tabular-nums text-fg">
               {formatMoney(amountOf(r), r.currency)}
             </div>
             <div className="mt-2 text-[13px] text-fg-muted">to <span className="font-medium text-fg">{r.merchant}</span></div>
+          </div>
+
+          <div>
+            <div className="mb-2.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Status timeline</div>
+            <StatusTimeline r={r} />
+          </div>
+
+          {/* Counterparty & method */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="well p-3">
+              <div className="text-[10.5px] uppercase tracking-[0.1em] text-fg-subtle">Merchant</div>
+              <div className="mt-1 truncate text-[12.5px] font-medium text-fg">{r.merchant}</div>
+              <div className="truncate font-mono text-[10.5px] text-fg-subtle">{r.merchant_id}</div>
+            </div>
+            <div className="well p-3">
+              <div className="text-[10.5px] uppercase tracking-[0.1em] text-fg-subtle">Method</div>
+              <div className="mt-1 flex items-center gap-1.5 text-[12.5px] font-medium text-fg">
+                <span className="grid h-4 w-6 place-items-center rounded-[3px] bg-[linear-gradient(135deg,#B6F36A,#20C878)] text-[7px] font-bold text-accent-fg">PP</span>
+                PayPal Sandbox
+              </div>
+              <div className="text-[10.5px] text-fg-subtle">{r.agent_id ? "Agent-initiated" : "UI-initiated"}</div>
+            </div>
           </div>
 
           <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-[12.5px]">
@@ -269,11 +350,11 @@ function DetailDrawer({ r, onClose }: { r: PaymentRequest; onClose: () => void }
 /* -------------------------------------------------------------------------- */
 /* Transactions panel                                                          */
 /* -------------------------------------------------------------------------- */
-export function TransactionsPanel({ rows, loading }: { rows: PaymentRequest[]; loading: boolean }) {
+export function TransactionsPanel({ rows, loading, pageSize = 8 }: { rows: PaymentRequest[]; loading: boolean; pageSize?: number }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<{ key: SortKey; dir: "asc" | "desc" }>({ key: "created_at", dir: "desc" });
-  const [limit, setLimit] = useState(8);
+  const [limit, setLimit] = useState(pageSize);
   const [selected, setSelected] = useState<PaymentRequest | null>(null);
   const closeDrawer = useCallback(() => setSelected(null), []);
 
@@ -349,6 +430,15 @@ export function TransactionsPanel({ rows, loading }: { rows: PaymentRequest[]; l
             <label htmlFor="tx-search" className="sr-only">Search transactions</label>
             <input id="tx-search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Merchant, purpose, ID…" className="field h-9 py-0 pl-8 text-[12.5px]" />
           </div>
+          <button
+            type="button"
+            disabled={!visible.length}
+            onClick={() => exportCsv(visible)}
+            className="btn btn-secondary h-9 px-3 py-0 text-[12.5px]"
+            title="Export the filtered transactions as CSV"
+          >
+            <Download size={14} /> Export
+          </button>
         </div>
       </div>
 
@@ -380,7 +470,7 @@ export function TransactionsPanel({ rows, loading }: { rows: PaymentRequest[]; l
               <tr
                 key={r.id}
                 onClick={() => setSelected(r)}
-                className="group cursor-pointer border-b border-white/[0.04] transition-colors last:border-0 hover:bg-[linear-gradient(90deg,rgb(53_217_255/.05),transparent_70%)]"
+                className="group cursor-pointer border-b border-white/[0.04] transition-colors last:border-0 hover:bg-[linear-gradient(90deg,rgb(32_200_120/.05),transparent_70%)]"
               >
                 <td className="max-w-[320px] px-3 py-3 pl-5">
                   <button

@@ -8,6 +8,11 @@ import {
   ShieldAlert,
   FilePlus2,
   ListPlus,
+  ArrowLeftRight,
+  BarChart3,
+  ShieldCheck,
+  Code2,
+  Settings,
   type LucideIcon
 } from "lucide-react";
 
@@ -23,23 +28,38 @@ export interface NavGroup {
   items: NavItem[];
 }
 
-/** Primary application navigation — every entry maps to an existing route. */
+/** Primary application navigation — every entry maps to a real route. */
 export const navGroups: NavGroup[] = [
   {
-    label: "Workspace",
+    label: "Operations",
     items: [
-      { href: "/dashboard", label: "Overview", icon: LayoutDashboard, description: "Workspace summary and metrics" },
+      { href: "/dashboard", label: "Overview", icon: LayoutDashboard, description: "Operations command centre" },
+      { href: "/transactions", label: "Transactions", icon: ArrowLeftRight, description: "Payment requests, filters and export" },
+      { href: "/analytics", label: "Analytics", icon: BarChart3, description: "Volume, outcomes and risk" },
+      { href: "/approvals", label: "Review Center", icon: ClipboardCheck, description: "Pending human authorizations" }
+    ]
+  },
+  {
+    label: "Governance",
+    items: [
       { href: "/agreements", label: "Agreements", icon: FileText, description: "Payment agreements and analysis" },
       { href: "/policies", label: "Policies", icon: SlidersHorizontal, description: "Spending rules and limits" },
       { href: "/agents", label: "AI Agents", icon: Bot, description: "Registered autonomous agents" }
     ]
   },
   {
-    label: "Control",
+    label: "Security",
     items: [
-      { href: "/approvals", label: "Review Center", icon: ClipboardCheck, description: "Pending human authorizations" },
+      { href: "/security", label: "Security Centre", icon: ShieldCheck, description: "Sessions, credentials and integrity" },
       { href: "/audit", label: "Audit Trail", icon: Activity, description: "Hash-chained event log" },
-      { href: "/demo", label: "Security Demo", icon: ShieldAlert, description: "Run attack scenarios" }
+      { href: "/demo", label: "Attack Simulator", icon: ShieldAlert, description: "Run red-team scenarios" }
+    ]
+  },
+  {
+    label: "Platform",
+    items: [
+      { href: "/developers", label: "Developers", icon: Code2, description: "API reference and integrations" },
+      { href: "/settings", label: "Settings", icon: Settings, description: "Profile, session and preferences" }
     ]
   }
 ];

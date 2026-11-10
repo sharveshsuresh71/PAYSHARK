@@ -38,9 +38,9 @@ export function categorize(r: PaymentRequest): PaymentCategory {
 }
 
 export const categoryMeta: Record<PaymentCategory, { label: string; color: string; text: string }> = {
-  captured: { label: "Captured", color: "rgb(39 217 149)", text: "text-success" },
-  pending: { label: "Pending", color: "rgb(255 181 71)", text: "text-warning" },
-  blocked: { label: "Blocked", color: "rgb(255 84 112)", text: "text-danger" }
+  captured: { label: "Captured", color: "rgb(32 200 120)", text: "text-success" },
+  pending: { label: "Pending", color: "rgb(245 190 80)", text: "text-warning" },
+  blocked: { label: "Blocked", color: "rgb(255 99 99)", text: "text-danger" }
 };
 
 export function statusLabel(r: PaymentRequest) {

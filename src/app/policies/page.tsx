@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ShieldCheck, Plus, AlertCircle, Loader2 } from "lucide-react";
+import { PageHeader, HeaderStat, EmptyState } from "@/components/page-header";
 
 export default function Policies() {
   const [policies, setPolicies] = useState<any[]>([]);
@@ -42,63 +43,76 @@ export default function Policies() {
 
   return (
     <AppShell>
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="kicker">DETERMINISTIC GUARDRAILS</div>
-          <h1 className="text-3xl font-semibold mt-2">Spending policies</h1>
-          <p className="muted mt-2">Set the exact limits and categories an agent cannot exceed.</p>
-        </div>
-        <Link href="/policies/new" className="btn btn-primary flex gap-2 items-center">
-          <Plus size={16} /> New policy
-        </Link>
-      </div>
+      <PageHeader
+        kicker="DETERMINISTIC GUARDRAILS"
+        title="Spending policies"
+        description="Set the exact limits and categories an agent cannot exceed."
+        actions={
+          <>
+            {!loading && (
+              <>
+                <HeaderStat label="Total" value={policies.length} />
+                <HeaderStat
+                  label="Active"
+                  value={policies.filter(p => p.status === "ACTIVE").length}
+                  tone="text-success"
+                />
+              </>
+            )}
+            <Link href="/policies/new" className="btn btn-primary flex gap-2 items-center">
+              <Plus size={16} /> New policy
+            </Link>
+          </>
+        }
+      />
 
       {loading ? (
-        <div className="py-20 text-center">
-          <Loader2 className="mx-auto animate-spin text-accent" size={32} />
-          <p className="muted mt-3">Loading policies...</p>
+        <div className="grid gap-4 mt-8" aria-busy="true" aria-label="Loading policies...">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="skeleton h-[132px] rounded-[18px]" />
+          ))}
+          <p className="sr-only">Loading policies...</p>
         </div>
       ) : policies.length === 0 ? (
-        <div className="card mt-8 p-12 text-center">
-          <ShieldCheck className="mx-auto text-slate-500" size={30} />
-          <h2 className="font-semibold mt-4">No policies configured</h2>
-          <p className="muted text-sm mt-2">Create an active agreement, then attach a spending policy.</p>
+        <div className="mt-8">
+          <EmptyState
+            icon={<ShieldCheck size={22} />}
+            title="No policies configured"
+            description="Create an active agreement, then attach a spending policy."
+          />
         </div>
       ) : (
         <div className="grid gap-4 mt-8">
           {policies.map(p => (
-            <div key={p.id} className="card p-6 flex flex-wrap justify-between items-center gap-4">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
-                      p.status === "ACTIVE"
-                        ? "bg-emerald-400/10 text-emerald-300 border border-emerald-400/30"
-                        : "bg-rose-400/10 text-rose-300 border border-rose-400/30"
-                    }`}
-                  >
-                    {p.status}
-                  </span>
-                  <span className="text-xs text-slate-500 font-mono">v{p.version}</span>
+            <div key={p.id} className="card p-5 sm:p-6 flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="min-w-0 flex-1 space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className={`pill ${p.status === "ACTIVE" ? "text-success" : "text-danger"}`}>{p.status}</span>
+                  <span className="font-mono text-[11px] text-fg-subtle">v{p.version}</span>
                 </div>
-                <h3 className="font-semibold text-lg text-white">{p.policy_name}</h3>
-                <div className="text-xs text-slate-400 flex flex-wrap gap-x-4 gap-y-1">
-                  <span>
-                    Allowance: <span className="text-slate-200">{p.used_transactions} / {p.maximum_transactions} used</span>
-                  </span>
-                  <span>
-                    Categories: <span className="text-slate-200">{(p.allowed_categories || []).join(", ") || "All"}</span>
-                  </span>
-                  <span>
-                    Merchants: <span className="text-slate-200">{(p.allowed_merchants || []).join(", ") || "All"}</span>
-                  </span>
-                </div>
+                <h3 className="text-[15px] font-semibold text-fg break-words">{p.policy_name}</h3>
+                <dl className="grid gap-3 sm:grid-cols-3">
+                  <div className="well min-w-0 px-3 py-2.5">
+                    <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Allowance</dt>
+                    <dd className="mt-1 text-[13px] text-fg tabular-nums">
+                      {p.used_transactions} / {p.maximum_transactions} used
+                    </dd>
+                  </div>
+                  <div className="well min-w-0 px-3 py-2.5">
+                    <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Categories</dt>
+                    <dd className="mt-1 text-[13px] text-fg break-words">{(p.allowed_categories || []).join(", ") || "All"}</dd>
+                  </div>
+                  <div className="well min-w-0 px-3 py-2.5">
+                    <dt className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Merchants</dt>
+                    <dd className="mt-1 text-[13px] text-fg break-words">{(p.allowed_merchants || []).join(", ") || "All"}</dd>
+                  </div>
+                </dl>
               </div>
 
-              <div className="flex items-center gap-6">
-                <div className="text-right">
-                  <div className="text-xs muted">TRANSACTION LIMIT</div>
-                  <div className="text-2xl font-bold text-accent">
+              <div className="flex flex-wrap items-center justify-between gap-4 lg:justify-end lg:gap-6">
+                <div className="lg:text-right">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Transaction limit</div>
+                  <div className="mt-1 font-display text-2xl font-semibold tabular-nums text-accent">
                     {p.maximum_amount} {p.currency}
                   </div>
                 </div>
@@ -106,7 +120,7 @@ export default function Policies() {
                 {p.status === "ACTIVE" && (
                   <button
                     onClick={() => revoke(p.id)}
-                    className="text-xs text-rose-400 hover:text-rose-300 border border-rose-400/30 hover:bg-rose-400/10 rounded-lg px-3 py-2 transition"
+                    className="btn btn-ghost text-xs text-danger border border-danger/30 hover:bg-danger/[0.08]"
                   >
                     Revoke
                   </button>

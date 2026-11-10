@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { ClipboardCheck, AlertOctagon, CheckCircle2, ShieldAlert, ArrowRight, Loader2, DollarSign } from "lucide-react";
+import { PageHeader, HeaderStat, EmptyState } from "@/components/page-header";
 
 export default function Approvals() {
   const [requests, setRequests] = useState<any[]>([]);
@@ -70,89 +71,127 @@ export default function Approvals() {
 
   return (
     <AppShell>
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="kicker">HUMAN AUTHORITY · SINGLE-USE BINDING</div>
-          <h1 className="text-3xl font-semibold mt-2">Review center</h1>
-          <p className="muted mt-2">
-            No AI agent can authorize its own payment. Human authorizations are cryptographically bound to exact values.
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        kicker="HUMAN AUTHORITY · SINGLE-USE BINDING"
+        title="Review center"
+        description="No AI agent can authorize its own payment. Human authorizations are cryptographically bound to exact values."
+        actions={
+          !loading ? (
+            <>
+              <HeaderStat label="Requests" value={requests.length} />
+              <HeaderStat
+                label="Blocked"
+                value={requests.filter(r => r.decision === "BLOCKED").length}
+                tone="text-danger"
+              />
+              <HeaderStat
+                label="Captured"
+                value={requests.filter(r => r.status === "COMPLETED").length}
+                tone="text-success"
+              />
+            </>
+          ) : undefined
+        }
+      />
 
-      <div className="card mt-8 p-6 border-amber-500/30 bg-amber-950/10 flex items-start gap-4">
-        <AlertOctagon className="text-amber-400 shrink-0 mt-0.5" size={24} />
-        <div>
-          <h2 className="font-semibold text-amber-200">Enforcement Policy: Purpose Mismatches (Scenario D)</h2>
-          <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+      <div className="card mt-8 p-5 sm:p-6 border-warning/30 flex items-start gap-4">
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[12px] border border-warning/30 bg-warning/[0.08] text-warning">
+          <AlertOctagon size={20} />
+        </span>
+        <div className="min-w-0">
+          <h2 className="text-[15px] font-semibold text-fg">Enforcement Policy: Purpose Mismatches (Scenario D)</h2>
+          <p className="text-[13px] text-fg-muted mt-1.5 leading-relaxed">
             When a requested payment purpose does not match the agreement or spending policy, PAYSHARK AI enforces:{" "}
-            <strong className="text-amber-300">BLOCKED + HUMAN REVIEW REQUIRED</strong>.
+            <strong className="text-warning">BLOCKED + HUMAN REVIEW REQUIRED</strong>.
             The payment is strictly blocked from auto-approval or PayPal dispatch. Review does not silently convert a blocked request into an approval; an updated agreement or clarified policy is required.
           </p>
         </div>
       </div>
 
       {feedback && (
-        <div className="mt-5 p-4 rounded-xl border border-accent/40 bg-accent/10 text-accent text-sm">
-          {feedback}
+        <div className="mt-5 flex items-start gap-3 p-4 rounded-[12px] border border-accent/30 bg-accent/10 text-accent text-[13px]">
+          <CheckCircle2 size={18} className="shrink-0 mt-px" />
+          <span className="min-w-0 break-words">{feedback}</span>
         </div>
       )}
 
       <div className="mt-8 space-y-4">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
+        <h2 className="text-[15px] font-semibold text-fg flex items-center gap-2">
           <ClipboardCheck size={20} className="text-accent" /> Payment Requests
         </h2>
 
         {loading ? (
-          <div className="card p-10 text-center">
-            <Loader2 className="mx-auto animate-spin text-accent" size={28} />
-            <p className="muted text-sm mt-2">Loading requests...</p>
+          <div className="space-y-4" aria-busy="true">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="skeleton h-[150px] rounded-[18px]" />
+            ))}
+            <p className="sr-only">Loading requests...</p>
           </div>
         ) : requests.length === 0 ? (
-          <div className="card p-10 text-center text-slate-500">
-            No payment requests received yet. Run an attack scenario in the Demo or submit an agent request.
-          </div>
+          <EmptyState
+            icon={<ClipboardCheck size={22} />}
+            title="No payment requests received yet"
+            description="Run an attack scenario in the Demo or submit an agent request."
+          />
         ) : (
           requests.map(r => (
-            <div key={r.id} className="card p-6 flex flex-wrap justify-between items-start gap-4">
-              <div className="space-y-2 max-w-2xl">
-                <div className="flex items-center gap-2">
+            <div
+              key={r.id}
+              className={`card relative p-5 pl-6 sm:p-6 sm:pl-7 flex flex-col gap-5 md:flex-row md:items-start md:justify-between ${
+                r.decision === "BLOCKED" ? "border-danger/30" : ""
+              }`}
+            >
+              <span
+                aria-hidden
+                className={`absolute left-0 top-5 bottom-5 w-[3px] rounded-r-full ${
+                  r.decision === "BLOCKED" ? "bg-danger" : r.status === "COMPLETED" ? "bg-success" : "bg-warning"
+                }`}
+              />
+              <div className="min-w-0 flex-1 space-y-3 max-w-2xl">
+                <div className="flex flex-wrap items-center gap-2">
                   <span
-                    className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                    className={`pill ${
                       r.decision === "BLOCKED"
-                        ? "bg-rose-400/10 text-rose-300 border border-rose-400/30"
+                        ? "text-danger"
                         : r.status === "COMPLETED"
-                        ? "bg-emerald-400/10 text-emerald-300 border border-emerald-400/30"
-                        : "bg-amber-400/10 text-amber-300 border border-amber-400/30"
+                        ? "text-success"
+                        : "text-warning"
                     }`}
                   >
                     {r.status === "COMPLETED" ? "CAPTURED" : r.decision}
                   </span>
 
                   {r.policy_result?.reviewRequired && (
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 font-semibold uppercase tracking-wider">
+                    <span className="pill text-warning">
                       Review Required
                     </span>
                   )}
 
-                  <span className="text-xs text-slate-500 font-mono">ID: {r.id.slice(0, 8)}...</span>
+                  <span className="font-mono text-[11px] text-fg-subtle">ID: {r.id.slice(0, 8)}...</span>
                 </div>
 
-                <div className="font-semibold text-lg text-white">
-                  {r.requested_amount} {r.currency} → {r.merchant}
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 min-w-0">
+                  <span className="font-display text-xl font-semibold tabular-nums text-fg">
+                    {r.requested_amount} {r.currency}
+                  </span>
+                  <span className="text-fg-subtle">→</span>
+                  <span className="text-[15px] font-semibold text-fg break-words min-w-0">{r.merchant}</span>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  <strong className="text-slate-400">Purpose:</strong> {r.purpose}
+                <p className="text-[13px] text-fg-muted leading-relaxed break-words">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle mr-1.5">Purpose:</span>
+                  {r.purpose}
                 </p>
 
                 {r.policy_result?.checks && (
-                  <div className="text-xs text-slate-400 flex flex-wrap gap-2 pt-1">
+                  <div className="flex flex-wrap gap-1.5 pt-1">
                     {r.policy_result.checks.map((c: any) => (
                       <span
                         key={c.code}
-                        className={`px-2 py-0.5 rounded ${
-                          c.passed ? "bg-slate-800 text-slate-400" : "bg-rose-950/60 text-rose-300 border border-rose-800/40"
+                        className={`inline-flex items-center rounded-md border px-2 py-0.5 font-mono text-[10.5px] ${
+                          c.passed
+                            ? "border-white/[0.07] bg-surface/60 text-fg-muted"
+                            : "border-danger/30 bg-danger/[0.08] text-danger"
                         }`}
                       >
                         {c.code}: {c.passed ? "PASS" : "FAIL"}
@@ -162,11 +201,19 @@ export default function Approvals() {
                 )}
               </div>
 
-              <div className="flex flex-col items-end gap-3 shrink-0">
-                <div className="text-right">
-                  <div className="text-xs muted">RISK SCORE</div>
-                  <div className={`text-xl font-bold ${r.risk_score > 50 ? "text-rose-400" : "text-emerald-400"}`}>
-                    {r.risk_score ?? 15} / 100
+              <div className="flex flex-wrap items-end justify-between gap-3 md:flex-col md:items-end md:shrink-0">
+                <div className="well px-3.5 py-2.5 w-[180px] max-w-full">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Risk score</span>
+                    <span className={`font-display text-base font-semibold tabular-nums ${r.risk_score > 50 ? "text-danger" : "text-success"}`}>
+                      {r.risk_score ?? 15} / 100
+                    </span>
+                  </div>
+                  <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
+                    <div
+                      className={`h-full rounded-full ${r.risk_score > 50 ? "bg-danger" : "bg-success"}`}
+                      style={{ width: `${Math.min(100, Math.max(0, Number(r.risk_score ?? 15)))}%` }}
+                    />
                   </div>
                 </div>
 

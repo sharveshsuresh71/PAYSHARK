@@ -382,7 +382,7 @@ function ProfileMenu() {
         aria-label="Account menu"
         className="flex h-9 items-center gap-2 rounded-[10px] border border-transparent pl-1 pr-1.5 transition-colors hover:bg-white/[0.05] aria-expanded:border-white/[0.08] aria-expanded:bg-white/[0.06] md:pr-2"
       >
-        <span className="rounded-full bg-[conic-gradient(from_200deg,#35D9FF,#1677FF,#795CFF,#35D9FF)] p-[1.5px]">
+        <span className="rounded-full bg-[conic-gradient(from_200deg,#B6F36A,#20C878,#36D9F5,#B6F36A)] p-[1.5px]">
           <span className="grid h-7 w-7 place-items-center rounded-full bg-sidebar text-[11px] font-semibold text-fg">
             {user ? initials(user) : ""}
           </span>

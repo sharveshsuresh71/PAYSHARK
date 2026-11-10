@@ -1,17 +1,477 @@
 import Link from "next/link";
-import { ShieldCheck, ArrowUpRight, LockKeyhole, BrainCircuit, Fingerprint } from "lucide-react";
-export default function Home(){return <main className="shell min-h-screen flex items-center px-6">
- <div className="max-w-6xl mx-auto w-full py-20">
-  <div className="flex items-center gap-3 mb-20"><div className="h-11 w-11 rounded-xl bg-accent text-slate-950 grid place-items-center"><ShieldCheck/></div><span className="font-bold tracking-[.16em]">PAYSHARK <span className="text-accent">AI</span></span><span className="ml-2 text-xs border border-slate-700 rounded-full px-3 py-1 text-slate-400">PRIVATE BETA · SANDBOX</span></div>
-  <div className="grid lg:grid-cols-[1.2fr_.8fr] gap-14 items-center">
-   <div><div className="kicker mb-5">AGENTIC COMMERCE · HUMAN CONTROL</div><h1 className="text-5xl md:text-7xl font-semibold leading-[1.04] tracking-tight" style={{fontFamily:"Space Grotesk"}}>Trust every agreement.<br/><span className="text-accent">Control every payment.</span></h1>
-    <p className="text-lg text-slate-400 max-w-xl mt-7 leading-8">A policy enforcement layer between autonomous AI agents and money movement. Agreements define intent. Rules enforce limits. Humans authorize.</p>
-    <div className="flex flex-wrap gap-3 mt-9"><Link className="btn btn-primary inline-flex items-center gap-2" href="/dashboard">Open workspace <ArrowUpRight size={17}/></Link><Link className="btn btn-secondary" href="/demo">Explore security demo</Link></div>
-    <p className="text-xs text-slate-600 mt-7">AI interprets. Rules enforce. Humans authorize. PayPal processes.</p>
-   </div>
-   <div className="card p-6 md:p-8 shadow-glow"><div className="flex justify-between items-center"><span className="kicker">Authorization pipeline</span><span className="text-xs text-emerald-300">● guarded</span></div>
-    {[["01","Agreement verified","Mutual confirmation + version lock"],["02","Policy evaluated","Deterministic limits and merchant rules"],["03","Human authorization","Single-use approval binding"],["04","PayPal Sandbox","Server-side order and capture verification"]].map(([n,t,d])=><div key={n} className="flex gap-4 py-5 border-b border-slate-800 last:border-0"><div className="text-accent font-mono text-sm">{n}</div><div><div className="font-semibold">{t}</div><div className="text-xs muted mt-1">{d}</div></div></div>)}
-   </div>
-  </div>
- </div>
-</main>}
+import {
+  ArrowUpRight, ArrowRight, FileCheck2, SlidersHorizontal, Fingerprint, CreditCard, Link2, Globe, Lock, ShieldCheck,
+  Sparkles, Activity, BarChart3, Terminal, Database, Bot, CheckCircle2
+} from "lucide-react";
+import { LandingNav, Reveal, MagneticLink } from "@/components/landing/primitives";
+import { HeroSculpture } from "@/components/landing/sculpture";
+import { BrandMark } from "@/components/sidebar";
+
+/*
+ * Public landing page — editorial direction.
+ * All claims describe real product behaviour; no invented customer or volume metrics.
+ */
+
+const PIPELINE = [
+  { icon: FileCheck2, title: "Agreement verified", body: "Both parties confirm the exact version. Terms are locked before any money can move." },
+  { icon: SlidersHorizontal, title: "Policy enforced", body: "13 deterministic rules: ceilings, merchant allow-lists, currency precision, purpose match." },
+  { icon: Fingerprint, title: "Human authorizes", body: "A single-use approval is cryptographically bound to amount, merchant and versions." },
+  { icon: CreditCard, title: "PayPal captures", body: "Server-side order and capture. Approval consumed; event appended to the hash chain." }
+];
+
+const LAYERS = [
+  { icon: Globe, name: "Edge WAF", note: "Scanner signatures · traversal & script patterns" },
+  { icon: Lock, name: "CSRF & rate limits", note: "Origin verification · tiered per-route limits" },
+  { icon: SlidersHorizontal, name: "Policy engine", note: "Pure, deterministic, side-effect free" },
+  { icon: Fingerprint, name: "Approval binding", note: "Single-use · tamper-evident" },
+  { icon: Link2, name: "Audit hash chain", note: "SHA-256 linked events · verifiable" }
+];
+
+export default function Home() {
+  return (
+    <div className="relative min-h-screen overflow-x-clip bg-canvas text-fg">
+      <a href="#hero-title" className="skip-link">Skip to content</a>
+      <LandingNav />
+
+      {/* ================================================================== */}
+      {/* HERO                                                                 */}
+      {/* ================================================================== */}
+      <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden pb-24 pt-28 lg:pb-16">
+        {/* Atmosphere */}
+        <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_70%_40%,rgb(18_61_40/.85),transparent_70%),radial-gradient(ellipse_40%_40%_at_10%_90%,rgb(32_200_120/.12),transparent_70%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-[45%] origin-bottom [background-image:linear-gradient(rgb(32_200_120/.09)_1px,transparent_1px),linear-gradient(90deg,rgb(32_200_120/.09)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_top,#000_10%,transparent)] [transform:perspective(600px)_rotateX(64deg)]" />
+          <div className="ps-particles !opacity-30" />
+        </div>
+
+        {/* Massive wordmark */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-[-2vw] -z-10 select-none text-center font-display text-[clamp(90px,21vw,340px)] font-bold leading-none tracking-[-0.06em] text-transparent [-webkit-text-stroke:1px_rgb(150_220_170/.14)]" aria-hidden>
+          PAYSHARK
+        </div>
+
+        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-10 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)]">
+          <div className="relative z-10">
+            <Reveal>
+              <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/[0.07] py-1 pl-1 pr-3 text-[12px] text-fg-muted">
+                <span className="rounded-full bg-accent px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-accent-fg">New</span>
+                Payment control for autonomous AI agents
+              </div>
+            </Reveal>
+            <Reveal delay={80}>
+              <h1 id="hero-title" className="mt-7 font-display text-[clamp(44px,6.6vw,104px)] font-semibold uppercase leading-[0.92] tracking-[-0.045em]">
+                The future
+                <br />
+                of money
+                <br />
+                <span className="bg-gradient-to-r from-volt via-accent to-[#1E8F5A] bg-clip-text text-transparent">moves different.</span>
+              </h1>
+            </Reveal>
+            <Reveal delay={160}>
+              <p className="mt-7 max-w-[520px] text-[17px] leading-[1.6] text-fg-muted sm:text-[18px]">
+                Intelligent payments. Smarter financial operations. One powerful platform.
+              </p>
+            </Reveal>
+            <Reveal delay={240}>
+              <div className="mt-9 flex flex-wrap items-center gap-3">
+                <MagneticLink href="/dashboard" className="btn btn-primary h-12 px-6 text-[15px]">
+                  Get started <ArrowUpRight size={17} />
+                </MagneticLink>
+                <MagneticLink href="#platform" className="btn btn-secondary h-12 px-6 text-[15px]">
+                  Explore platform <ArrowRight size={16} />
+                </MagneticLink>
+              </div>
+              <p className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-fg-subtle">
+                <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-accent" /> AI interprets</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-accent" /> Rules enforce</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-accent" /> Humans authorize</span>
+              </p>
+            </Reveal>
+          </div>
+
+          <Reveal delay={200} className="relative">
+            <HeroSculpture />
+          </Reveal>
+        </div>
+
+        <a href="#platform" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10.5px] uppercase tracking-[0.2em] text-fg-subtle transition-colors hover:text-fg sm:flex">
+          Scroll
+          <span className="h-10 w-px bg-gradient-to-b from-accent to-transparent" />
+        </a>
+      </section>
+
+      {/* Marquee transition */}
+      <div className="relative overflow-hidden border-y border-white/[0.06] bg-sidebar py-4" aria-hidden>
+        <div className="marquee-track flex w-max gap-10 whitespace-nowrap font-display text-[clamp(18px,2.4vw,28px)] font-semibold uppercase tracking-[-0.01em]">
+          {Array.from({ length: 2 }).map((_, k) => (
+            <div key={k} className="flex gap-10">
+              {["Agreement-aware", "Policy-enforced", "Human-authorized", "Hash-chained", "Agent-ready", "Sandbox-safe"].map(w => (
+                <span key={w} className="flex items-center gap-10 text-fg-subtle">
+                  {w} <span className="h-2 w-2 rotate-45 bg-accent" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <main>
+        {/* ================================================================ */}
+        {/* PLATFORM OVERVIEW — editorial split                              */}
+        {/* ================================================================ */}
+        <section id="platform" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+          <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,.8fr)] lg:gap-20">
+            <Reveal>
+              <div className="kicker">01 — Platform</div>
+              <h2 className="mt-5 font-display text-[clamp(34px,4.8vw,72px)] font-semibold leading-[1] tracking-[-0.035em]">
+                One control layer between <span className="text-accent">autonomous agents</span> and money.
+              </h2>
+            </Reveal>
+            <div className="space-y-8 lg:pt-16">
+              {[
+                ["Agreements define intent", "Every payment traces back to a mutually confirmed, version-locked agreement."],
+                ["Rules enforce limits", "Spending policies are evaluated by a pure engine, never by a language model."],
+                ["Humans authorize", "No agent can approve its own payment. Ever."]
+              ].map(([t, d], i) => (
+                <Reveal key={t} delay={i * 90}>
+                  <div className="group flex gap-5 border-t border-white/[0.08] pt-6">
+                    <span className="font-mono text-[12px] text-accent">0{i + 1}</span>
+                    <div>
+                      <h3 className="text-[19px] font-semibold text-fg transition-colors group-hover:text-accent">{t}</h3>
+                      <p className="mt-2 text-[15px] leading-[1.65] text-fg-muted">{d}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* PAYMENT INFRASTRUCTURE — flowing pipeline                         */}
+        {/* ================================================================ */}
+        <section id="infrastructure" className="relative scroll-mt-24 overflow-hidden border-y border-white/[0.06] bg-sidebar py-28 lg:py-36">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgb(32_200_120/.12),transparent_70%)]" aria-hidden />
+          <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8">
+            <Reveal className="mx-auto max-w-3xl text-center">
+              <div className="kicker">02 — Payment infrastructure</div>
+              <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">
+                Four gates. Zero shortcuts.
+              </h2>
+              <p className="mx-auto mt-5 max-w-xl text-[16px] leading-[1.65] text-fg-muted">
+                Every request travels the same authorization path. If any gate fails, the payment stops and the reason is recorded.
+              </p>
+            </Reveal>
+
+            <div className="relative mt-16">
+              {/* flowing connector (desktop) */}
+              <svg className="absolute left-0 right-0 top-[38px] hidden h-2 w-full lg:block" preserveAspectRatio="none" viewBox="0 0 100 2" aria-hidden>
+                <line x1="12" y1="1" x2="88" y2="1" stroke="rgb(32 200 120 / .2)" strokeWidth=".3" />
+                <line x1="12" y1="1" x2="88" y2="1" stroke="#20C878" strokeWidth=".35" className="flow-line" vectorEffect="non-scaling-stroke" />
+              </svg>
+              <ol className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {PIPELINE.map((s, i) => (
+                  <Reveal as="li" key={s.title} delay={i * 110} className="text-center">
+                    <div className="relative mx-auto grid h-[76px] w-[76px] place-items-center [perspective:400px]">
+                      <span className="absolute inset-0 rounded-[22px] bg-accent/20 blur-xl" aria-hidden />
+                      <span className="relative grid h-[76px] w-[76px] place-items-center rounded-[22px] border border-accent/30 bg-[linear-gradient(160deg,#1B5A3A,#0B1F15)] text-volt shadow-[inset_0_1px_0_rgb(255_255_255/.15),0_20px_40px_-18px_rgb(0_0_0/.9)] [transform:rotateX(14deg)]">
+                        <s.icon size={28} strokeWidth={1.6} />
+                      </span>
+                    </div>
+                    <div className="mt-6 font-mono text-[11px] text-accent">STEP 0{i + 1}</div>
+                    <h3 className="mt-2 text-[18px] font-semibold text-fg">{s.title}</h3>
+                    <p className="mx-auto mt-2 max-w-[260px] text-[14px] leading-[1.6] text-fg-muted">{s.body}</p>
+                  </Reveal>
+                ))}
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* AI INTELLIGENCE — orb + example extraction                        */}
+        {/* ================================================================ */}
+        <section id="intelligence" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+          <div className="grid items-center gap-14 lg:grid-cols-2">
+            <Reveal className="relative order-2 lg:order-1">
+              <div className="relative mx-auto max-w-[520px]">
+                <div className="absolute -left-6 -top-10 h-40 w-40" aria-hidden>
+                  <span className="ai-orb absolute inset-6" />
+                </div>
+                <div className="card relative ml-auto w-[88%] p-5 [transform:perspective(900px)_rotateY(-10deg)_rotateX(4deg)]" data-no-tilt>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-cyan/15 px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.1em] text-cyan"><Sparkles size={11} /> AI extraction</span>
+                    <span className="text-[10.5px] uppercase tracking-[0.12em] text-fg-subtle">Example</span>
+                  </div>
+                  <div className="mt-4 space-y-2.5 text-[13px]">
+                    {[["Purpose", "Website redesign · milestone 1"], ["Amount", "USD 1,500.00"], ["Deadline", "2026-12-31"], ["Completeness", "95%"]].map(([k, v]) => (
+                      <div key={k} className="well flex justify-between gap-4 px-3 py-2.5"><span className="text-fg-subtle">{k}</span><span className="text-right font-medium text-fg">{v}</span></div>
+                    ))}
+                  </div>
+                </div>
+                <div className="card relative -mt-6 w-[70%] p-4 [transform:perspective(900px)_rotateY(-10deg)_translateZ(40px)]" data-no-tilt>
+                  <div className="flex items-center gap-2 text-[12.5px] font-medium text-fg"><ShieldCheck size={15} className="text-accent" /> Verified by policy engine</div>
+                  <p className="mt-1 text-[12px] text-fg-muted">AI output is advisory. Enforcement is deterministic.</p>
+                </div>
+              </div>
+            </Reveal>
+            <Reveal className="order-1 lg:order-2">
+              <div className="kicker">03 — Financial intelligence</div>
+              <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">
+                AI reads the fine print. <span className="text-fg-subtle">It never holds the pen.</span>
+              </h2>
+              <p className="mt-6 max-w-lg text-[16px] leading-[1.7] text-fg-muted">
+                PAYSHARK uses AI to extract amounts, deadlines and purpose from agreements, then hands everything to deterministic rules. AI insights are always labelled, and verified data always comes from the ledger.
+              </p>
+              <ul className="mt-8 grid gap-3 sm:grid-cols-2">
+                {["Agreement term extraction", "Missing-information detection", "Purpose-mismatch blocking", "Verified, explainable answers"].map(f => (
+                  <li key={f} className="flex items-center gap-2.5 text-[14px] text-fg"><span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_rgb(32_200_120)]" />{f}</li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* REAL-TIME MONITORING — tilted product stage                        */}
+        {/* ================================================================ */}
+        <section className="relative overflow-hidden py-24 lg:py-32">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_50%_100%,rgb(32_200_120/.16),transparent_70%)]" aria-hidden />
+          <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8">
+            <Reveal className="max-w-2xl">
+              <div className="kicker">04 — Real-time monitoring</div>
+              <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">A command centre for every agent payment.</h2>
+            </Reveal>
+            <Reveal delay={120} className="mt-14 [perspective:1600px]">
+              <div className="mx-auto max-w-[1100px] rounded-[22px] border border-white/[0.08] bg-[linear-gradient(180deg,#101713,#0B110E)] p-3 shadow-[0_60px_120px_-50px_rgb(0_0_0/1),0_0_0_1px_rgb(0_0_0/.4)] [transform:rotateX(18deg)] sm:p-4">
+                <div className="flex items-center gap-1.5 pb-3" aria-hidden>{["#FF6363", "#F5BE50", "#20C878"].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full opacity-70" style={{ background: c }} />)}<span className="ml-3 text-[11px] text-fg-subtle">Product preview</span></div>
+                <div className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)]">
+                  <div className="hidden space-y-1.5 rounded-[14px] bg-sidebar p-3 md:block" aria-hidden>
+                    {["Overview", "Transactions", "Analytics", "Review", "Security"].map((n, i) => (
+                      <div key={n} className={`rounded-[8px] px-2.5 py-2 text-[11.5px] ${i === 0 ? "bg-accent/15 text-fg" : "text-fg-subtle"}`}>{n}</div>
+                    ))}
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {[["Captured", "text-accent"], ["Pending", "text-warning"], ["Blocked", "text-danger"]].map(([l, c]) => (
+                      <div key={l} className="rounded-[14px] border border-white/[0.06] bg-surface p-4">
+                        <div className="text-[11px] text-fg-subtle">{l}</div>
+                        <div className={`mt-3 h-2 w-16 rounded-full bg-current opacity-60 ${c}`} />
+                        <div className="mt-2 h-1.5 w-24 rounded-full bg-white/[0.06]" />
+                      </div>
+                    ))}
+                    <div className="rounded-[14px] border border-white/[0.06] bg-surface p-4 sm:col-span-3">
+                      <svg viewBox="0 0 600 120" className="h-28 w-full" aria-hidden>
+                        <defs><linearGradient id="pv" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#20C878" stopOpacity=".35" /><stop offset="1" stopColor="#20C878" stopOpacity="0" /></linearGradient></defs>
+                        <path d="M0,90 C60,80 90,40 150,52 S260,96 320,60 S430,20 480,34 S560,70 600,40 L600,120 L0,120Z" fill="url(#pv)" />
+                        <path d="M0,90 C60,80 90,40 150,52 S260,96 320,60 S430,20 480,34 S560,70 600,40" fill="none" stroke="#20C878" strokeWidth="2.5" />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* SECURITY ARCHITECTURE — stacked isometric layers                   */}
+        {/* ================================================================ */}
+        <section id="security" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+          <div className="grid items-center gap-16 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]">
+            <Reveal>
+              <div className="kicker">05 — Security architecture</div>
+              <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">Defence in depth, by design.</h2>
+              <p className="mt-6 max-w-md text-[16px] leading-[1.7] text-fg-muted">
+                Five independent layers stand between a compromised agent and your funds. Each one is enforced on the server, and every outcome is written to a tamper-evident chain.
+              </p>
+              <Link href="/demo" className="mt-8 inline-flex items-center gap-2 text-[14px] font-semibold text-accent transition-colors hover:text-accent-hover">
+                Try the attack simulator <ArrowRight size={15} />
+              </Link>
+            </Reveal>
+            <div className="[perspective:1400px]">
+              <ul className="mx-auto max-w-[520px] [transform-style:preserve-3d] [transform:rotateX(52deg)_rotateZ(-30deg)] max-sm:[transform:none]">
+                {LAYERS.map((l, i) => (
+                  <Reveal as="li" key={l.name} delay={i * 90} className="preserve-3d group relative -mt-6 first:mt-0 max-sm:mt-2">
+                    <div
+                      className="flex items-center gap-4 rounded-[18px] border border-accent/25 bg-[linear-gradient(135deg,rgb(18_61_40/.92),rgb(16_23_19/.95))] p-5 shadow-[0_24px_40px_-20px_rgb(0_0_0/.95),inset_0_1px_0_rgb(255_255_255/.08)] transition-transform duration-500 group-hover:[transform:translateZ(36px)] max-sm:group-hover:[transform:none]"
+                    >
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[12px] bg-accent/15 text-volt"><l.icon size={18} /></span>
+                      <div className="min-w-0">
+                        <div className="text-[15px] font-semibold text-fg">{l.name}</div>
+                        <div className="text-[12.5px] text-fg-muted">{l.note}</div>
+                      </div>
+                      <span className="ml-auto font-mono text-[11px] text-accent">L{i + 1}</span>
+                    </div>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* ANALYTICS & INSIGHTS — asymmetric bento                            */}
+        {/* ================================================================ */}
+        <section className="border-y border-white/[0.06] bg-sidebar py-28 lg:py-36">
+          <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
+            <Reveal className="flex flex-wrap items-end justify-between gap-6">
+              <div className="max-w-2xl">
+                <div className="kicker">06 — Analytics & insights</div>
+                <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">See every outcome. Explain every decision.</h2>
+              </div>
+            </Reveal>
+            <div className="mt-14 grid gap-4 md:grid-cols-6">
+              <Reveal className="md:col-span-4">
+                <div className="card h-full p-7">
+                  <Activity className="text-accent" size={22} />
+                  <h3 className="mt-5 text-[20px] font-semibold">Volume & success analytics</h3>
+                  <p className="mt-2 max-w-md text-[14.5px] leading-[1.65] text-fg-muted">Daily volume, captured vs. blocked, success rate and top block reasons, calculated straight from the ledger.</p>
+                  <div className="mt-8 flex h-24 items-end gap-2" aria-hidden>
+                    {[30, 52, 41, 68, 57, 80, 64, 92, 76, 88, 70, 96].map((h, i) => (
+                      <span key={i} className="flex-1 rounded-t-[4px] bg-gradient-to-t from-forest to-accent" style={{ height: `${h}%`, opacity: 0.35 + i * 0.05 }} />
+                    ))}
+                  </div>
+                </div>
+              </Reveal>
+              <Reveal delay={100} className="md:col-span-2">
+                <div className="card flex h-full flex-col justify-between p-7">
+                  <BarChart3 className="text-cyan" size={22} />
+                  <div>
+                    <h3 className="mt-5 text-[20px] font-semibold">Risk distribution</h3>
+                    <p className="mt-2 text-[14.5px] leading-[1.65] text-fg-muted">Every request scored 0–100 with explainable reasons.</p>
+                  </div>
+                </div>
+              </Reveal>
+              <Reveal delay={60} className="md:col-span-3">
+                <div className="card h-full p-7">
+                  <ShieldCheck className="text-volt" size={22} />
+                  <h3 className="mt-5 text-[20px] font-semibold">Policy check transparency</h3>
+                  <p className="mt-2 text-[14.5px] leading-[1.65] text-fg-muted">Each decision lists every rule it passed or failed, with no black boxes.</p>
+                </div>
+              </Reveal>
+              <Reveal delay={140} className="md:col-span-3">
+                <div className="card h-full p-7">
+                  <Link2 className="text-accent" size={22} />
+                  <h3 className="mt-5 text-[20px] font-semibold">Verifiable audit trail</h3>
+                  <p className="mt-2 text-[14.5px] leading-[1.65] text-fg-muted">Hash-linked events with an integrity check you can run anytime.</p>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* DEVELOPER EXPERIENCE — code-forward                                */}
+        {/* ================================================================ */}
+        <section id="developers" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+          <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
+            <Reveal>
+              <div className="kicker">07 — Developer experience</div>
+              <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">One request. Fully governed.</h2>
+              <p className="mt-6 max-w-md text-[16px] leading-[1.7] text-fg-muted">Give your agent a scoped key. It submits a payment request and gets an explainable decision back. Approval and capture stay with humans.</p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link href="/developers" className="btn btn-primary"><Terminal size={15} /> API reference</Link>
+                <Link href="/agents" className="btn btn-secondary"><Bot size={15} /> Register an agent</Link>
+              </div>
+            </Reveal>
+            <Reveal delay={120}>
+              <div className="overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#060A08] shadow-[0_40px_80px_-40px_rgb(0_0_0/1)]">
+                <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-3" aria-hidden>{["#FF6363", "#F5BE50", "#20C878"].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full opacity-70" style={{ background: c }} />)}<span className="ml-3 font-mono text-[11px] text-fg-subtle">agent.ts</span></div>
+                <pre className="overflow-x-auto p-5 font-mono text-[12.5px] leading-[1.8] text-[#C9D6CD]"><code>{`const res = await fetch("/api/payment-requests", {
+  method: "POST",
+  headers: {
+    Authorization: \`Bearer \${process.env.PAYSHARK_AGENT_KEY}\`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ policy_id, agreement_id, merchant,
+    merchant_id, purpose, amount: "150.00",
+    currency: "USD", idempotency_key }),
+});
+
+const { data } = await res.json();
+// data.decision → "APPROVED_FOR_REVIEW" | "REQUIRES_REVIEW" | "BLOCKED"`}</code></pre>
+              </div>
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* INTEGRATION ECOSYSTEM — orbital                                    */}
+        {/* ================================================================ */}
+        <section className="relative overflow-hidden border-t border-white/[0.06] py-28 lg:py-36">
+          <div className="mx-auto max-w-[1320px] px-5 text-center sm:px-8">
+            <Reveal>
+              <div className="kicker">08 — Integrations</div>
+              <h2 className="mx-auto mt-5 max-w-3xl font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">Built on infrastructure you already trust.</h2>
+            </Reveal>
+            <Reveal delay={120} className="relative mx-auto mt-16 aspect-square w-[min(520px,90vw)]">
+              <div className="absolute inset-0 rounded-full border border-white/[0.07]" aria-hidden />
+              <div className="absolute inset-[18%] rounded-full border border-dashed border-accent/20" aria-hidden />
+              <div className="absolute inset-[38%] grid place-items-center rounded-full bg-[radial-gradient(circle_at_40%_30%,#2FCB82,#0B3D25_70%)] shadow-[0_0_80px_-10px_rgb(32_200_120/.6),inset_0_2px_0_rgb(255_255_255/.3)]">
+                <BrandMark className="h-10 w-10 rounded-[12px]" />
+              </div>
+              {[
+                { name: "PayPal", sub: "Payments", icon: CreditCard, pos: "left-1/2 top-0 -translate-x-1/2 -translate-y-1/2" },
+                { name: "Neon", sub: "Postgres", icon: Database, pos: "right-0 top-1/2 translate-x-1/3 -translate-y-1/2" },
+                { name: "Groq", sub: "AI analysis", icon: Sparkles, pos: "bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2" },
+                { name: "Next.js", sub: "Platform", icon: Globe, pos: "left-0 top-1/2 -translate-x-1/3 -translate-y-1/2" }
+              ].map(i => (
+                <div key={i.name} className={`popover absolute flex items-center gap-2.5 px-3.5 py-2.5 text-left ${i.pos}`}>
+                  <i.icon size={16} className="text-accent" />
+                  <div><div className="text-[13px] font-semibold text-fg">{i.name}</div><div className="text-[11px] text-fg-subtle">{i.sub}</div></div>
+                </div>
+              ))}
+            </Reveal>
+          </div>
+        </section>
+
+        {/* ================================================================ */}
+        {/* FINAL CONVERSION                                                   */}
+        {/* ================================================================ */}
+        <section className="px-3 pb-6 sm:px-5">
+          <Reveal className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[28px] border border-accent/20 bg-[radial-gradient(ellipse_80%_120%_at_80%_0%,rgb(32_200_120/.45),transparent_60%),linear-gradient(135deg,#123D28,#0B110E_70%)] px-6 py-20 text-center sm:px-12 lg:py-28">
+            <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(rgb(182_243_106/.15)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000,transparent)]" aria-hidden />
+            <h2 className="relative mx-auto max-w-4xl font-display text-[clamp(38px,6vw,88px)] font-semibold uppercase leading-[0.95] tracking-[-0.04em]">
+              Let agents spend.<br /><span className="text-volt">Keep humans in charge.</span>
+            </h2>
+            <p className="relative mx-auto mt-6 max-w-lg text-[16px] leading-[1.65] text-fg-muted">Launch the workspace in sandbox mode. No real funds move until you say so.</p>
+            <div className="relative mt-10 flex flex-wrap justify-center gap-3">
+              <MagneticLink href="/dashboard" className="btn btn-primary h-12 px-7 text-[15px]">Get started <ArrowUpRight size={17} /></MagneticLink>
+              <MagneticLink href="/demo" className="btn btn-secondary h-12 px-7 text-[15px]">Run a live attack demo</MagneticLink>
+            </div>
+          </Reveal>
+        </section>
+      </main>
+
+      {/* ================================================================== */}
+      {/* FOOTER                                                               */}
+      {/* ================================================================== */}
+      <footer className="mx-auto max-w-[1320px] px-5 pb-10 pt-20 sm:px-8">
+        <div className="grid gap-12 border-b border-white/[0.06] pb-14 md:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))]">
+          <div>
+            <Link href="/" className="flex items-center gap-2.5"><BrandMark /><span className="font-display text-[15px] font-semibold tracking-[0.14em]">PAYSHARK</span></Link>
+            <p className="mt-4 max-w-xs text-[13.5px] leading-[1.65] text-fg-muted">Agreement-aware payment control for autonomous AI agents.</p>
+            <span className="mt-5 inline-flex items-center gap-2 rounded-full border border-warning/25 bg-warning/[0.06] px-3 py-1 text-[11.5px] text-warning"><span className="h-1.5 w-1.5 rounded-full bg-warning" /> Private beta · PayPal Sandbox</span>
+          </div>
+          {[
+            ["Product", [["Command centre", "/dashboard"], ["Transactions", "/transactions"], ["Analytics", "/analytics"], ["Review center", "/approvals"]]],
+            ["Governance", [["Agreements", "/agreements"], ["Policies", "/policies"], ["AI agents", "/agents"], ["Audit trail", "/audit"]]],
+            ["Platform", [["Security centre", "/security"], ["Attack simulator", "/demo"], ["Developers", "/developers"], ["Settings", "/settings"]]]
+          ].map(([title, links]) => (
+            <div key={title as string}>
+              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-fg-subtle">{title as string}</div>
+              <ul className="mt-4 space-y-2.5">
+                {(links as string[][]).map(([l, h]) => (
+                  <li key={h}><Link href={h} className="text-[13.5px] text-fg-muted transition-colors hover:text-fg">{l}</Link></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-4 pt-8 text-[12px] text-fg-subtle">
+          <span>© {new Date().getFullYear()} PAYSHARK. AI interprets. Rules enforce. Humans authorize. PayPal processes.</span>
+          <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-accent" /> All systems sandboxed</span>
+        </div>
+      </footer>
+    </div>
+  );
+}
