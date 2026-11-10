@@ -724,7 +724,19 @@ html[data-effects="reduced"] .popover { -webkit-backdrop-filter: none; backdrop-
 }
 .scene-guides span { border-left: 1px dashed rgb(255 255 255 / .05); }
 .scene-guides span:first-child { border-left: 0; }
-.scene-canvas { opacity: .3; }
+.scene-canvas { opacity: 1; }
+/* soft vertical light shaft down the middle of the valley */
+.scene-beam {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 34vw;
+  height: 70vh;
+  translate: -50% 0;
+  background: radial-gradient(ellipse 50% 100% at 50% 0%, rgb(255 255 255 / .09), transparent 70%);
+  animation: scene-beam 9s ease-in-out infinite alternate;
+}
+@keyframes scene-beam { from { opacity: .7; } to { opacity: 1; } }
 /* fine grain to keep the gradients from banding */
 .scene-grain {
   position: absolute;

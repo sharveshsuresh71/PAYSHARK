@@ -748,6 +748,51 @@ function ribbonsScene(): Draw {
   };
 }
 
+/**
+ * Silk valley (used on every page): fine silver lines forming a curved surface
+ * that rises into walls on both sides, rippling slowly, like brushed silk.
+ * `seed` gives each page its own curvature, ripple, tilt and phase.
+ */
+function silkScene(seed: number): Draw {
+  const width = 0.06 + ((seed * 37) % 10) / 200;          // how steeply the walls rise
+  const freq = 0.35 + ((seed * 53) % 10) / 40;            // ripple frequency across the surface
+  const tilt = ((((seed * 29) % 10) / 10) - 0.5) * 1.6;   // camera offset left/right
+  const phase = seed * 1.7;
+
+  return f => {
+    const { ctx, w, h, t, px, scroll, mobile } = f;
+    const rows = mobile ? 34 : 64, cols = mobile ? 48 : 96;
+    const horizon = h * 0.42, foc = h * 0.9, camH = 1.1;
+    const camX = tilt + (px / w - 0.5) * -0.8;
+    const flow = t * 0.25 + scroll * 0.002;
+    const height = (x: number, z: number) =>
+      width * x * x * (1 + 0.25 * Math.sin(z * 0.25 + flow + phase)) +
+      0.18 * Math.sin(x * freq + z * 0.35 - flow * 2 + phase);
+
+    for (let r = 0; r < rows; r++) {
+      const z = 22 - (r / (rows - 1)) * 20.5; // far → near
+      const near = 1 - (z - 1.5) / 20.5;
+      ctx.beginPath();
+      for (let c = 0; c < cols; c++) {
+        const x = -11 + (c / (cols - 1)) * 22;
+        const sx = w / 2 + ((x - camX) * foc) / z;
+        const sy = horizon + ((camH - height(x, z)) * foc) / z;
+        if (c) ctx.lineTo(sx, sy);
+        else ctx.moveTo(sx, sy);
+      }
+      // the walls catch the light; the valley floor stays dark
+      const a = 0.035 + near * 0.26;
+      const sheen = ctx.createLinearGradient(0, 0, w, 0);
+      sheen.addColorStop(0, `rgba(230,230,236,${Math.min(1, a * 1.8)})`);
+      sheen.addColorStop(0.5, `rgba(230,230,236,${a * 0.35})`);
+      sheen.addColorStop(1, `rgba(230,230,236,${Math.min(1, a * 1.8)})`);
+      ctx.strokeStyle = sheen;
+      ctx.lineWidth = 0.6 + near * 0.8;
+      ctx.stroke();
+    }
+  };
+}
+
 const SCENES: Record<SceneKind, () => Draw> = {
   terrain: terrainScene,
   globe: globeScene,
@@ -800,7 +845,8 @@ export function SceneBackdrop({ className, scene }: { className?: string; scene?
     const drawers = new Map<SceneKind, Draw>();
     const drawerFor = (k: SceneKind) => {
       let d = drawers.get(k);
-      if (!d) { d = SCENES[k](); drawers.set(k, d); }
+      // every page draws the silk valley, each with its own variation (seeded by scene)
+      if (!d) { d = silkScene(SCENE_ORDER.indexOf(k) + 1); drawers.set(k, d); }
       return d;
     };
     let index = 0;
@@ -902,7 +948,7 @@ export function SceneBackdrop({ className, scene }: { className?: string; scene?
       ctx.fillStyle = band;
       ctx.fill();
       seg(ctx, { x: edge, y: 0 }, { x: edge - slant, y: h }, SIGNAL, 0.95, 2);
-      seg(ctx, { x: edge + 7, y: 0 }, { x: edge + 7 - slant, y: h }, RED, 0.8, 1);
+      seg(ctx, { x: edge + 7, y: 0 }, { x: edge + 7 - slant, y: h }, INK, 0.5, 1);
     };
 
     const loop = (now: number) => {
@@ -956,6 +1002,8 @@ export function SceneBackdrop({ className, scene }: { className?: string; scene?
     >
       <div className="scene-glow scene-glow-a" />
       <div className="scene-glow scene-glow-b" />
+      <canvas ref={canvasRef} className="scene-canvas absolute inset-0" />
+      <div className="scene-beam" />
       <div className="scene-grain" />
       <div className="scene-vignette" />
     </div>
