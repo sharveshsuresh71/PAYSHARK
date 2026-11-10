@@ -29,7 +29,12 @@ const config: Config = {
           DEFAULT: "rgb(var(--ps-fg) / <alpha-value>)",
           muted: "rgb(var(--ps-fg-muted) / <alpha-value>)",
           subtle: "rgb(var(--ps-fg-subtle) / <alpha-value>)"
-        }
+        },
+        ocean: "rgb(var(--ps-ocean) / <alpha-value>)",
+        iris: "rgb(var(--ps-violet) / <alpha-value>)",
+        success: "rgb(var(--ps-success) / <alpha-value>)",
+        warning: "rgb(var(--ps-warning) / <alpha-value>)",
+        danger: "rgb(var(--ps-danger) / <alpha-value>)"
       },
       fontFamily: {
         sans: ["var(--ps-font-sans)"],

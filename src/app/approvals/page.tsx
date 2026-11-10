@@ -93,19 +93,19 @@ export default function Approvals() {
       </div>
 
       {feedback && (
-        <div className="mt-5 p-4 rounded-xl border border-[#42d6d0]/40 bg-[#42d6d0]/10 text-[#42d6d0] text-sm">
+        <div className="mt-5 p-4 rounded-xl border border-accent/40 bg-accent/10 text-accent text-sm">
           {feedback}
         </div>
       )}
 
       <div className="mt-8 space-y-4">
         <h2 className="text-lg font-semibold flex items-center gap-2">
-          <ClipboardCheck size={20} className="text-[#42d6d0]" /> Payment Requests
+          <ClipboardCheck size={20} className="text-accent" /> Payment Requests
         </h2>
 
         {loading ? (
           <div className="card p-10 text-center">
-            <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={28} />
+            <Loader2 className="mx-auto animate-spin text-accent" size={28} />
             <p className="muted text-sm mt-2">Loading requests...</p>
           </div>
         ) : requests.length === 0 ? (

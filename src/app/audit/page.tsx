@@ -55,7 +55,7 @@ export default function Audit() {
 
       {loading ? (
         <div className="py-20 text-center">
-          <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={32} />
+          <Loader2 className="mx-auto animate-spin text-accent" size={32} />
           <p className="muted mt-3">Verifying hash chain...</p>
         </div>
       ) : logs.length === 0 ? (
@@ -70,7 +70,7 @@ export default function Audit() {
             <div key={log.id} className="card p-5 space-y-2 hover:border-slate-700 transition">
               <div className="flex flex-wrap justify-between items-center gap-2">
                 <div className="flex items-center gap-2.5">
-                  <span className="text-xs font-mono text-[#42d6d0] bg-[#42d6d0]/10 px-2 py-0.5 rounded">
+                  <span className="text-xs font-mono text-accent bg-accent/10 px-2 py-0.5 rounded">
                     #{idx + 1}
                   </span>
                   <span className="font-semibold text-white text-sm">{log.action}</span>
@@ -84,7 +84,7 @@ export default function Audit() {
                 </div>
               </div>
 
-              <div className="bg-[#070d18] p-3 rounded-lg border border-slate-800/80 text-xs text-slate-300 font-mono overflow-x-auto">
+              <div className="bg-canvas/70 p-3 rounded-lg border border-slate-800/80 text-xs text-slate-300 font-mono overflow-x-auto">
                 {JSON.stringify(log.event_data, null, 2)}
               </div>
 
@@ -93,7 +93,7 @@ export default function Audit() {
                   <Hash size={13} className="text-slate-600" />
                   <span>Prev: {log.previous_event_hash ? log.previous_event_hash.slice(0, 16) + "..." : "GENESIS_BLOCK"}</span>
                 </div>
-                <div className="text-[#42d6d0]/80">
+                <div className="text-accent/80">
                   Hash: {log.event_hash ? log.event_hash.slice(0, 24) + "..." : "N/A"}
                 </div>
               </div>

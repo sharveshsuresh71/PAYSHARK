@@ -6,6 +6,8 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { Bell, ChevronDown, ChevronRight, LogOut, Menu, Repeat2, Search, Activity, CornerDownLeft } from "lucide-react";
 import { allNavItems, quickActions, findActiveItem, type NavItem } from "./nav-config";
 import { BrandMark } from "./sidebar";
+import { toast } from "./toast";
+import { useSessionUser, displayName, initials } from "@/lib/client/session-store";
 import { cn } from "@/lib/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -311,26 +313,9 @@ function Notifications() {
 /* -------------------------------------------------------------------------- */
 /* Profile menu — wired to the existing /api/auth/session endpoint              */
 /* -------------------------------------------------------------------------- */
-interface SessionUser {
-  id: string;
-  email: string;
-  full_name: string;
-  role: "buyer" | "seller" | "admin";
-}
-
-function initials(name: string) {
-  return name
-    .replace(/\(.*?\)/g, "")
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map(p => p[0]?.toUpperCase() ?? "")
-    .join("") || "PS";
-}
-
 function ProfileMenu() {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<SessionUser | null>(null);
+  const user = useSessionUser();
   const [busy, setBusy] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -339,13 +324,6 @@ function ProfileMenu() {
 
   const close = useCallback(() => setOpen(false), []);
   useDismiss(open, close, rootRef, triggerRef);
-
-  useEffect(() => {
-    fetch("/api/auth/session")
-      .then(r => r.json())
-      .then(json => { if (json.ok) setUser(json.data); })
-      .catch(() => {});
-  }, []);
 
   // Move focus into the menu when it opens
   useEffect(() => {
@@ -366,13 +344,15 @@ function ProfileMenu() {
     if (!user) return;
     setBusy(true);
     try {
-      await fetch("/api/auth/session", {
+      const res = await fetch("/api/auth/session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ role: user.role === "seller" ? "buyer" : "seller" })
       });
+      if (!res.ok) throw new Error();
       window.location.reload();
-    } finally {
+    } catch {
+      toast("Couldn’t switch role", { tone: "error", description: "The session service did not respond. Try again." });
       setBusy(false);
     }
   }
@@ -382,12 +362,13 @@ function ProfileMenu() {
     try {
       await fetch("/api/auth/session", { method: "DELETE" });
       window.location.reload();
-    } finally {
+    } catch {
+      toast("Couldn’t end session", { tone: "error" });
       setBusy(false);
     }
   }
 
-  const displayName = user?.full_name.replace(/\s*\(.*?\)\s*/g, "") ?? "Loading…";
+  const name = user ? displayName(user) : "Loading…";
 
   return (
     <div ref={rootRef} className="relative">
@@ -401,11 +382,13 @@ function ProfileMenu() {
         aria-label="Account menu"
         className="flex h-9 items-center gap-2 rounded-[10px] border border-transparent pl-1 pr-1.5 transition-colors hover:bg-white/[0.05] aria-expanded:border-white/[0.08] aria-expanded:bg-white/[0.06] md:pr-2"
       >
-        <span className="grid h-7 w-7 place-items-center rounded-full border border-accent/30 bg-accent/15 text-[11px] font-semibold text-accent">
-          {user ? initials(user.full_name) : ""}
+        <span className="rounded-full bg-[conic-gradient(from_200deg,#35D9FF,#1677FF,#795CFF,#35D9FF)] p-[1.5px]">
+          <span className="grid h-7 w-7 place-items-center rounded-full bg-sidebar text-[11px] font-semibold text-fg">
+            {user ? initials(user) : ""}
+          </span>
         </span>
         <span className="hidden min-w-0 text-left md:block">
-          <span className="block max-w-[140px] truncate text-[12.5px] font-medium leading-4 text-fg">{displayName}</span>
+          <span className="block max-w-[140px] truncate text-[12.5px] font-medium leading-4 text-fg">{name}</span>
           <span className="block text-[11px] capitalize leading-4 text-fg-subtle">{user?.role ?? "—"}</span>
         </span>
         <ChevronDown size={14} className={cn("hidden text-fg-subtle transition-transform duration-200 md:block", open && "rotate-180")} />
@@ -421,7 +404,7 @@ function ProfileMenu() {
           className="popover absolute right-0 top-[calc(100%+8px)] z-50 w-64 animate-pop-in p-1.5"
         >
           <div className="px-2.5 pb-2.5 pt-2">
-            <div className="truncate text-[13px] font-semibold text-fg">{displayName}</div>
+            <div className="truncate text-[13px] font-semibold text-fg">{name}</div>
             <div className="truncate text-[12px] text-fg-muted">{user?.email}</div>
             <span className="mt-2 inline-flex items-center rounded-md border border-accent/25 bg-accent/10 px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-accent">
               {user?.role ?? "—"}
@@ -461,7 +444,7 @@ export function Topbar({ onOpenMobileNav, mobileNavOpen }: { onOpenMobileNav: ()
       className={cn(
         "sticky top-0 z-30 flex h-[60px] items-center gap-3 border-b px-3 backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-300 sm:px-6 lg:px-8",
         scrolled
-          ? "border-white/[0.08] bg-canvas/90 shadow-[0_12px_32px_-20px_rgb(0_0_0/.9)]"
+          ? "glass border-white/[0.07] shadow-[0_12px_32px_-20px_rgb(0_0_0/.9)]"
           : "border-transparent bg-canvas/40"
       )}
     >

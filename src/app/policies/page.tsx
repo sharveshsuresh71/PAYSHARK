@@ -55,7 +55,7 @@ export default function Policies() {
 
       {loading ? (
         <div className="py-20 text-center">
-          <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={32} />
+          <Loader2 className="mx-auto animate-spin text-accent" size={32} />
           <p className="muted mt-3">Loading policies...</p>
         </div>
       ) : policies.length === 0 ? (
@@ -98,7 +98,7 @@ export default function Policies() {
               <div className="flex items-center gap-6">
                 <div className="text-right">
                   <div className="text-xs muted">TRANSACTION LIMIT</div>
-                  <div className="text-2xl font-bold text-[#42d6d0]">
+                  <div className="text-2xl font-bold text-accent">
                     {p.maximum_amount} {p.currency}
                   </div>
                 </div>

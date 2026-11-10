@@ -185,7 +185,7 @@ function NewPolicyForm() {
           />
         </label>
 
-        <label className="flex gap-3 items-center text-sm p-3 rounded-lg bg-[#0a1423] border border-slate-800">
+        <label className="flex gap-3 items-center text-sm p-3 rounded-lg bg-canvas/60 border border-slate-800">
           <input
             type="checkbox"
             checked={human}

@@ -93,7 +93,7 @@ export default function NewAgreement() {
               </div>
             </div>
 
-            <div className="bg-[#0a1423] p-4 rounded-xl border border-slate-800 space-y-2">
+            <div className="bg-canvas/60 p-4 rounded-xl border border-slate-800 space-y-2">
               <div className="text-xs kicker">COUNTERPARTY INVITATION LINK</div>
               <div className="flex gap-2 items-center">
                 <input
@@ -170,7 +170,7 @@ export default function NewAgreement() {
 
             <div className="flex justify-between items-center pt-2">
               <div className="text-xs text-slate-500 flex gap-2 items-center">
-                <Sparkles size={14} className="text-[#42d6d0]" />
+                <Sparkles size={14} className="text-accent" />
                 Terms will be extracted and verified server-side
               </div>
               <button disabled={loading} className="btn btn-primary flex gap-2 items-center">

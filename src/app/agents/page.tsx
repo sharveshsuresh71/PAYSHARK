@@ -82,7 +82,7 @@ export default function Agents() {
       <div className="grid lg:grid-cols-[1fr_1.2fr] gap-6 mt-8">
         <div className="card p-6 h-fit">
           <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Plus size={18} className="text-[#42d6d0]" /> Register New Agent
+            <Plus size={18} className="text-accent" /> Register New Agent
           </h2>
           <form onSubmit={registerAgent} className="mt-4 space-y-4">
             <label className="block text-sm">
@@ -117,7 +117,7 @@ export default function Agents() {
               <div className="flex gap-2 items-center mt-2">
                 <input
                   readOnly
-                  className="field text-xs font-mono text-emerald-300 bg-[#080e19]"
+                  className="field text-xs font-mono text-emerald-300 bg-canvas/60"
                   value={newKey}
                 />
                 <button onClick={copyKey} className="btn btn-secondary shrink-0 flex gap-1.5 items-center text-xs">
@@ -131,12 +131,12 @@ export default function Agents() {
 
         <div className="space-y-4">
           <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Bot size={20} className="text-[#42d6d0]" /> Registered Agent Workspaces
+            <Bot size={20} className="text-accent" /> Registered Agent Workspaces
           </h2>
 
           {loading ? (
             <div className="card p-10 text-center">
-              <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={28} />
+              <Loader2 className="mx-auto animate-spin text-accent" size={28} />
               <p className="muted text-sm mt-2">Loading agents...</p>
             </div>
           ) : agents.length === 0 ? (
@@ -156,7 +156,7 @@ export default function Agents() {
                   <div className="text-xs font-mono text-slate-500">ID: {a.id}</div>
                 </div>
                 <div className="text-xs text-slate-400 flex items-center gap-1.5">
-                  <ShieldCheck size={16} className="text-[#42d6d0]" />
+                  <ShieldCheck size={16} className="text-accent" />
                   Scoped: payment:request
                 </div>
               </div>

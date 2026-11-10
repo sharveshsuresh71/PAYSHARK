@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { Sidebar } from "./sidebar";
 import { Topbar } from "./topbar";
 import { useCardTilt } from "./use-card-tilt";
+import { Toaster } from "./toast";
+import { AiAssistant } from "./ai-assistant";
 import { cn } from "@/lib/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -108,13 +110,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="ps-backdrop" aria-hidden>
         <div className="ps-backdrop-grid" />
         <div className="ps-backdrop-fade" />
+        <div className="ps-particles" />
       </div>
 
-      {/* Desktop sidebar */}
+      {/* Desktop sidebar — floating glass panel */}
       <aside
         aria-label="Sidebar"
         className={cn(
-          "fixed inset-y-0 left-0 z-40 hidden border-r border-white/[0.06] bg-sidebar transition-[width] duration-200 ease-out lg:block",
+          "glass fixed bottom-3 left-3 top-3 z-40 hidden rounded-[16px] border border-white/[0.07] shadow-[inset_0_1px_0_rgb(255_255_255/.06),0_30px_60px_-30px_rgb(0_0_0/.9),0_0_0_1px_rgb(0_0_0/.25)] transition-[width] duration-300 ease-out lg:block",
           collapsed ? "w-[var(--ps-sidebar-w-collapsed)]" : "w-[var(--ps-sidebar-w)]"
         )}
       >
@@ -124,7 +127,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 animate-fade-in bg-black/60" onClick={closeMobile} aria-hidden />
+          <div className="absolute inset-0 animate-fade-in bg-black/60 backdrop-blur-[2px]" onClick={closeMobile} aria-hidden />
           <div
             ref={drawerRef}
             id="mobile-nav"
@@ -141,8 +144,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* Content column */}
       <div
         className={cn(
-          "relative z-[1] flex min-h-screen min-w-0 flex-col transition-[padding] duration-200 ease-out",
-          collapsed ? "lg:pl-[var(--ps-sidebar-w-collapsed)]" : "lg:pl-[var(--ps-sidebar-w)]"
+          "relative z-[1] flex min-h-screen min-w-0 flex-col transition-[padding] duration-300 ease-out",
+          collapsed ? "lg:pl-[calc(var(--ps-sidebar-w-collapsed)+12px)]" : "lg:pl-[calc(var(--ps-sidebar-w)+12px)]"
         )}
       >
         <Topbar onOpenMobileNav={openMobile} mobileNavOpen={mobileOpen} />
@@ -150,6 +153,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </div>
+
+      <AiAssistant />
+      <Toaster />
     </div>
   );
 }

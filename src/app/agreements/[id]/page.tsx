@@ -69,7 +69,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
   if (loading) {
     return (
       <div className="py-20 text-center">
-        <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={32} />
+        <Loader2 className="mx-auto animate-spin text-accent" size={32} />
         <p className="muted mt-3">Loading agreement...</p>
       </div>
     );
@@ -130,7 +130,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
       </div>
 
       {msg && (
-        <div className="mt-5 p-4 rounded-xl border border-[#42d6d0]/40 bg-[#42d6d0]/10 text-[#42d6d0] text-sm">
+        <div className="mt-5 p-4 rounded-xl border border-accent/40 bg-accent/10 text-accent text-sm">
           {msg}
         </div>
       )}
@@ -139,24 +139,24 @@ function AgreementDetailsContent({ id }: { id: string }) {
         <div className="space-y-6">
           <div className="card p-6">
             <h2 className="font-semibold text-lg flex items-center gap-2">
-              <ShieldCheck className="text-[#42d6d0]" size={20} />
+              <ShieldCheck className="text-accent" size={20} />
               Machine-Verified Terms
             </h2>
 
             <div className="grid sm:grid-cols-3 gap-4 mt-5">
-              <div className="bg-[#0a1423] p-4 rounded-xl border border-slate-800">
+              <div className="bg-canvas/60 p-4 rounded-xl border border-slate-800">
                 <div className="text-xs muted">AUTHORIZED AMOUNT</div>
-                <div className="text-xl font-bold mt-1 text-[#42d6d0]">
+                <div className="text-xl font-bold mt-1 text-accent">
                   {terms.amount || agreement.amount || "—"} {terms.currency || agreement.currency || "USD"}
                 </div>
               </div>
-              <div className="bg-[#0a1423] p-4 rounded-xl border border-slate-800">
+              <div className="bg-canvas/60 p-4 rounded-xl border border-slate-800">
                 <div className="text-xs muted">DEADLINE</div>
                 <div className="text-xl font-bold mt-1 text-slate-200">
                   {terms.deadline || agreement.deadline || "Open"}
                 </div>
               </div>
-              <div className="bg-[#0a1423] p-4 rounded-xl border border-slate-800">
+              <div className="bg-canvas/60 p-4 rounded-xl border border-slate-800">
                 <div className="text-xs muted">COMPLETENESS</div>
                 <div className="text-xl font-bold mt-1 text-emerald-400">
                   {terms.completeness_percent || 100}%
@@ -166,7 +166,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
 
             <div className="mt-6">
               <div className="text-xs kicker">PERMITTED PURPOSE</div>
-              <p className="mt-2 text-slate-300 text-sm bg-[#0a1423] p-3 rounded-lg border border-slate-800/80">
+              <p className="mt-2 text-slate-300 text-sm bg-canvas/60 p-3 rounded-lg border border-slate-800/80">
                 {terms.transaction_purpose || "Core deliverables specified in agreement"}
               </p>
             </div>
@@ -177,7 +177,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
                 <ul className="mt-2 space-y-1.5 text-sm text-slate-300">
                   {terms.deliverables.map((d: string, i: number) => (
                     <li key={i} className="flex gap-2 items-center">
-                      <span className="text-[#42d6d0]">•</span> {d}
+                      <span className="text-accent">•</span> {d}
                     </li>
                   ))}
                 </ul>
@@ -187,7 +187,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
 
           <div className="card p-6">
             <h2 className="font-semibold text-lg">Original Agreement Text</h2>
-            <pre className="mt-4 p-4 rounded-xl bg-[#070d18] text-slate-300 text-xs font-mono whitespace-pre-wrap leading-relaxed border border-slate-800">
+            <pre className="mt-4 p-4 rounded-xl bg-canvas/70 text-slate-300 text-xs font-mono whitespace-pre-wrap leading-relaxed border border-slate-800">
               {agreement.original_text}
             </pre>
           </div>
@@ -196,14 +196,14 @@ function AgreementDetailsContent({ id }: { id: string }) {
         <div className="space-y-6">
           <div className="card p-6">
             <h2 className="font-semibold text-lg flex items-center gap-2">
-              <UserCheck size={20} className="text-[#42d6d0]" /> Mutual Confirmation
+              <UserCheck size={20} className="text-accent" /> Mutual Confirmation
             </h2>
             <p className="text-xs muted mt-2 leading-relaxed">
               Both parties must independently sign off on the active version before policies can be attached or payments initiated.
             </p>
 
             <div className="mt-5 space-y-3">
-              <div className="flex items-center justify-between p-3 rounded-lg bg-[#0a1423] border border-slate-800">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-canvas/60 border border-slate-800">
                 <div>
                   <div className="text-sm font-medium">Buyer (Alex Mercer)</div>
                   <div className="text-xs muted">Creator</div>
@@ -213,7 +213,7 @@ function AgreementDetailsContent({ id }: { id: string }) {
                 </span>
               </div>
 
-              <div className="flex items-center justify-between p-3 rounded-lg bg-[#0a1423] border border-slate-800">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-canvas/60 border border-slate-800">
                 <div>
                   <div className="text-sm font-medium">Seller ({agreement.counterparty_email})</div>
                   <div className="text-xs muted">

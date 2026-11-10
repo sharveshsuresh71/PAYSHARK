@@ -42,7 +42,7 @@ export default function Agreements() {
 
       {loading ? (
         <div className="py-20 text-center">
-          <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={32} />
+          <Loader2 className="mx-auto animate-spin text-accent" size={32} />
           <p className="muted mt-3">Loading agreements...</p>
         </div>
       ) : agreements.length === 0 ? (
@@ -57,7 +57,7 @@ export default function Agreements() {
             <Link
               key={a.id}
               href={`/agreements/${a.id}`}
-              className="card p-6 hover:border-[#42d6d0]/50 transition flex flex-wrap justify-between items-center gap-4"
+              className="card p-6 hover:border-accent/50 transition flex flex-wrap justify-between items-center gap-4"
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export default function Agreements() {
               <div className="flex items-center gap-6">
                 <div className="text-right">
                   <div className="text-xs muted">AUTHORIZED CEILING</div>
-                  <div className="text-xl font-bold text-[#42d6d0]">
+                  <div className="text-xl font-bold text-accent">
                     {a.amount || "—"} {a.currency || "USD"}
                   </div>
                 </div>
