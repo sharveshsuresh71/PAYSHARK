@@ -95,7 +95,7 @@ export default function Agents() {
             </label>
 
             {error && (
-              <p className="text-[13px] text-danger bg-danger/[0.08] border border-danger/30 px-3 py-2.5 rounded-[10px] break-words">
+              <p className="text-[13px] text-danger bg-danger/[0.08] border border-danger/30 px-3 py-2.5 rounded-[4px] break-words">
                 {error}
               </p>
             )}
@@ -135,7 +135,7 @@ export default function Agents() {
           {loading ? (
             <div className="space-y-3" aria-busy="true">
               {[0, 1, 2].map(i => (
-                <div key={i} className="skeleton h-[76px] rounded-[14px]" />
+                <div key={i} className="skeleton h-[76px] rounded-[12px]" />
               ))}
               <p className="sr-only">Loading agents...</p>
             </div>

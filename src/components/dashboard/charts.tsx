@@ -50,17 +50,17 @@ export function VolumeChart({ data, currency }: { data: PaymentAnalytics["daily"
       <svg viewBox={`0 0 ${W} ${H + 40}`} className="h-auto w-full" role="presentation">
         <defs>
           <linearGradient id={`${gid}-fill`} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#20C878" stopOpacity=".32" />
-            <stop offset="1" stopColor="#0E7A4A" stopOpacity="0" />
+            <stop offset="0" stopColor="#3496FF" stopOpacity=".32" />
+            <stop offset="1" stopColor="#1D4F8F" stopOpacity="0" />
           </linearGradient>
           <linearGradient id={`${gid}-stroke`} x1="0" x2="1">
-            <stop offset="0" stopColor="#0E7A4A" />
-            <stop offset=".6" stopColor="#20C878" />
-            <stop offset="1" stopColor="#B6F36A" />
+            <stop offset="0" stopColor="#1D4F8F" />
+            <stop offset=".6" stopColor="#3496FF" />
+            <stop offset="1" stopColor="#60D6FF" />
           </linearGradient>
           <linearGradient id={`${gid}-reflect`} x1="0" x2="0" y1="0" y2="1">
-            <stop offset=".55" stopColor="#20C878" stopOpacity="0" />
-            <stop offset="1" stopColor="#20C878" stopOpacity=".14" />
+            <stop offset=".55" stopColor="#3496FF" stopOpacity="0" />
+            <stop offset="1" stopColor="#3496FF" stopOpacity=".14" />
           </linearGradient>
           <filter id={`${gid}-glow`} x="-10%" y="-50%" width="120%" height="200%">
             <feGaussianBlur stdDeviation="4" result="b" />
@@ -86,8 +86,8 @@ export function VolumeChart({ data, currency }: { data: PaymentAnalytics["daily"
             <rect x={x(i) - (W / data.length) / 2} y={0} width={W / data.length} height={base} fill="transparent" />
             {hover === i && (
               <>
-                <line x1={x(i)} x2={x(i)} y1={PAD_T} y2={base} stroke="rgb(32 200 120 / .35)" />
-                <circle cx={x(i)} cy={y(d.volume)} r="4.5" fill="#080C0B" stroke="#20C878" strokeWidth="2" />
+                <line x1={x(i)} x2={x(i)} y1={PAD_T} y2={base} stroke="rgb(52 150 255 / .35)" />
+                <circle cx={x(i)} cy={y(d.volume)} r="4.5" fill="#0B111C" stroke="#3496FF" strokeWidth="2" />
               </>
             )}
           </g>
@@ -132,7 +132,7 @@ export function DistributionRing({ counts }: { counts: Record<PaymentCategory, n
             cy="70"
             r={R}
             fill="none"
-            stroke={depth ? "#0A2418" : categoryMeta[s.k].color}
+            stroke={depth ? "#0B111C" : categoryMeta[s.k].color}
             strokeWidth="14"
             strokeDasharray={`${Math.max(0, s.len - (total > 1 ? 2 : 0))} ${C}`}
             strokeDashoffset={-s.offset}
@@ -197,8 +197,8 @@ export function SuccessGauge({ rate, captured, blocked, reasons }: { rate: numbe
         <svg viewBox="0 0 160 92" className="w-full overflow-visible">
           <defs>
             <linearGradient id={`${gid}-g`} x1="0" x2="1">
-              <stop offset="0" stopColor="#0E7A4A" />
-              <stop offset=".6" stopColor="#20C878" />
+              <stop offset="0" stopColor="#1D4F8F" />
+              <stop offset=".6" stopColor="#3496FF" />
               <stop offset="1" stopColor="#36D9F5" />
             </linearGradient>
           </defs>
@@ -211,7 +211,7 @@ export function SuccessGauge({ rate, captured, blocked, reasons }: { rate: numbe
             strokeLinecap="round"
             strokeDasharray={`${arc * value} ${arc}`}
             className="transition-[stroke-dasharray] duration-1000 ease-out"
-            style={{ filter: "drop-shadow(0 0 6px rgb(32 200 120 / .45))" }}
+            style={{ filter: "drop-shadow(0 0 6px rgb(52 150 255 / .45))" }}
           />
         </svg>
         <div className="absolute inset-x-0 bottom-0 text-center">

@@ -76,15 +76,15 @@ function CodeBlock({ code, label }: { code: string; label: string }) {
     catch { toast("Couldn’t copy", { tone: "error" }); }
   }
   return (
-    <div className="overflow-hidden rounded-[12px] border border-white/[0.08] bg-[#060A08]">
+    <div className="overflow-hidden rounded-[12px] border border-white/[0.08] bg-[#0B111C]">
       <div className="flex items-center justify-between border-b border-white/[0.06] px-3.5 py-2">
         <div className="flex items-center gap-2">
-          <span className="flex gap-1" aria-hidden>{["#FF6363", "#F5BE50", "#20C878"].map(c => <span key={c} className="h-2 w-2 rounded-full" style={{ background: c, opacity: 0.7 }} />)}</span>
+          <span className="flex gap-1" aria-hidden>{["#FF6363", "#F5BE50", "#3496FF"].map(c => <span key={c} className="h-2 w-2 rounded-full" style={{ background: c, opacity: 0.7 }} />)}</span>
           <span className="text-[11px] font-medium text-fg-subtle">{label}</span>
         </div>
         <button type="button" onClick={copy} className="icon-btn h-7 w-7" aria-label={`Copy ${label}`}><Copy size={13} /></button>
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-[11.5px] leading-[1.7] text-[#C9D6CD]"><code>{code}</code></pre>
+      <pre className="overflow-x-auto p-4 font-mono text-[11.5px] leading-[1.7] text-[#C9D3E0]"><code>{code}</code></pre>
     </div>
   );
 }
@@ -146,7 +146,7 @@ export default function DevelopersPage() {
             <p className="text-[12px] text-fg-subtle">{ENDPOINTS.length} endpoints · rate-limited per IP</p>
           </div>
           <div className="flex w-full flex-wrap gap-2 sm:w-auto">
-            <div role="group" aria-label="Endpoint group" className="flex flex-wrap rounded-[10px] border border-white/[0.07] bg-canvas/50 p-0.5">
+            <div role="group" aria-label="Endpoint group" className="flex flex-wrap rounded-[4px] border border-white/[0.07] bg-canvas/50 p-0.5">
               {groups.map(g => (
                 <button key={g} type="button" aria-pressed={group === g} onClick={() => setGroup(g)}
                   className={cn("rounded-[8px] px-2.5 py-1.5 text-[12px] font-medium transition-all", group === g ? "bg-surface text-fg" : "text-fg-muted hover:text-fg")}>
@@ -183,7 +183,7 @@ export default function DevelopersPage() {
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {integrations.map(i => (
             <div key={i.name} className="card p-5">
-              <span className="grid h-10 w-10 place-items-center rounded-[12px] border border-accent/20 bg-[linear-gradient(160deg,rgb(18_61_40/.8),rgb(21_31_25))] text-accent shadow-[inset_0_1px_0_rgb(255_255_255/.08)]">
+              <span className="grid h-10 w-10 place-items-center rounded-[12px] border border-accent/20 bg-[linear-gradient(160deg,rgb(30_46_72/.8),rgb(19_29_46))] text-accent shadow-[inset_0_1px_0_rgb(255_255_255/.08)]">
                 <i.icon size={18} />
               </span>
               <div className="mt-4 text-[14px] font-semibold text-fg">{i.name}</div>

@@ -31,12 +31,12 @@ function Sparkline({ values, className }: { values: number[]; className?: string
     <svg viewBox="0 0 100 30" preserveAspectRatio="none" className={cn("h-10 w-full", className)} aria-hidden>
       <defs>
         <linearGradient id="spark-fill" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0" stopColor="#20C878" stopOpacity=".28" />
-          <stop offset="1" stopColor="#20C878" stopOpacity="0" />
+          <stop offset="0" stopColor="#3496FF" stopOpacity=".28" />
+          <stop offset="1" stopColor="#3496FF" stopOpacity="0" />
         </linearGradient>
       </defs>
       <polygon points={`0,30 ${pts} 100,30`} fill="url(#spark-fill)" />
-      <polyline points={pts} pathLength={1} fill="none" stroke="#20C878" strokeWidth="1.6" className="chart-line" />
+      <polyline points={pts} pathLength={1} fill="none" stroke="#3496FF" strokeWidth="1.6" className="chart-line" />
     </svg>
   );
 }
@@ -144,34 +144,19 @@ export default function Dashboard() {
       {/* ------------------------------------------------------------------ */}
       {/* Hero                                                                 */}
       {/* ------------------------------------------------------------------ */}
-      <section className="relative overflow-hidden rounded-[20px] border border-white/[0.07] bg-[linear-gradient(135deg,rgb(18_61_40/.55),rgb(16_23_19/.85))] shadow-[inset_0_1px_0_rgb(255_255_255/.06),0_40px_80px_-40px_rgb(0_0_0/.9)]">
-        {/* Atmosphere */}
+      <section className="card relative overflow-hidden" data-no-tilt>
+        {/* Atmosphere — a single soft light, no ornament */}
         <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="absolute -right-20 -top-32 h-[420px] w-[420px] rounded-full bg-[radial-gradient(closest-side,rgb(32_200_120/.3),transparent)] motion-safe:animate-[ps-float_9s_ease-in-out_infinite]" />
-          <div className="absolute -bottom-40 left-1/3 h-[360px] w-[360px] rounded-full bg-[radial-gradient(closest-side,rgb(182_243_106/.08),transparent)]" />
-          <svg className="absolute inset-0 h-full w-full opacity-[.18]" aria-hidden>
-            <defs>
-              <pattern id="hero-dots" width="22" height="22" patternUnits="userSpaceOnUse">
-                <circle cx="1" cy="1" r="1" fill="#91A49A" />
-              </pattern>
-              <radialGradient id="hero-dots-mask-g" cx="80%" cy="20%" r="70%">
-                <stop offset="0" stopColor="#fff" />
-                <stop offset="1" stopColor="#fff" stopOpacity="0" />
-              </radialGradient>
-              <mask id="hero-dots-mask"><rect width="100%" height="100%" fill="url(#hero-dots-mask-g)" /></mask>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#hero-dots)" mask="url(#hero-dots-mask)" />
-          </svg>
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
+          <div className="absolute -right-24 -top-40 h-[420px] w-[420px] rounded-full bg-[radial-gradient(closest-side,rgb(61_126_255/.28),transparent)]" />
         </div>
 
-        <div className="relative grid items-center gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)] lg:gap-10 lg:p-10">
+        <div className="relative grid items-center gap-8 py-6 sm:py-8 lg:grid-cols-[minmax(0,1fr)_minmax(260px,340px)] lg:gap-10 lg:py-10">
           <div className="min-w-0">
             <div className="kicker">Control room · Neon Postgres connected</div>
-            <h1 className="mt-3 font-display text-[clamp(28px,3.6vw,42px)] font-semibold leading-[1.08] tracking-[-0.02em]">
-              <span className="text-fg">{greeting}{firstName ? "," : ""}</span>{" "}
+            <h1 className="mt-4 text-[clamp(28px,3.2vw,42px)] font-medium leading-[1.1] tracking-[-0.03em] text-fg">
+              {greeting}{firstName ? ", " : " "}
               {firstName ? (
-                <span className="bg-gradient-to-r from-volt via-accent to-cyan bg-clip-text text-transparent">{firstName}</span>
+                <span className="serif-accent text-[1.08em]">{firstName}</span>
               ) : (
                 <span className="skeleton inline-block h-8 w-32 align-middle" />
               )}
@@ -241,8 +226,8 @@ export default function Dashboard() {
               <div className="text-[12.5px] font-medium text-fg-muted">Total payment volume</div>
               <div className="text-[11px] text-fg-subtle">Captured · {a.currency}</div>
             </div>
-            <span className="grid h-9 w-9 place-items-center rounded-[10px] border border-accent/20 bg-accent/10 text-accent shadow-[0_0_20px_-6px_rgb(32_200_120/.6)]">
-              <Activity size={17} />
+            <span className="text-fg-muted">
+              <Activity size={18} />
             </span>
           </div>
           {loading ? (
@@ -387,7 +372,7 @@ export default function Dashboard() {
           ].map(([n, t, d]) => (
             <div key={n} className="card p-5">
               <div className="flex items-center gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-[10px] border border-accent/20 bg-accent/10 font-mono text-[12px] font-semibold text-accent">{n}</span>
+                <span className="font-mono text-[12px] font-medium text-fg-subtle">{n}</span>
                 <span className="h-px flex-1 bg-gradient-to-r from-accent/30 to-transparent" aria-hidden />
               </div>
               <h3 className="mt-4 text-[13.5px] font-semibold text-fg">{t}</h3>
@@ -397,7 +382,7 @@ export default function Dashboard() {
 
           <div className="card p-5">
             <div className="flex items-center gap-2">
-              <span className="grid h-8 w-8 place-items-center rounded-[10px] border border-success/25 bg-success/10 text-success">
+              <span className="text-success">
                 <ShieldCheck size={16} />
               </span>
               <h3 className="text-[13.5px] font-semibold text-fg">Security posture</h3>

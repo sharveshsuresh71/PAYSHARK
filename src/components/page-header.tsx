@@ -18,20 +18,19 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={cn("relative flex flex-wrap items-end justify-between gap-x-6 gap-y-4 pb-2", className)}>
+    <header className={cn("relative flex flex-wrap items-end justify-between gap-x-5 gap-y-3 pb-1", className)}>
       <div className="min-w-0 max-w-3xl">
         {kicker && (
           <div className="kicker flex items-center gap-2">
-            <span className="h-px w-5 bg-accent/70" aria-hidden />
             {kicker}
           </div>
         )}
-        <h1 className="mt-2.5 font-display text-[clamp(26px,3.2vw,38px)] font-semibold leading-[1.08] tracking-[-0.025em] text-fg">
+        <h1 className="mt-3 text-[clamp(26px,2.8vw,36px)] font-medium leading-[1.12] tracking-[-0.03em] text-fg">
           {title}
         </h1>
-        {description && <p className="mt-2.5 text-[14px] leading-[1.65] text-fg-muted">{description}</p>}
+        {description && <p className="mt-2 max-w-2xl text-[14px] leading-[1.65] text-fg-muted">{description}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2.5">{actions}</div>}
+      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </header>
   );
 }
@@ -39,9 +38,9 @@ export function PageHeader({
 /** Compact stat used in page header strips. */
 export function HeaderStat({ label, value, tone }: { label: string; value: React.ReactNode; tone?: string }) {
   return (
-    <div className="min-w-[110px] rounded-[12px] border border-white/[0.07] bg-surface/60 px-3.5 py-2.5">
-      <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">{label}</div>
-      <div className={cn("mt-0.5 font-display text-lg font-semibold tabular-nums text-fg", tone)}>{value}</div>
+    <div className="min-w-[110px] border-l border-white/[0.08] pl-4">
+      <div className="text-[11px] font-medium uppercase tracking-[0.1em] text-fg-subtle">{label}</div>
+      <div className={cn("mt-0.5 text-xl font-medium tabular-nums text-fg", tone)}>{value}</div>
     </div>
   );
 }
@@ -62,7 +61,7 @@ export function EmptyState({
     <div className="card flex flex-col items-center px-6 py-14 text-center" data-no-tilt>
       <div className="relative">
         <div className="absolute inset-0 -z-10 scale-150 rounded-full bg-accent/10 blur-2xl" aria-hidden />
-        <span className="grid h-14 w-14 place-items-center rounded-[16px] border border-white/[0.09] bg-[linear-gradient(160deg,rgb(18_61_40/.6),rgb(21_31_25/.9))] text-accent shadow-[inset_0_1px_0_rgb(255_255_255/.08),0_16px_32px_-16px_rgb(0_0_0/.9)] [transform:perspective(300px)_rotateX(12deg)]">
+        <span className="grid h-14 w-14 place-items-center rounded-[16px] border border-white/[0.09] bg-[linear-gradient(160deg,rgb(30_46_72/.6),rgb(19_29_46/.9))] text-accent shadow-[inset_0_1px_0_rgb(255_255_255/.08),0_16px_32px_-16px_rgb(0_0_0/.9)] [transform:perspective(300px)_rotateX(12deg)]">
           {icon}
         </span>
       </div>

@@ -82,6 +82,13 @@ npx vitest run
 
 ---
 
+## 🔐 Security maintenance
+
+- Next.js is pinned to `15.5.29`, the patched 15.x maintenance release for the November 3, 2026 advisories.
+- `eslint-config-next` is pinned to the matching version.
+- After cloning this updated source, run `npm install` (or `pnpm install`) once to generate a fresh lockfile, then commit that lockfile.
+- Run `npm audit` and `npm run typecheck` before deploying.
+
 ## 📦 Quick Start
 
 1. Install dependencies:

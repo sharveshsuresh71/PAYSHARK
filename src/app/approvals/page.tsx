@@ -123,7 +123,7 @@ export default function Approvals() {
         {loading ? (
           <div className="space-y-4" aria-busy="true">
             {[0, 1, 2].map(i => (
-              <div key={i} className="skeleton h-[150px] rounded-[18px]" />
+              <div key={i} className="skeleton h-[150px] rounded-[16px]" />
             ))}
             <p className="sr-only">Loading requests...</p>
           </div>

@@ -48,21 +48,21 @@ export function PaymentCard({
           ref={ref}
           role="img"
           aria-label={`PAYSHARK policy-controlled virtual card for ${holder || "your workspace"}. Card credentials are never displayed.`}
-          className="group/card relative aspect-[1.586/1] w-full rounded-[18px] p-px transition-transform duration-500 ease-out [transform-style:preserve-3d] data-[active=true]:duration-100"
+          className="group/card relative aspect-[1.586/1] w-full rounded-[16px] p-px transition-transform duration-500 ease-out [transform-style:preserve-3d] data-[active=true]:duration-100"
           style={{
             transform: "rotateX(var(--crx, 6deg)) rotateY(var(--cry, -10deg))",
-            background: "linear-gradient(135deg,#E9FFD0 0%,#3FA36F 20%,#0B1F15 46%,#20C878 72%,#36D9F5 100%)",
-            boxShadow: "0 40px 70px -30px rgba(0,0,0,.95), 0 20px 40px -24px rgba(32,200,120,.4)"
+            background: "linear-gradient(135deg,#E6F1FF 0%,#4F8FD8 20%,#0B111C 46%,#3496FF 72%,#36D9F5 100%)",
+            boxShadow: "0 40px 70px -30px rgba(0,0,0,.95), 0 20px 40px -24px rgba(52,150,255,.4)"
           }}
         >
           {/* Card body */}
-          <div className="relative h-full w-full overflow-hidden rounded-[17px] bg-[radial-gradient(120%_90%_at_100%_0%,#1B5A3A_0%,#0F2A1D_45%,#080C0B_100%)] [transform-style:preserve-3d]">
+          <div className="relative h-full w-full overflow-hidden rounded-[16px] bg-[radial-gradient(120%_90%_at_100%_0%,#1E2E48_0%,#131D2E_45%,#0B111C_100%)] [transform-style:preserve-3d]">
             {/* Contour lines */}
             <svg className="absolute inset-0 h-full w-full opacity-[.35]" viewBox="0 0 400 252" preserveAspectRatio="none" aria-hidden>
               <defs>
                 <linearGradient id="ps-card-line" x1="0" x2="1">
-                  <stop offset="0" stopColor="#20C878" stopOpacity="0" />
-                  <stop offset=".5" stopColor="#20C878" stopOpacity=".7" />
+                  <stop offset="0" stopColor="#3496FF" stopOpacity="0" />
+                  <stop offset=".5" stopColor="#3496FF" stopOpacity=".7" />
                   <stop offset="1" stopColor="#36D9F5" stopOpacity="0" />
                 </linearGradient>
               </defs>
@@ -89,7 +89,7 @@ export function PaymentCard({
             <div className="relative flex h-full flex-col justify-between p-[7%] [transform:translateZ(30px)]">
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="bg-gradient-to-r from-white to-[#B6F36A] bg-clip-text font-display text-[clamp(13px,1.4vw,17px)] font-semibold tracking-[0.22em] text-transparent">
+                  <div className="bg-gradient-to-r from-white to-[#60D6FF] bg-clip-text font-display text-[clamp(13px,1.4vw,17px)] font-semibold tracking-[0.22em] text-transparent">
                     PAYSHARK
                   </div>
                   <div className="mt-0.5 text-[9.5px] font-medium uppercase tracking-[0.2em] text-[#91A49A]">Agent spend · Virtual</div>
@@ -101,13 +101,13 @@ export function PaymentCard({
 
               <div className="flex items-center gap-3">
                 {/* Chip */}
-                <span className="relative h-[30px] w-[40px] overflow-hidden rounded-[6px] bg-[linear-gradient(135deg,#E6F7FF,#7FA9D6_40%,#C9E7FF_60%,#5B7FAD)] shadow-[inset_0_0_0_1px_rgba(255,255,255,.35),0_2px_4px_rgba(0,0,0,.4)]" aria-hidden>
+                <span className="relative h-[30px] w-[40px] overflow-hidden rounded-[16px] bg-[linear-gradient(135deg,#E6F7FF,#7FA9D6_40%,#C9E7FF_60%,#5B7FAD)] shadow-[inset_0_0_0_1px_rgba(255,255,255,.35),0_2px_4px_rgba(0,0,0,.4)]" aria-hidden>
                   <span className="absolute inset-y-[6px] left-1/2 w-px bg-[#2A4A78]/60" />
                   <span className="absolute inset-x-[5px] top-1/2 h-px bg-[#2A4A78]/60" />
                   <span className="absolute inset-[9px] rounded-[3px] border border-[#2A4A78]/50" />
                 </span>
                 {/* Contactless */}
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B6F36A" strokeWidth="1.6" strokeLinecap="round" aria-hidden className="opacity-80">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60D6FF" strokeWidth="1.6" strokeLinecap="round" aria-hidden className="opacity-80">
                   <path d="M8.5 8.5a5 5 0 0 1 0 7" /><path d="M12 6a8.5 8.5 0 0 1 0 12" /><path d="M15.5 3.5a12 12 0 0 1 0 17" />
                 </svg>
               </div>
@@ -125,7 +125,7 @@ export function PaymentCard({
                 </div>
                 <div className="shrink-0 text-right">
                   <div className="text-[8.5px] uppercase tracking-[0.18em] text-[#91A49A]">{role || "role"}</div>
-                  <div className="text-[12.5px] font-medium text-[#20C878]">
+                  <div className="text-[12.5px] font-medium text-[#3496FF]">
                     {activePolicies === null ? "—" : `${activePolicies} ${activePolicies === 1 ? "policy" : "policies"}`}
                   </div>
                 </div>
@@ -135,7 +135,7 @@ export function PaymentCard({
         </div>
       </div>
       {/* Ground shadow */}
-      <div className="mx-auto mt-4 h-4 w-[78%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(32,200,120,.3),transparent)] blur-md" aria-hidden />
+      <div className="mx-auto mt-4 h-4 w-[78%] rounded-[50%] bg-[radial-gradient(closest-side,rgba(52,150,255,.3),transparent)] blur-md" aria-hidden />
     </div>
   );
 }

@@ -39,7 +39,7 @@ export function PaymentNetwork({ rows, agents, currency }: { rows: PaymentReques
     return { x: CX + Math.cos(t) * rx, y: CY + Math.sin(t) * ry, depth: (Math.sin(t) + 1) / 2 };
   };
   const tone = (e: { captured: number; blocked: number; pending: number }) =>
-    e.blocked >= e.captured && e.blocked >= e.pending ? "#FF6363" : e.captured >= e.pending ? "#20C878" : "#F5BE50";
+    e.blocked >= e.captured && e.blocked >= e.pending ? "#FF6363" : e.captured >= e.pending ? "#3496FF" : "#F5BE50";
   const maxCount = Math.max(1, ...merchants.map(m => m.count));
   const hovered = merchants.find(m => m.name === hover);
 
@@ -60,19 +60,19 @@ export function PaymentNetwork({ rows, agents, currency }: { rows: PaymentReques
       <svg viewBox={`0 0 ${W} ${H}`} className="h-auto w-full" role="img" aria-label={`Payment network: ${agentNodes.length} agents and ${merchants.length} merchants connected through PAYSHARK.`}>
         <defs>
           <radialGradient id="net-core" cx="50%" cy="40%" r="60%">
-            <stop offset="0" stopColor="#C8F78A" />
-            <stop offset=".45" stopColor="#20C878" />
-            <stop offset="1" stopColor="#0B3D25" />
+            <stop offset="0" stopColor="#E6F1FF" />
+            <stop offset=".45" stopColor="#3496FF" />
+            <stop offset="1" stopColor="#1E2E48" />
           </radialGradient>
           <radialGradient id="net-halo" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stopColor="#20C878" stopOpacity=".28" />
-            <stop offset="1" stopColor="#20C878" stopOpacity="0" />
+            <stop offset="0" stopColor="#3496FF" stopOpacity=".28" />
+            <stop offset="1" stopColor="#3496FF" stopOpacity="0" />
           </radialGradient>
         </defs>
 
         {/* Orbital rings (perspective ellipses) */}
         {[{ rx: 240, ry: 112 }, { rx: 140, ry: 64 }].map((o, i) => (
-          <ellipse key={i} cx={CX} cy={CY} rx={o.rx} ry={o.ry} fill="none" stroke="rgb(150 220 170 / .12)" strokeDasharray={i ? "2 6" : "0"} />
+          <ellipse key={i} cx={CX} cy={CY} rx={o.rx} ry={o.ry} fill="none" stroke="rgb(170 196 232 / .12)" strokeDasharray={i ? "2 6" : "0"} />
         ))}
         <circle cx={CX} cy={CY} r="70" fill="url(#net-halo)" />
 
@@ -223,7 +223,7 @@ export function RecentActivity({ logs, loading }: { logs: AuditLite[]; loading: 
       <ol className="relative space-y-3.5 before:absolute before:bottom-1 before:left-[7px] before:top-1 before:w-px before:bg-gradient-to-b before:from-accent/40 before:to-transparent">
         {logs.slice(0, 6).map((l, i) => (
           <li key={l.id} className="relative flex gap-3 pl-0">
-            <span className={cn("relative z-[1] mt-1 h-[15px] w-[15px] shrink-0 rounded-full border-2 border-canvas", i === 0 ? "bg-accent shadow-[0_0_10px_rgb(32_200_120/.8)]" : "bg-slate-700")} />
+            <span className={cn("relative z-[1] mt-1 h-[15px] w-[15px] shrink-0 rounded-full border-2 border-canvas", i === 0 ? "bg-accent shadow-[0_0_10px_rgb(52_150_255/.8)]" : "bg-slate-700")} />
             <div className="min-w-0 flex-1">
               <div className="truncate text-[12.5px] font-medium text-fg">{l.action.replace(/_/g, " ").toLowerCase().replace(/^\w/, c => c.toUpperCase())}</div>
               <div className="text-[11px] text-fg-subtle">{l.entity_type}</div>

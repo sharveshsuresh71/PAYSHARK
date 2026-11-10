@@ -58,7 +58,7 @@ function StatusTimeline({ r }: { r: PaymentRequest }) {
     );
   }
   const dot = {
-    done: "bg-accent border-accent shadow-[0_0_10px_rgb(32_200_120/.7)]",
+    done: "bg-accent border-accent shadow-[0_0_10px_rgb(52_150_255/.7)]",
     current: "bg-canvas border-warning",
     todo: "bg-canvas border-slate-700",
     fail: "bg-danger border-danger shadow-[0_0_10px_rgb(255_99_99/.6)]"
@@ -240,7 +240,7 @@ function DetailDrawer({ r, onClose }: { r: PaymentRequest; onClose: () => void }
 
         <div className="min-h-0 flex-1 space-y-5 overflow-y-auto p-5">
           {/* Hero amount */}
-          <div className="relative overflow-hidden rounded-[14px] border border-white/[0.08] bg-[radial-gradient(120%_120%_at_100%_0%,rgb(32_200_120/.16),transparent_60%)] p-5">
+          <div className="relative overflow-hidden rounded-[12px] border border-white/[0.08] bg-[radial-gradient(120%_120%_at_100%_0%,rgb(52_150_255/.16),transparent_60%)] p-5">
             <StatusPill r={r} />
             <div className="mt-3 font-display text-[32px] font-semibold leading-none tracking-tight tabular-nums text-fg">
               {formatMoney(amountOf(r), r.currency)}
@@ -263,7 +263,7 @@ function DetailDrawer({ r, onClose }: { r: PaymentRequest; onClose: () => void }
             <div className="well p-3">
               <div className="text-[10.5px] uppercase tracking-[0.1em] text-fg-subtle">Method</div>
               <div className="mt-1 flex items-center gap-1.5 text-[12.5px] font-medium text-fg">
-                <span className="grid h-4 w-6 place-items-center rounded-[3px] bg-[linear-gradient(135deg,#B6F36A,#20C878)] text-[7px] font-bold text-accent-fg">PP</span>
+                <span className="grid h-4 w-6 place-items-center rounded-[3px] bg-[linear-gradient(135deg,#60D6FF,#3496FF)] text-[7px] font-bold text-accent-fg">PP</span>
                 PayPal Sandbox
               </div>
               <div className="text-[10.5px] text-fg-subtle">{r.agent_id ? "Agent-initiated" : "UI-initiated"}</div>
@@ -406,7 +406,7 @@ export function TransactionsPanel({ rows, loading, pageSize = 8 }: { rows: Payme
           <p className="text-[12px] text-fg-subtle">Agent payment requests evaluated by the policy engine</p>
         </div>
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
-          <div role="group" aria-label="Filter by status" className="flex rounded-[10px] border border-white/[0.07] bg-canvas/50 p-0.5">
+          <div role="group" aria-label="Filter by status" className="flex rounded-[4px] border border-white/[0.07] bg-canvas/50 p-0.5">
             {filters.map(f => (
               <button
                 key={f.key}
@@ -470,7 +470,7 @@ export function TransactionsPanel({ rows, loading, pageSize = 8 }: { rows: Payme
               <tr
                 key={r.id}
                 onClick={() => setSelected(r)}
-                className="group cursor-pointer border-b border-white/[0.04] transition-colors last:border-0 hover:bg-[linear-gradient(90deg,rgb(32_200_120/.05),transparent_70%)]"
+                className="group cursor-pointer border-b border-white/[0.04] transition-colors last:border-0 hover:bg-[linear-gradient(90deg,rgb(52_150_255/.05),transparent_70%)]"
               >
                 <td className="max-w-[320px] px-3 py-3 pl-5">
                   <button

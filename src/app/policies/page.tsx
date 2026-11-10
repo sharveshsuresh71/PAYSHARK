@@ -69,7 +69,7 @@ export default function Policies() {
       {loading ? (
         <div className="grid gap-4 mt-8" aria-busy="true" aria-label="Loading policies...">
           {[0, 1, 2].map(i => (
-            <div key={i} className="skeleton h-[132px] rounded-[18px]" />
+            <div key={i} className="skeleton h-[132px] rounded-[16px]" />
           ))}
           <p className="sr-only">Loading policies...</p>
         </div>
