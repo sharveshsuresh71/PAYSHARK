@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { ArrowLeft, ArrowRight, Mail, CheckCircle2, Copy, Sparkles, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { PageHeader } from "@/components/page-header";
 
 export default function NewAgreement() {
   const router = useRouter();
@@ -70,43 +71,43 @@ export default function NewAgreement() {
 
   return (
     <AppShell>
-      <Link href="/agreements" className="text-sm muted flex gap-2 items-center">
+      <Link href="/agreements" className="inline-flex gap-2 items-center text-[13px] text-fg-muted transition hover:text-fg">
         <ArrowLeft size={15} /> Agreements
       </Link>
 
-      <div className="max-w-3xl mt-7">
-        <div className="kicker">NEW AGREEMENT · GLOBAL COUNTERPARTY FLOW</div>
-        <h1 className="text-3xl font-semibold mt-2">Define the deal.</h1>
-        <p className="muted mt-2">
-          Invite the counterparty by verified email. A single-use cryptographic token binds their account upon confirmation.
-        </p>
+      <div className="max-w-3xl mt-6">
+        <PageHeader
+          kicker="NEW AGREEMENT · GLOBAL COUNTERPARTY FLOW"
+          title="Define the deal."
+          description="Invite the counterparty by verified email. A single-use cryptographic token binds their account upon confirmation."
+        />
 
         {invitationData ? (
-          <div className="card p-8 mt-7 border-emerald-500/40 bg-emerald-950/20 space-y-6">
-            <div className="flex items-center gap-3 text-emerald-400">
-              <CheckCircle2 size={28} />
+          <div className="card p-5 sm:p-6 mt-6 border-success/30 bg-success/[0.06] space-y-5">
+            <div className="flex items-start gap-3">
+              <CheckCircle2 size={24} className="text-success shrink-0 mt-0.5" />
               <div>
-                <h2 className="text-xl font-semibold text-white">Agreement Created & AI Analyzed</h2>
-                <p className="text-sm text-emerald-300/80">
+                <h2 className="text-[15px] font-semibold text-fg">Agreement Created & AI Analyzed</h2>
+                <p className="mt-1 text-[13px] text-fg-muted">
                   Status set to PENDING_CONFIRMATION. Both parties must confirm before execution.
                 </p>
               </div>
             </div>
 
-            <div className="bg-[#0a1423] p-4 rounded-xl border border-slate-800 space-y-2">
-              <div className="text-xs kicker">COUNTERPARTY INVITATION LINK</div>
-              <div className="flex gap-2 items-center">
+            <div className="well p-4 space-y-2.5">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Counterparty invitation link</div>
+              <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
                 <input
                   readOnly
-                  className="field text-sm font-mono text-slate-300"
+                  className="field min-w-0 text-[13px] font-mono text-fg"
                   value={invitationData.url}
                 />
-                <button onClick={copyInvite} className="btn btn-secondary flex gap-2 items-center shrink-0">
+                <button onClick={copyInvite} className="btn btn-secondary flex gap-2 items-center justify-center shrink-0">
                   <Copy size={16} /> {copied ? "Copied!" : "Copy Link"}
                 </button>
               </div>
-              <p className="text-xs text-slate-500 mt-2">
-                Sent to: <span className="text-slate-300 font-medium">{email}</span>. The counterparty must authenticate to bind their profile and confirm the version.
+              <p className="text-[12px] leading-relaxed text-fg-subtle">
+                Sent to: <span className="text-fg font-medium break-all">{email}</span>. The counterparty must authenticate to bind their profile and confirm the version.
               </p>
             </div>
 
@@ -120,9 +121,11 @@ export default function NewAgreement() {
             </div>
           </div>
         ) : (
-          <form onSubmit={submit} className="card p-6 md:p-8 mt-7 space-y-5">
-            <label className="block text-sm">
-              Agreement title
+          <form onSubmit={submit} className="card p-5 sm:p-6 mt-6 space-y-5">
+            <h2 className="text-[15px] font-semibold text-fg">Agreement details</h2>
+
+            <label className="block">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Agreement title</span>
               <input
                 required
                 className="field mt-2"
@@ -132,10 +135,10 @@ export default function NewAgreement() {
               />
             </label>
 
-            <label className="block text-sm">
-              Counterparty email (Seller identification)
+            <label className="block">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Counterparty email (Seller identification)</span>
               <div className="relative mt-2">
-                <Mail size={17} className="absolute left-3 top-3.5 text-slate-500" />
+                <Mail size={17} className="absolute left-3 top-3.5 text-fg-subtle" />
                 <input
                   required
                   type="email"
@@ -145,17 +148,17 @@ export default function NewAgreement() {
                   placeholder="seller@example.com"
                 />
               </div>
-              <span className="text-xs muted mt-1.5 block">
+              <span className="text-[12px] leading-relaxed text-fg-subtle mt-1.5 block">
                 Global Best Practice: Counterparty is identified via normalized email with a single-use expiring token. Identity is securely bound to seller_id upon verified authentication.
               </span>
             </label>
 
-            <label className="block text-sm">
-              Agreement text & deliverables
+            <label className="block">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Agreement text & deliverables</span>
               <textarea
                 required
                 rows={9}
-                className="field mt-2 resize-y font-mono text-sm leading-relaxed"
+                className="field mt-2 resize-y font-mono text-[13px] leading-relaxed"
                 value={body}
                 onChange={e => setBody(e.target.value)}
                 placeholder="Describe deliverables, payment amount ($250.00 USD), timeline, milestone acceptance criteria, and authorized payment categories..."
@@ -163,14 +166,14 @@ export default function NewAgreement() {
             </label>
 
             {error && (
-              <p className="text-sm text-rose-300 bg-rose-500/10 border border-rose-500/30 p-3 rounded-lg">
+              <p className="text-[13px] text-danger bg-danger/[0.08] border border-danger/30 p-3 rounded-[12px]">
                 {error}
               </p>
             )}
 
-            <div className="flex justify-between items-center pt-2">
-              <div className="text-xs text-slate-500 flex gap-2 items-center">
-                <Sparkles size={14} className="text-[#42d6d0]" />
+            <div className="flex flex-wrap gap-3 justify-between items-center pt-2">
+              <div className="text-[12px] text-fg-subtle flex gap-2 items-center">
+                <Sparkles size={14} className="text-accent" />
                 Terms will be extracted and verified server-side
               </div>
               <button disabled={loading} className="btn btn-primary flex gap-2 items-center">

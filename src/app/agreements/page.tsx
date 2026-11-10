@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { Plus, FileText, ArrowRight, ShieldCheck, Clock, Loader2 } from "lucide-react";
+import { PageHeader, EmptyState } from "@/components/page-header";
 
 export default function Agreements() {
   const [agreements, setAgreements] = useState<any[]>([]);
@@ -29,27 +30,31 @@ export default function Agreements() {
 
   return (
     <AppShell>
-      <div className="flex justify-between items-center">
-        <div>
-          <div className="kicker">CONTRACT LAYER · MUTUAL TRUST</div>
-          <h1 className="text-3xl font-semibold mt-2">Agreements</h1>
-          <p className="muted mt-2">Turn written commitments into machine-checkable boundaries.</p>
-        </div>
-        <Link href="/agreements/new" className="btn btn-primary flex gap-2 items-center">
-          <Plus size={16} /> Create agreement
-        </Link>
-      </div>
+      <PageHeader
+        kicker="CONTRACT LAYER · MUTUAL TRUST"
+        title="Agreements"
+        description="Turn written commitments into machine-checkable boundaries."
+        actions={
+          <Link href="/agreements/new" className="btn btn-primary flex gap-2 items-center">
+            <Plus size={16} /> Create agreement
+          </Link>
+        }
+      />
 
       {loading ? (
-        <div className="py-20 text-center">
-          <Loader2 className="mx-auto animate-spin text-[#42d6d0]" size={32} />
-          <p className="muted mt-3">Loading agreements...</p>
+        <div className="grid gap-4 mt-8">
+          <span className="sr-only">Loading agreements...</span>
+          <div className="skeleton h-[104px] rounded-[18px]" />
+          <div className="skeleton h-[104px] rounded-[18px]" />
+          <div className="skeleton h-[104px] rounded-[18px]" />
         </div>
       ) : agreements.length === 0 ? (
-        <div className="card mt-8 p-12 text-center">
-          <FileText className="mx-auto text-slate-500" size={30} />
-          <h2 className="font-semibold mt-4">No agreements yet</h2>
-          <p className="muted text-sm mt-2">Create an agreement and invite the counterparty by email.</p>
+        <div className="mt-8">
+          <EmptyState
+            icon={<FileText size={22} />}
+            title="No agreements yet"
+            description="Create an agreement and invite the counterparty by email."
+          />
         </div>
       ) : (
         <div className="grid gap-4 mt-8">
@@ -57,35 +62,29 @@ export default function Agreements() {
             <Link
               key={a.id}
               href={`/agreements/${a.id}`}
-              className="card p-6 hover:border-[#42d6d0]/50 transition flex flex-wrap justify-between items-center gap-4"
+              className="card group p-5 sm:p-6 transition hover:border-accent/30 flex flex-wrap justify-between items-center gap-4"
             >
-              <div className="space-y-1">
+              <div className="min-w-0 space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
-                      a.status === "ACTIVE"
-                        ? "bg-emerald-400/10 text-emerald-300 border border-emerald-400/30"
-                        : "bg-amber-400/10 text-amber-300 border border-amber-400/30"
-                    }`}
-                  >
+                  <span className={`pill ${a.status === "ACTIVE" ? "text-success" : "text-warning"}`}>
                     {a.status}
                   </span>
-                  <span className="text-xs text-slate-500 font-mono">v{a.current_version}</span>
+                  <span className="text-[11px] text-fg-subtle font-mono tabular-nums">v{a.current_version}</span>
                 </div>
-                <h3 className="font-semibold text-lg text-white">{a.title}</h3>
-                <p className="text-xs text-slate-400">
-                  Counterparty: <span className="text-slate-300">{a.counterparty_email}</span>
+                <h3 className="text-[15px] font-semibold text-fg break-words">{a.title}</h3>
+                <p className="text-[13px] text-fg-muted break-all">
+                  Counterparty: <span className="text-fg">{a.counterparty_email}</span>
                 </p>
               </div>
 
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-5">
                 <div className="text-right">
-                  <div className="text-xs muted">AUTHORIZED CEILING</div>
-                  <div className="text-xl font-bold text-[#42d6d0]">
+                  <div className="text-[11px] font-semibold uppercase tracking-[0.12em] text-fg-subtle">Authorized ceiling</div>
+                  <div className="mt-0.5 font-display text-xl font-semibold tabular-nums text-accent">
                     {a.amount || "—"} {a.currency || "USD"}
                   </div>
                 </div>
-                <div className="h-9 w-9 rounded-full bg-slate-800 grid place-items-center text-slate-400">
+                <div className="h-9 w-9 rounded-full border border-white/[0.07] bg-surface grid place-items-center text-fg-muted transition group-hover:text-accent group-hover:border-accent/30">
                   <ArrowRight size={17} />
                 </div>
               </div>
