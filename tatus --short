@@ -1,0 +1,92 @@
+ .gitignore                                         |    5 [32m+[m
+ .next/app-build-manifest.json                      |   45 [31m-[m
+ .next/build-manifest.json                          |   20 [31m-[m
+ .next/cache/.rscinfo                               |    1 [31m-[m
+ .next/cache/webpack/client-development/0.pack.gz   |  Bin [31m44303[m -> [32m0[m bytes
+ .next/cache/webpack/client-development/1.pack.gz   |  Bin [31m9462441[m -> [32m0[m bytes
+ .next/cache/webpack/client-development/2.pack.gz   |  Bin [31m473328[m -> [32m0[m bytes
+ .next/cache/webpack/client-development/3.pack.gz   |  Bin [31m48728[m -> [32m0[m bytes
+ .../cache/webpack/client-development/index.pack.gz |  Bin [31m132126[m -> [32m0[m bytes
+ .../webpack/client-development/index.pack.gz.old   |  Bin [31m123567[m -> [32m0[m bytes
+ .../webpack/edge-server-development/0.pack.gz      |  Bin [31m1269994[m -> [32m0[m bytes
+ .../webpack/edge-server-development/index.pack.gz  |  Bin [31m25652[m -> [32m0[m bytes
+ .../edge-server-development/index.pack.gz.old      |  Bin [31m24056[m -> [32m0[m bytes
+ .next/cache/webpack/server-development/0.pack.gz   |  Bin [31m1964041[m -> [32m0[m bytes
+ .next/cache/webpack/server-development/1.pack.gz   |  Bin [31m2431252[m -> [32m0[m bytes
+ .next/cache/webpack/server-development/2.pack.gz   |  Bin [31m3847656[m -> [32m0[m bytes
+ .../cache/webpack/server-development/index.pack.gz |  Bin [31m168093[m -> [32m0[m bytes
+ .../webpack/server-development/index.pack.gz.old   |  Bin [31m131245[m -> [32m0[m bytes
+ .next/package.json                                 |    1 [31m-[m
+ .next/react-loadable-manifest.json                 |    8 [31m-[m
+ .next/server/app-paths-manifest.json               |    9 [31m-[m
+ .next/server/app/api/agents/route.js               |  188 [31m--[m
+ .../api/agents/route_client-reference-manifest.js  |    1 [31m-[m
+ .next/server/app/api/agreements/route.js           |  199 [31m--[m
+ .../agreements/route_client-reference-manifest.js  |    1 [31m-[m
+ .next/server/app/api/audit/route.js                |  177 [31m--[m
+ .../api/audit/route_client-reference-manifest.js   |    1 [31m-[m
+ .next/server/app/api/auth/session/route.js         |  188 [31m--[m
+ .../session/route_client-reference-manifest.js     |    1 [31m-[m
+ .next/server/app/api/policies/route.js             |  199 [31m--[m
+ .../policies/route_client-reference-manifest.js    |    1 [31m-[m
+ .next/server/app/dashboard/page.js                 |  240 [31m--[m
+ .../dashboard/page_client-reference-manifest.js    |    1 [31m-[m
+ .next/server/app/page.js                           |  195 [31m--[m
+ .next/server/app/page_client-reference-manifest.js |    1 [31m-[m
+ .next/server/edge-runtime-webpack.js               | 1151 [31m-------[m
+ .../server/interception-route-rewrite-manifest.js  |    1 [31m-[m
+ .next/server/middleware-build-manifest.js          |   22 [31m-[m
+ .next/server/middleware-manifest.json              |   29 [31m-[m
+ .next/server/middleware-react-loadable-manifest.js |    1 [31m-[m
+ .next/server/next-font-manifest.js                 |    1 [31m-[m
+ .next/server/next-font-manifest.json               |    1 [31m-[m
+ .next/server/pages-manifest.json                   |    1 [31m-[m
+ .next/server/server-reference-manifest.js          |    1 [31m-[m
+ .next/server/server-reference-manifest.json        |    5 [31m-[m
+ .next/server/src/middleware.js                     |  937 [31m------[m
+ .../webpack/633457081244afec._.hot-update.json     |    1 [31m-[m
+ .next/server/vendor-chunks/@neondatabase.js        |   25 [31m-[m
+ .next/server/vendor-chunks/@swc.js                 |   55 [31m-[m
+ .next/server/vendor-chunks/lucide-react.js         |  225 [31m--[m
+ .next/server/vendor-chunks/next.js                 | 3180 [31m--------------------[m
+ .next/server/vendor-chunks/zod.js                  |   85 [31m-[m
+ .next/server/webpack-runtime.js                    |  220 [31m--[m
+ ...s_next_dist_client_dev_noop-turbopack-hmr_js.js |   22 [31m-[m
+ .next/static/chunks/app-pages-internals.js         |  226 [31m--[m
+ .next/static/chunks/app/api/agents/route.js        |   28 [31m-[m
+ .next/static/chunks/app/api/agreements/route.js    |   28 [31m-[m
+ .next/static/chunks/app/api/audit/route.js         |   28 [31m-[m
+ .next/static/chunks/app/api/auth/session/route.js  |   28 [31m-[m
+ .next/static/chunks/app/api/policies/route.js      |   28 [31m-[m
+ .next/static/chunks/app/dashboard/page.js          |  325 [31m--[m
+ .next/static/chunks/app/layout.js                  |   39 [31m-[m
+ .next/static/chunks/app/page.js                    |  105 [31m-[m
+ .next/static/chunks/main-app.js                    | 2486 [31m---------------[m
+ .next/static/chunks/polyfills.js                   |    1 [31m-[m
+ .next/static/chunks/webpack.js                     | 1411 [31m---------[m
+ .next/static/css/app/layout.css                    | 1248 [31m--------[m
+ .next/static/development/_buildManifest.js         |    1 [31m-[m
+ .next/static/development/_ssgManifest.js           |    1 [31m-[m
+ .../2889c34d47c7b2be.webpack.hot-update.json       |    1 [31m-[m
+ .../webpack/633457081244afec._.hot-update.json     |    1 [31m-[m
+ .../6f614dc0da016720.webpack.hot-update.json       |    1 [31m-[m
+ .../app/layout.b0cd3c625bdd5cd7.hot-update.js      |   22 [31m-[m
+ .../b0cd3c625bdd5cd7.webpack.hot-update.json       |    1 [31m-[m
+ .../webpack/webpack.2889c34d47c7b2be.hot-update.js |   18 [31m-[m
+ .../webpack/webpack.6f614dc0da016720.hot-update.js |   18 [31m-[m
+ .../webpack/webpack.b0cd3c625bdd5cd7.hot-update.js |   30 [31m-[m
+ .next/trace                                        |    1 [31m-[m
+ .next/types/app/api/agents/route.ts                |  347 [31m---[m
+ .next/types/app/api/agreements/route.ts            |  347 [31m---[m
+ .next/types/app/api/audit/route.ts                 |  347 [31m---[m
+ .next/types/app/api/auth/session/route.ts          |  347 [31m---[m
+ .next/types/app/api/policies/route.ts              |  347 [31m---[m
+ .next/types/app/dashboard/page.ts                  |   84 [31m-[m
+ .next/types/app/layout.ts                          |   84 [31m-[m
+ .next/types/app/page.ts                            |   84 [31m-[m
+ .next/types/cache-life.d.ts                        |  141 [31m-[m
+ .next/types/package.json                           |    1 [31m-[m
+ next-env.d.ts                                      |    1 [32m+[m
+ pnpm-lock.yaml                                     | 1142 [32m++++++[m[31m-[m
+ tsconfig.tsbuildinfo                               |    1 [31m-[m
+ 91 files changed, 1141 insertions(+), 15653 deletions(-)
