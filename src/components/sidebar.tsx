@@ -166,7 +166,7 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
                       <span
                         className={cn(
                           "grid h-7 w-7 shrink-0 place-items-center rounded-[8px] transition-colors duration-300",
-                          active ? "bg-white text-black" : "text-fg-subtle group-hover/item:text-fg-muted"
+                          active ? "bg-accent text-white shadow-[0_6px_16px_-6px_rgb(59_130_246/.8)]" : "text-fg-subtle group-hover/item:text-fg-muted"
                         )}
                       >
                         <Icon size={16} strokeWidth={1.9} />

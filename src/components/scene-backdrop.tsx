@@ -81,15 +81,15 @@ vec3 calcNormal(vec3 p) {
   ));
 }
 
-// dark photo studio: soft overhead box, cool key light, white rim, faint floor bounce
+// navy studio: soft overhead box, blue key light, white rim, faint blue floor bounce
 vec3 env(vec3 r) {
   float y = r.y * 0.5 + 0.5;
-  vec3 col = mix(vec3(0.012), vec3(0.07, 0.072, 0.085), y);
-  col += vec3(1.0) * smoothstep(0.86, 1.0, r.y) * 1.1;
-  col += vec3(0.78, 0.84, 1.0) * pow(max(0.0, dot(r, normalize(vec3(-0.8, 0.35, 0.5)))), 18.0) * 1.4;
-  col += vec3(0.95) * pow(max(0.0, dot(r, normalize(vec3(0.9, 0.15, 0.2)))), 36.0) * 1.0;
-  col += vec3(0.55) * smoothstep(0.05, 0.0, abs(r.y - 0.12)) * 0.35;
-  col += vec3(0.08) * smoothstep(-0.2, -1.0, r.y);
+  vec3 col = mix(vec3(0.02, 0.04, 0.09), vec3(0.08, 0.13, 0.26), y);
+  col += vec3(0.92, 0.96, 1.0) * smoothstep(0.86, 1.0, r.y) * 1.05;
+  col += vec3(0.35, 0.58, 1.0) * pow(max(0.0, dot(r, normalize(vec3(-0.8, 0.35, 0.5)))), 14.0) * 1.6;
+  col += vec3(0.9, 0.94, 1.0) * pow(max(0.0, dot(r, normalize(vec3(0.9, 0.15, 0.2)))), 36.0) * 1.0;
+  col += vec3(0.4, 0.55, 0.9) * smoothstep(0.05, 0.0, abs(r.y - 0.12)) * 0.35;
+  col += vec3(0.05, 0.1, 0.25) * smoothstep(-0.2, -1.0, r.y);
   return col;
 }
 
@@ -97,9 +97,10 @@ void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
   vec2 q = uv - uShift;
 
-  // backdrop: near-black with a soft halo behind the cluster
-  vec3 col = vec3(0.006) + vec3(0.07, 0.072, 0.08) * exp(-dot(q, q) * 3.2);
-  col += vec3(0.05) * smoothstep(0.9, 0.0, abs(uv.x)) * smoothstep(0.6, -0.2, uv.y) * 0.4;
+  // backdrop: midnight-navy gradient with a blue halo behind the cluster
+  vec3 col = mix(vec3(0.02, 0.04, 0.10), vec3(0.05, 0.10, 0.21), smoothstep(-0.6, 0.6, uv.y));
+  col += vec3(0.12, 0.28, 0.65) * exp(-dot(q, q) * 2.6) * 0.55;
+  col += vec3(0.05, 0.12, 0.32) * exp(-dot(uv + vec2(0.6, 0.5), uv + vec2(0.6, 0.5)) * 2.0) * 0.6;
 
   vec3 ro = vec3(0.0, 0.0, 6.5);
   vec3 rd = normalize(vec3(q, -1.9));
@@ -120,7 +121,7 @@ void main() {
     float fres = pow(1.0 - max(0.0, dot(n, -rd)), 3.0);
     float ao = clamp(map(p + n * 0.25) / 0.25, 0.0, 1.0);
     vec3 metal = env(r) * mix(0.55, 1.15, fres) * (0.55 + 0.45 * ao);
-    col = metal + vec3(0.015);
+    col = metal + vec3(0.01, 0.02, 0.05);
   }
 
   // tone + vignette

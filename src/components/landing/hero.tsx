@@ -169,10 +169,10 @@ export function LandingHero() {
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <MagneticLink
                 href="/dashboard"
-                className="group inline-flex h-[48px] items-center gap-3 rounded-full bg-accent pl-6 pr-1.5 text-[14px] font-medium text-accent-fg shadow-[0_18px_40px_-14px_rgb(255_255_255/.35)] hover:bg-accent-hover"
+                className="group inline-flex h-[48px] items-center gap-3 rounded-full bg-accent pl-6 pr-1.5 text-[14px] font-medium text-accent-fg shadow-[0_18px_40px_-14px_rgb(59_130_246/.8)] hover:bg-accent-hover"
               >
                 Get started
-                <span className="grid h-9 w-9 place-items-center rounded-full bg-black/10 text-black transition-transform duration-300 group-hover:-rotate-45">
+                <span className="grid h-9 w-9 place-items-center rounded-full bg-white/15 text-white transition-transform duration-300 group-hover:-rotate-45">
                   <ArrowRight size={17} />
                 </span>
               </MagneticLink>
