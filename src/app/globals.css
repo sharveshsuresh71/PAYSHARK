@@ -725,6 +725,27 @@ html[data-effects="reduced"] .popover { -webkit-backdrop-filter: none; backdrop-
 .scene-guides span { border-left: 1px dashed rgb(255 255 255 / .05); }
 .scene-guides span:first-child { border-left: 0; }
 .scene-canvas { opacity: 1; }
+/* Live WebGL layer (liquid chrome), rendered at reduced resolution and scaled up */
+.scene-gl {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.scene-gl[data-ready="true"] { opacity: 1; }
+/* Keeps text readable: darker where content sits (left / top), open on the right where the 3D lives */
+.scene-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / .55) 0%, rgb(0 0 0 / .3) 45%, rgb(0 0 0 / .05) 75%, transparent 100%),
+    linear-gradient(180deg, rgb(0 0 0 / .25) 0%, transparent 25%);
+}
+@media (max-width: 767px) {
+  .scene-veil { background: linear-gradient(180deg, transparent 0%, rgb(0 0 0 / .45) 45%, rgb(0 0 0 / .6) 100%); }
+}
 /* soft vertical light shaft down the middle of the valley */
 .scene-beam {
   position: absolute;
