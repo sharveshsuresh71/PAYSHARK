@@ -18,7 +18,7 @@ interface Policy { id: string; status?: string; require_human_approval?: boolean
 type ControlState = "ok" | "warn" | "fail" | "na";
 
 const stateMeta: Record<ControlState, { icon: typeof CheckCircle2; cls: string; label: string; color: string }> = {
-  ok: { icon: CheckCircle2, cls: "text-success", label: "Enforced", color: "#20C878" },
+  ok: { icon: CheckCircle2, cls: "text-success", label: "Enforced", color: "#3496FF" },
   warn: { icon: AlertTriangle, cls: "text-warning", label: "Attention", color: "#F5BE50" },
   fail: { icon: XCircle, cls: "text-danger", label: "Failing", color: "#FF6363" },
   na: { icon: MinusCircle, cls: "text-fg-subtle", label: "Not available", color: "#4E5F56" }
@@ -33,7 +33,7 @@ function ShieldRings({ controls }: { controls: { label: string; state: ControlSt
     <div className="relative mx-auto h-[220px] w-[220px] [perspective:700px]" role="img" aria-label={`${ok} of ${controls.length} controls enforced`}>
       <div className="absolute inset-0 [transform:rotateX(18deg)] [transform-style:preserve-3d]">
         <svg viewBox="0 0 200 200" className="absolute inset-0 h-full w-full">
-          <circle cx="100" cy="100" r="92" fill="none" stroke="rgb(150 220 170 / .1)" strokeDasharray="2 6" className="motion-safe:animate-[ps-orb-spin_40s_linear_infinite]" style={{ transformOrigin: "center" }} />
+          <circle cx="100" cy="100" r="92" fill="none" stroke="rgb(170 196 232 / .1)" strokeDasharray="2 6" className="motion-safe:animate-[ps-orb-spin_40s_linear_infinite]" style={{ transformOrigin: "center" }} />
           {controls.map((c, i) => (
             <circle
               key={c.label}
@@ -45,15 +45,15 @@ function ShieldRings({ controls }: { controls: { label: string; state: ControlSt
               strokeDasharray={`${seg - gap} ${C}`}
               strokeDashoffset={-i * seg}
               transform="rotate(-90 100 100)"
-              style={{ filter: c.state === "ok" ? "drop-shadow(0 0 6px rgb(32 200 120 / .55))" : undefined }}
+              style={{ filter: c.state === "ok" ? "drop-shadow(0 0 6px rgb(52 150 255 / .55))" : undefined }}
             />
           ))}
-          <circle cx="100" cy="100" r="52" fill="rgb(18 61 40 / .35)" stroke="rgb(150 220 170 / .14)" />
+          <circle cx="100" cy="100" r="52" fill="rgb(30 46 72 / .35)" stroke="rgb(170 196 232 / .14)" />
         </svg>
       </div>
       <div className="absolute inset-0 grid place-items-center text-center">
         <div>
-          <ShieldCheck className="mx-auto text-accent drop-shadow-[0_0_12px_rgb(32_200_120/.7)]" size={26} />
+          <ShieldCheck className="mx-auto text-accent drop-shadow-[0_0_12px_rgb(52_150_255/.7)]" size={26} />
           <div className="mt-1 font-display text-2xl font-semibold tabular-nums text-fg">{ok}/{controls.length}</div>
           <div className="text-[10.5px] uppercase tracking-[0.14em] text-fg-subtle">controls</div>
         </div>

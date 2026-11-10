@@ -47,8 +47,8 @@ export default function AnalyticsPage() {
 
   const riskBuckets = useMemo(() => {
     const b = [
-      { label: "0–25", min: 0, max: 25, tone: "#20C878", n: 0 },
-      { label: "26–50", min: 26, max: 50, tone: "#B6F36A", n: 0 },
+      { label: "0–25", min: 0, max: 25, tone: "#3496FF", n: 0 },
+      { label: "26–50", min: 26, max: 50, tone: "#60D6FF", n: 0 },
       { label: "51–75", min: 51, max: 75, tone: "#F5BE50", n: 0 },
       { label: "76–100", min: 76, max: 100, tone: "#FF6363", n: 0 }
     ];
@@ -82,7 +82,7 @@ export default function AnalyticsPage() {
         title="Analytics"
         description="Volume, outcomes and risk across every payment request, computed live from your records."
         actions={
-          <div role="group" aria-label="Date range" className="flex rounded-[10px] border border-white/[0.07] bg-canvas/50 p-0.5">
+          <div role="group" aria-label="Date range" className="flex rounded-[4px] border border-white/[0.07] bg-canvas/50 p-0.5">
             {([14, 30] as const).map(d => (
               <button
                 key={d}
@@ -166,7 +166,7 @@ export default function AnalyticsPage() {
                     </div>
                     <div className="relative h-2.5 overflow-hidden rounded-full bg-white/[0.05]">
                       <div className="absolute inset-y-0 left-0 rounded-full bg-forest" style={{ width: `${(m.volume / maxVol) * 100}%` }} />
-                      <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-accent to-volt shadow-[0_0_12px_rgb(32_200_120/.5)] transition-[width] duration-1000" style={{ width: `${(m.captured / maxVol) * 100}%` }} />
+                      <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-accent to-volt shadow-[0_0_12px_rgb(52_150_255/.5)] transition-[width] duration-1000" style={{ width: `${(m.captured / maxVol) * 100}%` }} />
                     </div>
                   </li>
                 ))}

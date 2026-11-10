@@ -186,7 +186,7 @@ export function AiAssistant() {
         >
           {/* Header */}
           <div className="relative flex items-center gap-3 border-b border-white/[0.07] px-4 py-3.5">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_100%_at_0%_0%,rgb(32_200_120/.12),transparent_70%)]" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_100%_at_0%_0%,rgb(52_150_255/.12),transparent_70%)]" aria-hidden />
             <span className="ai-orb h-9 w-9 shrink-0" aria-hidden />
             <div className="relative min-w-0 flex-1">
               <h2 id={titleId} className="text-[14px] font-semibold text-fg">PAYSHARK Assistant</h2>
@@ -229,9 +229,9 @@ export function AiAssistant() {
               <div key={m.id} className={cn("flex animate-pop-in", m.from === "user" ? "justify-end" : "justify-start")}>
                 <div
                   className={cn(
-                    "max-w-[88%] whitespace-pre-line rounded-[14px] px-3.5 py-2.5 text-[13px] leading-[1.55]",
+                    "max-w-[88%] whitespace-pre-line rounded-[12px] px-3.5 py-2.5 text-[13px] leading-[1.55]",
                     m.from === "user"
-                      ? "rounded-br-[4px] bg-[linear-gradient(135deg,#B6F36A,#20C878)] text-accent-fg shadow-[0_8px_20px_-12px_rgb(32_200_120/.8)]"
+                      ? "rounded-br-[4px] bg-[linear-gradient(135deg,#60D6FF,#3496FF)] text-accent-fg shadow-[0_8px_20px_-12px_rgb(52_150_255/.8)]"
                       : "rounded-bl-[4px] border border-white/[0.08] bg-surface-2/60 text-fg"
                   )}
                 >
@@ -299,7 +299,7 @@ export function AiAssistant() {
             <Link
               href="/agreements/new"
               onClick={() => setOpen(false)}
-              className="mt-2.5 flex items-center gap-2 rounded-[10px] border border-iris/25 bg-iris/[0.08] px-3 py-2 text-[12px] text-fg-muted transition-colors hover:border-iris/45 hover:text-fg"
+              className="mt-2.5 flex items-center gap-2 rounded-[4px] border border-iris/25 bg-iris/[0.08] px-3 py-2 text-[12px] text-fg-muted transition-colors hover:border-iris/45 hover:text-fg"
             >
               <span className="inline-flex items-center gap-1 rounded-md bg-iris/20 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#9FEBF8]">
                 <Sparkles size={10} /> AI

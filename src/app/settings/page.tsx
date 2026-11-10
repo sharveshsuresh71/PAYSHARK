@@ -20,7 +20,7 @@ function Toggle({ checked, onChange, label, id }: { checked: boolean; onChange: 
       onClick={() => onChange(!checked)}
       className={cn(
         "relative h-6 w-11 shrink-0 rounded-full border transition-colors duration-300",
-        checked ? "border-accent/50 bg-accent/80 shadow-[0_0_14px_-2px_rgb(32_200_120/.7)]" : "border-white/[0.1] bg-white/[0.06]"
+        checked ? "border-accent/50 bg-accent/80 shadow-[0_0_14px_-2px_rgb(52_150_255/.7)]" : "border-white/[0.1] bg-white/[0.06]"
       )}
     >
       <span
@@ -36,7 +36,7 @@ function Toggle({ checked, onChange, label, id }: { checked: boolean; onChange: 
 function Row({ icon, title, description, control }: { icon: React.ReactNode; title: string; description: string; control: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4 py-4 first:pt-0 last:pb-0">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] border border-white/[0.07] bg-canvas/60 text-fg-muted">{icon}</span>
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-[4px] border border-white/[0.07] bg-canvas/60 text-fg-muted">{icon}</span>
       <div className="min-w-0 flex-1">
         <div className="text-[13px] font-medium text-fg">{title}</div>
         <div className="text-[12px] leading-[1.5] text-fg-subtle">{description}</div>
@@ -89,12 +89,12 @@ export default function SettingsPage() {
       <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]">
         {/* Profile */}
         <section className="card overflow-hidden" data-no-tilt aria-labelledby="profile-h">
-          <div className="relative h-24 bg-[radial-gradient(120%_140%_at_0%_0%,rgb(32_200_120/.35),transparent_60%),linear-gradient(135deg,#123D28,#101713)]">
+          <div className="relative h-24 bg-[radial-gradient(120%_140%_at_0%_0%,rgb(52_150_255/.35),transparent_60%),linear-gradient(135deg,#1E2E48,#0F1726)]">
             <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
           </div>
           <div className="px-5 pb-5">
             <div className="-mt-9 flex items-end gap-4">
-              <span className="rounded-full bg-[conic-gradient(from_200deg,#B6F36A,#20C878,#36D9F5,#B6F36A)] p-[2px] shadow-[0_12px_24px_-10px_rgb(0_0_0/.9)]">
+              <span className="rounded-full bg-[conic-gradient(from_200deg,#60D6FF,#3496FF,#36D9F5,#60D6FF)] p-[2px] shadow-[0_12px_24px_-10px_rgb(0_0_0/.9)]">
                 <span className="grid h-16 w-16 place-items-center rounded-full bg-sidebar font-display text-xl font-semibold text-fg">{user ? initials(user) : ""}</span>
               </span>
               <span className="pill mb-1 capitalize text-accent">{user?.role ?? "—"}</span>
@@ -127,7 +127,7 @@ export default function SettingsPage() {
               <Row
                 icon={<PanelLeftClose size={15} />}
                 title="Compact sidebar"
-                description="Collapse navigation to an icon rail (shortcut: Ctrl/⌘ + B)."
+                description="Collapse the main navigation to an icon rail (shortcut: Ctrl/⌘ + B)."
                 control={<Toggle id="pref-collapsed" label="Compact sidebar" checked={collapsed} onChange={v => { setCollapsed(v); toast(v ? "Sidebar collapsed" : "Sidebar expanded", { tone: "success" }); }} />}
               />
               <Row

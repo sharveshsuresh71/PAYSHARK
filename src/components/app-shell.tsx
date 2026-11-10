@@ -7,6 +7,8 @@ import { Topbar } from "./topbar";
 import { useCardTilt } from "./use-card-tilt";
 import { Toaster } from "./toast";
 import { AiAssistant } from "./ai-assistant";
+import { SceneBackdrop } from "./scene-backdrop";
+import { SwipeNavigator } from "./swipe-nav";
 import { cn } from "@/lib/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -128,18 +130,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     <div className="shell">
       <a href="#main-content" className="skip-link">Skip to content</a>
 
-      {/* Ambient 3D perspective grid */}
-      <div className="ps-backdrop" aria-hidden>
-        <div className="ps-backdrop-grid" />
-        <div className="ps-backdrop-fade" />
-        <div className="ps-particles" />
-      </div>
+      {/* Ambient 3D scene */}
+      <SceneBackdrop />
 
-      {/* Desktop sidebar — floating glass panel */}
+      {/* Desktop sidebar — main pages (Overview, Transactions, Analytics, Review Center) */}
       <aside
         aria-label="Sidebar"
         className={cn(
-          "glass fixed bottom-3 left-3 top-3 z-40 hidden rounded-[16px] border border-white/[0.07] shadow-[inset_0_1px_0_rgb(255_255_255/.06),0_30px_60px_-30px_rgb(0_0_0/.9),0_0_0_1px_rgb(0_0_0/.25)] transition-[width] duration-300 ease-out lg:block",
+          "glass fixed bottom-0 left-0 top-0 z-40 hidden border-r border-white/[0.06] transition-[width] duration-300 ease-out lg:block",
           collapsed ? "w-[var(--ps-sidebar-w-collapsed)]" : "w-[var(--ps-sidebar-w)]"
         )}
       >
@@ -167,7 +165,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div
         className={cn(
           "relative z-[1] flex min-h-screen min-w-0 flex-col transition-[padding] duration-300 ease-out",
-          collapsed ? "lg:pl-[calc(var(--ps-sidebar-w-collapsed)+12px)]" : "lg:pl-[calc(var(--ps-sidebar-w)+12px)]"
+          collapsed ? "lg:pl-[var(--ps-sidebar-w-collapsed)]" : "lg:pl-[var(--ps-sidebar-w)]"
         )}
       >
         <Topbar onOpenMobileNav={openMobile} mobileNavOpen={mobileOpen} />
@@ -178,6 +176,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <AiAssistant />
       <Toaster />
+      <SwipeNavigator />
     </div>
   );
 }

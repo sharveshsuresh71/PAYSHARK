@@ -1,10 +1,12 @@
 import Link from "next/link";
 import {
   ArrowUpRight, ArrowRight, FileCheck2, SlidersHorizontal, Fingerprint, CreditCard, Link2, Globe, Lock, ShieldCheck,
-  Sparkles, Activity, BarChart3, Terminal, Database, Bot, CheckCircle2
+  Sparkles, Activity, BarChart3, Terminal, Database, Bot
 } from "lucide-react";
 import { LandingNav, Reveal, MagneticLink } from "@/components/landing/primitives";
-import { HeroSculpture } from "@/components/landing/sculpture";
+import { LandingHero, StatementSection } from "@/components/landing/hero";
+import { DashboardPreview } from "@/components/landing/dashboard-preview";
+import { SceneBackdrop } from "@/components/scene-backdrop";
 import { BrandMark } from "@/components/sidebar";
 
 /*
@@ -29,78 +31,18 @@ const LAYERS = [
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen overflow-x-clip bg-canvas text-fg">
+    <div className="relative isolate min-h-screen overflow-x-clip text-fg">
+      <SceneBackdrop className="-z-10" />
       <a href="#hero-title" className="skip-link">Skip to content</a>
       <LandingNav />
 
       {/* ================================================================== */}
       {/* HERO                                                                 */}
       {/* ================================================================== */}
-      <section className="relative isolate flex min-h-[100svh] items-center overflow-hidden pb-24 pt-28 lg:pb-16">
-        {/* Atmosphere */}
-        <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_70%_40%,rgb(18_61_40/.85),transparent_70%),radial-gradient(ellipse_40%_40%_at_10%_90%,rgb(32_200_120/.12),transparent_70%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-[45%] origin-bottom [background-image:linear-gradient(rgb(32_200_120/.09)_1px,transparent_1px),linear-gradient(90deg,rgb(32_200_120/.09)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_top,#000_10%,transparent)] [transform:perspective(600px)_rotateX(64deg)]" />
-          <div className="ps-particles !opacity-30" />
-        </div>
-
-        {/* Massive wordmark */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-[-2vw] -z-10 select-none text-center font-display text-[clamp(90px,21vw,340px)] font-bold leading-none tracking-[-0.06em] text-transparent [-webkit-text-stroke:1px_rgb(150_220_170/.14)]" aria-hidden>
-          PAYSHARK
-        </div>
-
-        <div className="mx-auto grid w-full max-w-[1320px] items-center gap-10 px-5 sm:px-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,.95fr)]">
-          <div className="relative z-10">
-            <Reveal>
-              <div className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/[0.07] py-1 pl-1 pr-3 text-[12px] text-fg-muted">
-                <span className="rounded-full bg-accent px-2 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.08em] text-accent-fg">New</span>
-                Payment control for autonomous AI agents
-              </div>
-            </Reveal>
-            <Reveal delay={80}>
-              <h1 id="hero-title" className="mt-7 font-display text-[clamp(44px,6.6vw,104px)] font-semibold uppercase leading-[0.92] tracking-[-0.045em]">
-                The future
-                <br />
-                of money
-                <br />
-                <span className="bg-gradient-to-r from-volt via-accent to-[#1E8F5A] bg-clip-text text-transparent">moves different.</span>
-              </h1>
-            </Reveal>
-            <Reveal delay={160}>
-              <p className="mt-7 max-w-[520px] text-[17px] leading-[1.6] text-fg-muted sm:text-[18px]">
-                Intelligent payments. Smarter financial operations. One powerful platform.
-              </p>
-            </Reveal>
-            <Reveal delay={240}>
-              <div className="mt-9 flex flex-wrap items-center gap-3">
-                <MagneticLink href="/dashboard" className="btn btn-primary h-12 px-6 text-[15px]">
-                  Get started <ArrowUpRight size={17} />
-                </MagneticLink>
-                <MagneticLink href="#platform" className="btn btn-secondary h-12 px-6 text-[15px]">
-                  Explore platform <ArrowRight size={16} />
-                </MagneticLink>
-              </div>
-              <p className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12.5px] text-fg-subtle">
-                <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-accent" /> AI interprets</span>
-                <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-accent" /> Rules enforce</span>
-                <span className="flex items-center gap-1.5"><CheckCircle2 size={14} className="text-accent" /> Humans authorize</span>
-              </p>
-            </Reveal>
-          </div>
-
-          <Reveal delay={200} className="relative">
-            <HeroSculpture />
-          </Reveal>
-        </div>
-
-        <a href="#platform" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[10.5px] uppercase tracking-[0.2em] text-fg-subtle transition-colors hover:text-fg sm:flex">
-          Scroll
-          <span className="h-10 w-px bg-gradient-to-b from-accent to-transparent" />
-        </a>
-      </section>
+      <LandingHero />
 
       {/* Marquee transition */}
-      <div className="relative overflow-hidden border-y border-white/[0.06] bg-sidebar py-4" aria-hidden>
+      <div className="relative overflow-hidden border-y border-white/[0.06] bg-white/[0.05] py-4" aria-hidden>
         <div className="marquee-track flex w-max gap-10 whitespace-nowrap font-display text-[clamp(18px,2.4vw,28px)] font-semibold uppercase tracking-[-0.01em]">
           {Array.from({ length: 2 }).map((_, k) => (
             <div key={k} className="flex gap-10">
@@ -118,7 +60,7 @@ export default function Home() {
         {/* ================================================================ */}
         {/* PLATFORM OVERVIEW — editorial split                              */}
         {/* ================================================================ */}
-        <section id="platform" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+        <section id="platform" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-20 sm:px-8 lg:py-28">
           <div className="grid gap-14 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,.8fr)] lg:gap-20">
             <Reveal>
               <div className="kicker">01 — Platform</div>
@@ -149,8 +91,8 @@ export default function Home() {
         {/* ================================================================ */}
         {/* PAYMENT INFRASTRUCTURE — flowing pipeline                         */}
         {/* ================================================================ */}
-        <section id="infrastructure" className="relative scroll-mt-24 overflow-hidden border-y border-white/[0.06] bg-sidebar py-28 lg:py-36">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgb(32_200_120/.12),transparent_70%)]" aria-hidden />
+        <section id="infrastructure" className="relative scroll-mt-24 overflow-hidden border-y border-white/[0.06] bg-white/[0.05] py-20 lg:py-28">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgb(52_150_255/.12),transparent_70%)]" aria-hidden />
           <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8">
             <Reveal className="mx-auto max-w-3xl text-center">
               <div className="kicker">02 — Payment infrastructure</div>
@@ -165,15 +107,15 @@ export default function Home() {
             <div className="relative mt-16">
               {/* flowing connector (desktop) */}
               <svg className="absolute left-0 right-0 top-[38px] hidden h-2 w-full lg:block" preserveAspectRatio="none" viewBox="0 0 100 2" aria-hidden>
-                <line x1="12" y1="1" x2="88" y2="1" stroke="rgb(32 200 120 / .2)" strokeWidth=".3" />
-                <line x1="12" y1="1" x2="88" y2="1" stroke="#20C878" strokeWidth=".35" className="flow-line" vectorEffect="non-scaling-stroke" />
+                <line x1="12" y1="1" x2="88" y2="1" stroke="rgb(52 150 255 / .25)" strokeWidth=".3" />
+                <line x1="12" y1="1" x2="88" y2="1" stroke="#3496FF" strokeWidth=".35" className="flow-line" vectorEffect="non-scaling-stroke" />
               </svg>
               <ol className="relative grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {PIPELINE.map((s, i) => (
                   <Reveal as="li" key={s.title} delay={i * 110} className="text-center">
                     <div className="relative mx-auto grid h-[76px] w-[76px] place-items-center [perspective:400px]">
-                      <span className="absolute inset-0 rounded-[22px] bg-accent/20 blur-xl" aria-hidden />
-                      <span className="relative grid h-[76px] w-[76px] place-items-center rounded-[22px] border border-accent/30 bg-[linear-gradient(160deg,#1B5A3A,#0B1F15)] text-volt shadow-[inset_0_1px_0_rgb(255_255_255/.15),0_20px_40px_-18px_rgb(0_0_0/.9)] [transform:rotateX(14deg)]">
+                      <span className="absolute inset-0 rounded-[16px] bg-accent/20 blur-xl" aria-hidden />
+                      <span className="relative grid h-[76px] w-[76px] place-items-center rounded-[16px] border border-accent/30 bg-[linear-gradient(160deg,#1E2E48,#0B111C)] text-volt shadow-[inset_0_1px_0_rgb(255_255_255/.15),0_20px_40px_-18px_rgb(0_0_0/.9)] [transform:rotateX(14deg)]">
                         <s.icon size={28} strokeWidth={1.6} />
                       </span>
                     </div>
@@ -190,7 +132,7 @@ export default function Home() {
         {/* ================================================================ */}
         {/* AI INTELLIGENCE — orb + example extraction                        */}
         {/* ================================================================ */}
-        <section id="intelligence" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+        <section id="intelligence" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-20 sm:px-8 lg:py-28">
           <div className="grid items-center gap-14 lg:grid-cols-2">
             <Reveal className="relative order-2 lg:order-1">
               <div className="relative mx-auto max-w-[520px]">
@@ -224,7 +166,7 @@ export default function Home() {
               </p>
               <ul className="mt-8 grid gap-3 sm:grid-cols-2">
                 {["Agreement term extraction", "Missing-information detection", "Purpose-mismatch blocking", "Verified, explainable answers"].map(f => (
-                  <li key={f} className="flex items-center gap-2.5 text-[14px] text-fg"><span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_rgb(32_200_120)]" />{f}</li>
+                  <li key={f} className="flex items-center gap-2.5 text-[14px] text-fg"><span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_rgb(52_150_255)]" />{f}</li>
                 ))}
               </ul>
             </Reveal>
@@ -235,39 +177,14 @@ export default function Home() {
         {/* REAL-TIME MONITORING — tilted product stage                        */}
         {/* ================================================================ */}
         <section className="relative overflow-hidden py-24 lg:py-32">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_50%_100%,rgb(32_200_120/.16),transparent_70%)]" aria-hidden />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_50%_60%_at_50%_100%,rgb(52_150_255/.16),transparent_70%)]" aria-hidden />
           <div className="relative mx-auto max-w-[1320px] px-5 sm:px-8">
             <Reveal className="max-w-2xl">
               <div className="kicker">04 — Real-time monitoring</div>
               <h2 className="mt-5 font-display text-[clamp(32px,4.2vw,60px)] font-semibold leading-[1.02] tracking-[-0.03em]">A command centre for every agent payment.</h2>
             </Reveal>
-            <Reveal delay={120} className="mt-14 [perspective:1600px]">
-              <div className="mx-auto max-w-[1100px] rounded-[22px] border border-white/[0.08] bg-[linear-gradient(180deg,#101713,#0B110E)] p-3 shadow-[0_60px_120px_-50px_rgb(0_0_0/1),0_0_0_1px_rgb(0_0_0/.4)] [transform:rotateX(18deg)] sm:p-4">
-                <div className="flex items-center gap-1.5 pb-3" aria-hidden>{["#FF6363", "#F5BE50", "#20C878"].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full opacity-70" style={{ background: c }} />)}<span className="ml-3 text-[11px] text-fg-subtle">Product preview</span></div>
-                <div className="grid gap-3 md:grid-cols-[180px_minmax(0,1fr)]">
-                  <div className="hidden space-y-1.5 rounded-[14px] bg-sidebar p-3 md:block" aria-hidden>
-                    {["Overview", "Transactions", "Analytics", "Review", "Security"].map((n, i) => (
-                      <div key={n} className={`rounded-[8px] px-2.5 py-2 text-[11.5px] ${i === 0 ? "bg-accent/15 text-fg" : "text-fg-subtle"}`}>{n}</div>
-                    ))}
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-3">
-                    {[["Captured", "text-accent"], ["Pending", "text-warning"], ["Blocked", "text-danger"]].map(([l, c]) => (
-                      <div key={l} className="rounded-[14px] border border-white/[0.06] bg-surface p-4">
-                        <div className="text-[11px] text-fg-subtle">{l}</div>
-                        <div className={`mt-3 h-2 w-16 rounded-full bg-current opacity-60 ${c}`} />
-                        <div className="mt-2 h-1.5 w-24 rounded-full bg-white/[0.06]" />
-                      </div>
-                    ))}
-                    <div className="rounded-[14px] border border-white/[0.06] bg-surface p-4 sm:col-span-3">
-                      <svg viewBox="0 0 600 120" className="h-28 w-full" aria-hidden>
-                        <defs><linearGradient id="pv" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#20C878" stopOpacity=".35" /><stop offset="1" stopColor="#20C878" stopOpacity="0" /></linearGradient></defs>
-                        <path d="M0,90 C60,80 90,40 150,52 S260,96 320,60 S430,20 480,34 S560,70 600,40 L600,120 L0,120Z" fill="url(#pv)" />
-                        <path d="M0,90 C60,80 90,40 150,52 S260,96 320,60 S430,20 480,34 S560,70 600,40" fill="none" stroke="#20C878" strokeWidth="2.5" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <Reveal delay={120} className="mt-28">
+              <DashboardPreview />
             </Reveal>
           </div>
         </section>
@@ -275,7 +192,7 @@ export default function Home() {
         {/* ================================================================ */}
         {/* SECURITY ARCHITECTURE — stacked isometric layers                   */}
         {/* ================================================================ */}
-        <section id="security" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+        <section id="security" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-20 sm:px-8 lg:py-28">
           <div className="grid items-center gap-16 lg:grid-cols-[minmax(0,.9fr)_minmax(0,1.1fr)]">
             <Reveal>
               <div className="kicker">05 — Security architecture</div>
@@ -292,7 +209,7 @@ export default function Home() {
                 {LAYERS.map((l, i) => (
                   <Reveal as="li" key={l.name} delay={i * 90} className="preserve-3d group relative -mt-6 first:mt-0 max-sm:mt-2">
                     <div
-                      className="flex items-center gap-4 rounded-[18px] border border-accent/25 bg-[linear-gradient(135deg,rgb(18_61_40/.92),rgb(16_23_19/.95))] p-5 shadow-[0_24px_40px_-20px_rgb(0_0_0/.95),inset_0_1px_0_rgb(255_255_255/.08)] transition-transform duration-500 group-hover:[transform:translateZ(36px)] max-sm:group-hover:[transform:none]"
+                      className="flex items-center gap-4 rounded-[16px] border border-accent/25 bg-[linear-gradient(135deg,rgb(30_46_72/.95),rgb(15_23_38/.97))] p-5 shadow-[0_24px_40px_-20px_rgb(0_0_0/.95),inset_0_1px_0_rgb(255_255_255/.08)] transition-transform duration-500 group-hover:[transform:translateZ(36px)] max-sm:group-hover:[transform:none]"
                     >
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[12px] bg-accent/15 text-volt"><l.icon size={18} /></span>
                       <div className="min-w-0">
@@ -311,7 +228,7 @@ export default function Home() {
         {/* ================================================================ */}
         {/* ANALYTICS & INSIGHTS — asymmetric bento                            */}
         {/* ================================================================ */}
-        <section className="border-y border-white/[0.06] bg-sidebar py-28 lg:py-36">
+        <section className="border-y border-white/[0.06] bg-white/[0.05] py-20 lg:py-28">
           <div className="mx-auto max-w-[1320px] px-5 sm:px-8">
             <Reveal className="flex flex-wrap items-end justify-between gap-6">
               <div className="max-w-2xl">
@@ -362,7 +279,7 @@ export default function Home() {
         {/* ================================================================ */}
         {/* DEVELOPER EXPERIENCE — code-forward                                */}
         {/* ================================================================ */}
-        <section id="developers" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-28 sm:px-8 lg:py-40">
+        <section id="developers" className="mx-auto max-w-[1320px] scroll-mt-24 px-5 py-20 sm:px-8 lg:py-28">
           <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,.85fr)_minmax(0,1.15fr)]">
             <Reveal>
               <div className="kicker">07 — Developer experience</div>
@@ -374,9 +291,9 @@ export default function Home() {
               </div>
             </Reveal>
             <Reveal delay={120}>
-              <div className="overflow-hidden rounded-[18px] border border-white/[0.08] bg-[#060A08] shadow-[0_40px_80px_-40px_rgb(0_0_0/1)]">
-                <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-3" aria-hidden>{["#FF6363", "#F5BE50", "#20C878"].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full opacity-70" style={{ background: c }} />)}<span className="ml-3 font-mono text-[11px] text-fg-subtle">agent.ts</span></div>
-                <pre className="overflow-x-auto p-5 font-mono text-[12.5px] leading-[1.8] text-[#C9D6CD]"><code>{`const res = await fetch("/api/payment-requests", {
+              <div className="overflow-hidden rounded-[16px] border border-white/[0.08] bg-[#0B111C] shadow-[0_40px_80px_-40px_rgb(0_0_0/1)]">
+                <div className="flex items-center gap-1.5 border-b border-white/[0.06] px-4 py-3" aria-hidden>{["#FF6363", "#F5BE50", "#3496FF"].map(c => <span key={c} className="h-2.5 w-2.5 rounded-full opacity-70" style={{ background: c }} />)}<span className="ml-3 font-mono text-[11px] text-fg-subtle">agent.ts</span></div>
+                <pre className="overflow-x-auto p-5 font-mono text-[12.5px] leading-[1.8] text-[#C9D3E0]"><code>{`const res = await fetch("/api/payment-requests", {
   method: "POST",
   headers: {
     Authorization: \`Bearer \${process.env.PAYSHARK_AGENT_KEY}\`,
@@ -397,7 +314,7 @@ const { data } = await res.json();
         {/* ================================================================ */}
         {/* INTEGRATION ECOSYSTEM — orbital                                    */}
         {/* ================================================================ */}
-        <section className="relative overflow-hidden border-t border-white/[0.06] py-28 lg:py-36">
+        <section className="relative overflow-hidden border-t border-white/[0.06] py-20 lg:py-28">
           <div className="mx-auto max-w-[1320px] px-5 text-center sm:px-8">
             <Reveal>
               <div className="kicker">08 — Integrations</div>
@@ -406,7 +323,7 @@ const { data } = await res.json();
             <Reveal delay={120} className="relative mx-auto mt-16 aspect-square w-[min(520px,90vw)]">
               <div className="absolute inset-0 rounded-full border border-white/[0.07]" aria-hidden />
               <div className="absolute inset-[18%] rounded-full border border-dashed border-accent/20" aria-hidden />
-              <div className="absolute inset-[38%] grid place-items-center rounded-full bg-[radial-gradient(circle_at_40%_30%,#2FCB82,#0B3D25_70%)] shadow-[0_0_80px_-10px_rgb(32_200_120/.6),inset_0_2px_0_rgb(255_255_255/.3)]">
+              <div className="absolute inset-[38%] grid place-items-center rounded-full bg-[radial-gradient(circle_at_40%_30%,#6FB4FF,#1D4F8F_70%)] shadow-[0_0_80px_-10px_rgb(52_150_255/.6),inset_0_2px_0_rgb(255_255_255/.3)]">
                 <BrandMark className="h-10 w-10 rounded-[12px]" />
               </div>
               {[
@@ -425,11 +342,16 @@ const { data } = await res.json();
         </section>
 
         {/* ================================================================ */}
+        {/* STATEMENT — starfield                                              */}
+        {/* ================================================================ */}
+        <StatementSection />
+
+        {/* ================================================================ */}
         {/* FINAL CONVERSION                                                   */}
         {/* ================================================================ */}
         <section className="px-3 pb-6 sm:px-5">
-          <Reveal className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[28px] border border-accent/20 bg-[radial-gradient(ellipse_80%_120%_at_80%_0%,rgb(32_200_120/.45),transparent_60%),linear-gradient(135deg,#123D28,#0B110E_70%)] px-6 py-20 text-center sm:px-12 lg:py-28">
-            <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(rgb(182_243_106/.15)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000,transparent)]" aria-hidden />
+          <Reveal className="relative mx-auto max-w-[1320px] overflow-hidden rounded-[16px] border border-accent/20 bg-[radial-gradient(ellipse_80%_120%_at_80%_0%,rgb(52_150_255/.4),transparent_60%),linear-gradient(135deg,#1E2E48,#0B111C_70%)] px-6 py-16 text-center sm:px-12 lg:py-20">
+            <div className="pointer-events-none absolute inset-0 [background-image:radial-gradient(rgb(96_214_255/.15)_1px,transparent_1px)] [background-size:22px_22px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000,transparent)]" aria-hidden />
             <h2 className="relative mx-auto max-w-4xl font-display text-[clamp(38px,6vw,88px)] font-semibold uppercase leading-[0.95] tracking-[-0.04em]">
               Let agents spend.<br /><span className="text-volt">Keep humans in charge.</span>
             </h2>

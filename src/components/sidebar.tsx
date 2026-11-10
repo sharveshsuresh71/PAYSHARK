@@ -11,34 +11,48 @@ import { cn } from "@/lib/cn";
 /* -------------------------------------------------------------------------- */
 /* Brand                                                                        */
 /* -------------------------------------------------------------------------- */
+/** Z offsets (px) of the stacked discs that give the coin its visible thickness. */
+const COIN_EDGE_LAYERS = [-1.5, -1, -0.5, 0, 0.5, 1, 1.5];
+
+/**
+ * 3D spinning coin: "$" on the front, the PAYSHARK fin on the back.
+ * Motion is defined in globals.css (.brand-coin) and respects reduced-motion settings.
+ */
 export function BrandMark({ className }: { className?: string }) {
   return (
-    <span
-      aria-hidden
-      className={cn(
-        "brand-mark relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-[10px] text-accent-fg",
-        "bg-[linear-gradient(145deg,#C8F78A_0%,#20C878_45%,#0E7A4A_100%)]",
-        "shadow-[inset_0_1px_0_rgb(255_255_255/.55),inset_0_-3px_6px_rgb(3_30_15/.35),0_8px_18px_-8px_rgb(32_200_120/.75)]",
-        className
-      )}
-    >
-      {/* glossy reflection */}
-      <span className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/35 to-transparent" />
-      {/* Fin mark */}
-      <svg viewBox="0 0 24 24" className="relative h-[18px] w-[18px] drop-shadow-[0_1px_0_rgb(255_255_255/.35)]" fill="currentColor">
-        <path d="M3 17.5c3.2-.4 6-1.9 8.3-4.6C13.4 10.4 14.6 7 14.9 3c2.9 3.2 4.6 7.5 4.6 11.6 0 1.1-.1 2-.3 2.9H3Z" />
-        <path d="M3 19.5h18v1.5H3z" opacity=".55" />
-      </svg>
+    <span aria-hidden className={cn("brand-mark relative grid h-8 w-8 shrink-0 place-items-center", className)}>
+      {/* soft glow under the coin */}
+      <span className="brand-coin-glow absolute inset-[8%] rounded-full" />
+      <span className="brand-coin relative h-full w-full">
+        {/* coin edge (reeded rim) */}
+        {COIN_EDGE_LAYERS.map((z) => (
+          <span key={z} className="brand-coin-edge absolute inset-0 rounded-full" style={{ transform: `translateZ(${z}px)` }} />
+        ))}
+        {/* front face: dollar */}
+        <span className="brand-coin-face absolute inset-0 grid place-items-center rounded-full" style={{ transform: "translateZ(2px)" }}>
+          <svg viewBox="0 0 24 24" className="relative h-[58%] w-[58%]" fill="none" stroke="currentColor" strokeWidth={2.8} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2.5v19" />
+            <path d="M16.5 6H10a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6H7" />
+          </svg>
+        </span>
+        {/* back face: fin */}
+        <span className="brand-coin-face absolute inset-0 grid place-items-center rounded-full" style={{ transform: "rotateY(180deg) translateZ(2px)" }}>
+          <svg viewBox="0 0 24 24" className="relative h-[56%] w-[56%]" fill="currentColor">
+            <path d="M3 17.5c3.2-.4 6-1.9 8.3-4.6C13.4 10.4 14.6 7 14.9 3c2.9 3.2 4.6 7.5 4.6 11.6 0 1.1-.1 2-.3 2.9H3Z" />
+            <path d="M3 19.5h18v1.5H3z" opacity=".55" />
+          </svg>
+        </span>
+      </span>
     </span>
   );
 }
 
 export function Brand({ collapsed = false }: { collapsed?: boolean }) {
   return (
-    <Link href="/dashboard" className="brand-3d flex min-w-0 items-center gap-2.5 rounded-[10px]" aria-label="PAYSHARK — go to overview">
+    <Link href="/dashboard" className="brand-3d flex min-w-0 items-center gap-2.5 rounded-[4px]" aria-label="PAYSHARK — go to overview">
       <BrandMark />
       <span className={cn("min-w-0 animate-fade-in", collapsed && "sr-only")}>
-        <span className="block bg-gradient-to-r from-white via-white to-accent/80 bg-clip-text font-display text-[15px] font-semibold leading-5 tracking-[0.1em] text-transparent">
+        <span className="block font-display text-[15px] font-semibold leading-5 tracking-[0.08em] text-fg">
           PAYSHARK
         </span>
         <span className="block whitespace-nowrap text-[10px] font-medium uppercase leading-3 tracking-[0.16em] text-fg-subtle">
@@ -64,6 +78,9 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
   const pathname = usePathname();
   const isCollapsed = variant === "desktop" && collapsed;
   const user = useSessionUser();
+  // Desktop sidebar holds the main pages only (Operations); the other pages are
+  // tabs in the top bar. The mobile drawer lists everything.
+  const groups = variant === "desktop" ? navGroups.slice(0, 1) : navGroups;
 
   /* Floating active indicator: one pill that glides to the active item */
   const navRef = useRef<HTMLElement>(null);
@@ -112,27 +129,24 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
           <span
             aria-hidden
             className={cn(
-              "pointer-events-none absolute left-3 right-3 rounded-[10px]",
-              "bg-[linear-gradient(90deg,rgb(32_200_120/.14),rgb(18_61_40/.1))]",
-              "shadow-[inset_0_0_0_1px_rgb(32_200_120/.18),inset_0_1px_0_rgb(255_255_255/.06),0_8px_20px_-12px_rgb(32_200_120/.55)]",
+              "pointer-events-none absolute left-3 right-3 rounded-[12px] border border-white/[0.08] bg-white/[0.07]",
+              "shadow-[inset_0_1px_0_rgb(255_255_255/.06)]",
               animateIndicator && "transition-[transform,height] duration-500 ease-out"
             )}
             style={{ top: 0, height: indicator.height, transform: `translateY(${indicator.top}px)` }}
-          >
-            <span className="absolute -left-3 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-accent shadow-[0_0_12px_rgb(32_200_120/.9)]" />
-          </span>
+          />
         )}
 
-        {navGroups.map((group, gi) => (
+        {groups.map((group, gi) => (
           <div key={group.label} className={cn(gi > 0 && (isCollapsed ? "mt-3" : "mt-5"))}>
             {isCollapsed ? (
               gi > 0 && <div className="mx-2 mb-3 h-px bg-white/[0.06]" aria-hidden />
             ) : (
-              <div className="mb-1.5 px-2.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-fg-subtle">
-                {group.label}
+              <div className="mb-2 px-3 text-[10.5px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
+                {variant === "desktop" ? "Main" : group.label}
               </div>
             )}
-            <ul className="space-y-0.5">
+            <ul className="space-y-1">
               {group.items.map(({ href, label, icon: Icon }) => {
                 const active = isActivePath(pathname, href);
                 return (
@@ -144,17 +158,15 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
                       aria-label={isCollapsed ? label : undefined}
                       onClick={variant === "mobile" ? onClose : undefined}
                       className={cn(
-                        "relative flex h-9 items-center gap-3 rounded-[10px] text-[13.5px] font-medium transition-colors duration-200",
+                        "relative flex h-10 items-center gap-3 rounded-[12px] text-[14px] font-medium transition-colors duration-200",
                         isCollapsed ? "justify-center px-0" : "px-3",
-                        active ? "text-fg" : "text-fg-muted hover:bg-white/[0.035] hover:text-fg"
+                        active ? "text-fg" : "text-fg-muted hover:bg-white/[0.04] hover:text-fg"
                       )}
                     >
                       <span
                         className={cn(
-                          "grid h-7 w-7 shrink-0 place-items-center rounded-lg transition-all duration-300",
-                          active
-                            ? "bg-accent/15 text-accent shadow-[0_0_14px_-2px_rgb(32_200_120/.55)]"
-                            : "text-fg-subtle group-hover/item:text-fg-muted group-hover/item:[transform:perspective(200px)_rotateY(-14deg)_translateY(-1px)]"
+                          "grid h-7 w-7 shrink-0 place-items-center rounded-[8px] transition-colors duration-300",
+                          active ? "bg-white text-black" : "text-fg-subtle group-hover/item:text-fg-muted"
                         )}
                       >
                         <Icon size={16} strokeWidth={1.9} />
@@ -181,7 +193,7 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
       {/* Footer: environment, profile, collapse */}
       <div className="shrink-0 space-y-2 p-3">
         {!isCollapsed && (
-          <div className="flex items-center gap-2 rounded-[10px] border border-warning/15 bg-warning/[0.05] px-3 py-2 text-[11.5px] text-warning">
+          <div className="flex items-center gap-2 rounded-[4px] border border-warning/15 bg-warning/[0.05] px-3 py-2 text-[11.5px] text-warning">
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-warning/50 [animation-duration:2.4s]" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-warning" />
@@ -193,12 +205,12 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
         {/* Profile */}
         <div
           className={cn(
-            "relative flex items-center gap-2.5 rounded-[12px] border border-white/[0.07] bg-[linear-gradient(180deg,rgb(18_61_40/.35),rgb(21_31_25/.7))] shadow-[inset_0_1px_0_rgb(255_255_255/.05)]",
+            "relative flex items-center gap-2.5 rounded-[14px] border border-white/[0.07] bg-white/[0.03] shadow-[inset_0_1px_0_rgb(255_255_255/.05)]",
             isCollapsed ? "justify-center p-1.5" : "p-2.5"
           )}
           title={isCollapsed && user ? `${displayName(user)} · ${user.role}` : undefined}
         >
-          <span className="relative shrink-0 rounded-full bg-[conic-gradient(from_200deg,#B6F36A,#20C878,#36D9F5,#B6F36A)] p-[1.5px]">
+          <span className="relative shrink-0 rounded-full bg-[conic-gradient(from_200deg,#FFFFFF,#71717A,#D4D4D8,#FFFFFF)] p-[1.5px]">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-sidebar text-[11px] font-semibold text-fg">
               {user ? initials(user) : <span className="skeleton h-4 w-4 rounded-full" />}
             </span>
@@ -232,7 +244,7 @@ export function Sidebar({ collapsed = false, onToggleCollapsed, variant = "deskt
             aria-expanded={!isCollapsed}
             title={`${isCollapsed ? "Expand" : "Collapse"} sidebar (Ctrl/⌘ B)`}
             className={cn(
-              "flex h-9 w-full items-center gap-3 rounded-[10px] text-[12.5px] font-medium text-fg-subtle transition-colors hover:bg-white/[0.04] hover:text-fg",
+              "flex h-9 w-full items-center gap-3 rounded-[4px] text-[12.5px] font-medium text-fg-subtle transition-colors hover:bg-white/[0.04] hover:text-fg",
               isCollapsed ? "justify-center" : "px-3"
             )}
           >

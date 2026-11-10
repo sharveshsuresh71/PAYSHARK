@@ -44,9 +44,9 @@ export default function Agreements() {
       {loading ? (
         <div className="grid gap-4 mt-8">
           <span className="sr-only">Loading agreements...</span>
-          <div className="skeleton h-[104px] rounded-[18px]" />
-          <div className="skeleton h-[104px] rounded-[18px]" />
-          <div className="skeleton h-[104px] rounded-[18px]" />
+          <div className="skeleton h-[104px] rounded-[16px]" />
+          <div className="skeleton h-[104px] rounded-[16px]" />
+          <div className="skeleton h-[104px] rounded-[16px]" />
         </div>
       ) : agreements.length === 0 ? (
         <div className="mt-8">

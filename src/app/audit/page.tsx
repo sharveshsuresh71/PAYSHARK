@@ -41,7 +41,7 @@ export default function Audit() {
       {valid !== null && (
         <div
           role="status"
-          className={`mt-6 flex items-center gap-4 rounded-[14px] border p-4 sm:p-5 ${
+          className={`mt-6 flex items-center gap-4 rounded-[12px] border p-4 sm:p-5 ${
             valid ? "border-success/30 bg-success/[0.08] text-success" : "border-danger/30 bg-danger/[0.08] text-danger"
           }`}
         >
@@ -63,7 +63,7 @@ export default function Audit() {
       {loading ? (
         <div className="mt-8 space-y-3" aria-busy="true">
           {[0, 1, 2].map(i => (
-            <div key={i} className="skeleton h-[140px] rounded-[18px]" />
+            <div key={i} className="skeleton h-[140px] rounded-[16px]" />
           ))}
           <p className="sr-only">Verifying hash chain...</p>
         </div>
@@ -84,7 +84,7 @@ export default function Audit() {
                 aria-hidden
                 className="absolute -left-7 sm:-left-9 top-6 grid h-[19px] w-[19px] sm:h-[27px] sm:w-[27px] place-items-center rounded-full border border-accent/30 bg-canvas"
               >
-                <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgb(32_200_120/.6)]" />
+                <span className="h-2 w-2 rounded-full bg-accent shadow-[0_0_8px_rgb(52_150_255/.6)]" />
               </span>
               <div className="card p-4 sm:p-5 space-y-3 min-w-0">
                 <div className="flex flex-wrap justify-between items-center gap-2">

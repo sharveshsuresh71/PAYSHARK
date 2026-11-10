@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Bell, ChevronDown, ChevronRight, LogOut, Menu, Repeat2, Search, Activity, CornerDownLeft } from "lucide-react";
-import { allNavItems, quickActions, findActiveItem, type NavItem } from "./nav-config";
+import { allNavItems, quickActions, type NavItem } from "./nav-config";
 import { BrandMark } from "./sidebar";
+import { PagePager } from "./swipe-nav";
 import { toast } from "./toast";
 import { useSessionUser, displayName, initials } from "@/lib/client/session-store";
 import { cn } from "@/lib/cn";
@@ -119,14 +120,14 @@ function GlobalSearch() {
         onChange={e => { setQuery(e.target.value); setOpen(true); }}
         onFocus={() => setOpen(true)}
         onKeyDown={onKeyDown}
-        className="h-9 w-full rounded-[10px] border border-white/[0.08] bg-white/[0.03] pl-9 pr-14 text-[13px] text-fg placeholder:text-fg-subtle transition-colors hover:border-white/[0.14] focus:border-accent/70 focus:bg-canvas focus:shadow-[0_0_0_3px_rgb(54_191_250/.15)] focus-visible:shadow-[0_0_0_3px_rgb(54_191_250/.15)]"
+        className="h-9 w-full rounded-[4px] border border-white/[0.08] bg-white/[0.03] pl-9 pr-14 text-[13px] text-fg placeholder:text-fg-subtle transition-colors hover:border-white/[0.14] focus:border-accent/70 focus:bg-canvas focus:shadow-[0_0_0_3px_rgb(54_191_250/.15)] focus-visible:shadow-[0_0_0_3px_rgb(54_191_250/.15)]"
       />
       <span className="pointer-events-none absolute right-2 top-1/2 hidden -translate-y-1/2 items-center gap-1 sm:flex" aria-hidden>
         <kbd className="kbd">⌘K</kbd>
       </span>
 
       {open && (
-        <div className="popover absolute left-0 right-0 top-[calc(100%+6px)] z-50 animate-pop-in overflow-hidden p-1.5">
+        <div className="popover absolute right-0 top-[calc(100%+6px)] z-50 w-[min(420px,90vw)] animate-pop-in overflow-hidden p-1.5">
           <ul id={listId} role="listbox" aria-label="Search results" className="max-h-[340px] overflow-y-auto">
             {results.length === 0 && (
               <li className="px-3 py-6 text-center text-[13px] text-fg-muted">No results for “{query}”</li>
@@ -380,9 +381,9 @@ function ProfileMenu() {
         aria-expanded={open}
         aria-controls={menuId}
         aria-label="Account menu"
-        className="flex h-9 items-center gap-2 rounded-[10px] border border-transparent pl-1 pr-1.5 transition-colors hover:bg-white/[0.05] aria-expanded:border-white/[0.08] aria-expanded:bg-white/[0.06] md:pr-2"
+        className="flex h-9 items-center gap-2 rounded-[4px] border border-transparent pl-1 pr-1.5 transition-colors hover:bg-white/[0.05] aria-expanded:border-white/[0.08] aria-expanded:bg-white/[0.06] md:pr-2"
       >
-        <span className="rounded-full bg-[conic-gradient(from_200deg,#B6F36A,#20C878,#36D9F5,#B6F36A)] p-[1.5px]">
+        <span className="rounded-full bg-[conic-gradient(from_200deg,#60D6FF,#3496FF,#36D9F5,#60D6FF)] p-[1.5px]">
           <span className="grid h-7 w-7 place-items-center rounded-full bg-sidebar text-[11px] font-semibold text-fg">
             {user ? initials(user) : ""}
           </span>
@@ -427,9 +428,6 @@ function ProfileMenu() {
 /* Top navigation bar                                                           */
 /* -------------------------------------------------------------------------- */
 export function Topbar({ onOpenMobileNav, mobileNavOpen }: { onOpenMobileNav: () => void; mobileNavOpen: boolean }) {
-  const pathname = usePathname();
-  const current = findActiveItem(pathname);
-  const isNested = current && pathname !== current.href;
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -442,10 +440,8 @@ export function Topbar({ onOpenMobileNav, mobileNavOpen }: { onOpenMobileNav: ()
   return (
     <header
       className={cn(
-        "sticky top-0 z-30 flex h-[60px] items-center gap-3 border-b px-3 backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-300 sm:px-6 lg:px-8",
-        scrolled
-          ? "glass border-white/[0.07] shadow-[0_12px_32px_-20px_rgb(0_0_0/.9)]"
-          : "border-transparent bg-canvas/40"
+        "glass sticky top-0 z-30 flex h-[56px] items-center gap-3 border-b border-white/[0.06] px-3 transition-[box-shadow] duration-300 sm:px-5 lg:px-6",
+        scrolled && "shadow-[0_12px_32px_-20px_rgb(0_0_0/.8)]"
       )}
     >
       {/* Mobile: menu + brand */}
@@ -459,34 +455,16 @@ export function Topbar({ onOpenMobileNav, mobileNavOpen }: { onOpenMobileNav: ()
       >
         <Menu size={19} />
       </button>
-      <Link href="/dashboard" className="rounded-[10px] lg:hidden" aria-label="PAYSHARK — go to overview">
+      <Link href="/dashboard" className="brand-3d flex items-center gap-2 rounded-[4px] lg:hidden" aria-label="PAYSHARK — go to overview">
         <BrandMark className="h-7 w-7" />
       </Link>
 
-      {/* Desktop: breadcrumb */}
-      <nav aria-label="Breadcrumb" className="hidden min-w-0 shrink-0 items-center gap-1.5 text-[13px] lg:flex">
-        <span className="text-fg-subtle">PAYSHARK</span>
-        {current && (
-          <>
-            <ChevronRight size={14} className="text-fg-subtle/70" aria-hidden />
-            {isNested ? (
-              <Link href={current.href} className="rounded px-0.5 text-fg-muted transition-colors hover:text-fg">{current.label}</Link>
-            ) : (
-              <span className="font-medium text-fg" aria-current="page">{current.label}</span>
-            )}
-          </>
-        )}
-        {isNested && (
-          <>
-            <ChevronRight size={14} className="text-fg-subtle/70" aria-hidden />
-            <span className="max-w-[180px] truncate font-medium text-fg" aria-current="page">
-              {pathname?.endsWith("/new") ? "New" : "Details"}
-            </span>
-          </>
-        )}
-      </nav>
+      {/* Page pager — swipe (trackpad / touch) or use the arrows to move between pages */}
+      <div className="flex min-w-0 flex-1 justify-center">
+        <PagePager />
+      </div>
 
-      <div className="flex min-w-0 flex-1 justify-center px-1 lg:px-6">
+      <div className="hidden w-[min(260px,24vw)] shrink-0 md:block">
         <GlobalSearch />
       </div>
 
