@@ -101,7 +101,7 @@ npx vitest run
    ```bash
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+   Open https://payshark-ktwm-53juwqh6n-shark20.vercel.app/ in your browser.
 
 4. (Optional) Run database migration on Neon:
    Execute `neon/schema.sql` followed by `neon/seed.sql` in your Neon Console SQL Editor.
