@@ -23,6 +23,10 @@ import { cn } from "@/lib/cn";
  *   Developers    → an API hub with endpoint blocks in orbit
  *   Settings      → interlocking gears
  *
+ * The sky is a river of colour: as you scroll from the top of a page to the
+ * bottom it flows through morning, noon, dusk, evening and night (sun, then
+ * moon, then stars). The next page starts again at morning.
+ *
  * Scrolling drives the scene: the object turns and transforms with scroll
  * progress, the colour shifts toward the next page's colour, a stream of light
  * flows down to a portal, and at the bottom (or when pulling past the end, see
@@ -75,6 +79,14 @@ function nextConfigFor(path: string): SceneConfig {
 
 const VERT = `
 attribute vec2 aPos;
+/* time of day: 5 stops (morning · noon · dusk · evening · night), k runs 0..4 */
+vec3 ramp5(float k, vec3 a, vec3 b, vec3 c, vec3 d, vec3 e) {
+  vec3 r = mix(a, b, smoothstep(0.0, 1.0, k));
+  r = mix(r, c, smoothstep(1.0, 2.0, k));
+  r = mix(r, d, smoothstep(2.0, 3.0, k));
+  return mix(r, e, smoothstep(3.0, 4.0, k));
+}
+
 void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 `;
 
@@ -431,7 +443,14 @@ void main() {
   T = uTime;
   P = uP;
   E = uEnd;
+  // the sky is a river of colour that follows the scroll: morning -> night
+  float K = clamp(P, 0.0, 1.0) * 4.0;
+  vec3 skyTop = ramp5(K, vec3(0.34, 0.38, 0.78), vec3(0.08, 0.34, 0.76), vec3(0.30, 0.16, 0.52), vec3(0.12, 0.08, 0.32), vec3(0.02, 0.04, 0.11));
+  vec3 skyBot = ramp5(K, vec3(0.86, 0.46, 0.44), vec3(0.20, 0.52, 0.76), vec3(0.92, 0.34, 0.20), vec3(0.36, 0.12, 0.40), vec3(0.05, 0.10, 0.22));
+  vec3 river  = ramp5(K, vec3(1.00, 0.72, 0.48), vec3(0.18, 0.80, 1.00), vec3(1.00, 0.58, 0.18), vec3(0.66, 0.30, 0.90), vec3(0.16, 0.40, 0.90));
+  vec3 orb    = ramp5(K, vec3(1.00, 0.78, 0.55), vec3(1.00, 0.97, 0.85), vec3(1.00, 0.52, 0.26), vec3(0.88, 0.72, 0.92), vec3(0.85, 0.92, 1.00));
   HUE = mix(uHueA, uHueB, clamp(smoothstep(0.55, 1.0, P) * 0.5 + E * 0.8, 0.0, 1.0));
+  HUE = mix(HUE, river, 0.3);
 
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
   vec2 portal = vec2(uShift.x * 0.35, -0.38);
@@ -443,18 +462,32 @@ void main() {
 
   // backdrop: midnight-navy gradient + flowing liquid current tinted with the page colour;
   // the current shifts and churns harder as you scroll
-  vec3 col = mix(vec3(0.02, 0.04, 0.10), vec3(0.05, 0.10, 0.21), smoothstep(-0.6, 0.6, uv.y));
+  vec3 col = mix(skyBot, skyTop, smoothstep(-0.6, 0.7, uv.y));
   float ft = uTime * 0.09 + P * 1.6 + uSeed * 0.3;
   vec2 fp = rot(uSeed * 0.7) * (uv * (1.2 + fract(uSeed * 0.37) * 0.8)) + uMouse * vec2(-0.25, 0.18);
   vec2 w1 = vec2(fbm(fp + vec2(0.0, ft)), fbm(fp + vec2(5.2, 1.3) - ft));
   vec2 w2 = vec2(fbm(fp + 3.0 * w1 + vec2(1.7, 9.2) + ft * 1.3), fbm(fp + 3.0 * w1 + vec2(8.3, 2.8) - ft));
   float f = fbm(fp + (3.5 + P * 1.5 + E * 2.0) * w2);
-  vec3 current = mix(vec3(0.03, 0.06, 0.15), HUE * 0.62, smoothstep(0.35, 0.85, f));
-  current += mix(HUE, vec3(1.0), 0.35) * pow(smoothstep(0.62, 0.95, f), 3.0) * 0.5;
+  vec3 current = mix(skyBot * 0.6, river * 0.8, smoothstep(0.35, 0.8, f));
+  current += mix(river, vec3(1.0), 0.35) * pow(smoothstep(0.62, 0.95, f), 3.0) * 0.6;
   col = mix(col, current, 0.72);
 
   col += HUE * 0.45 * exp(-dot(q, q) * 2.6) * 0.45;
   col += HUE * 0.25 * exp(-dot(uv + vec2(0.6, 0.5), uv + vec2(0.6, 0.5)) * 2.0) * 0.5;
+
+  // sun -> moon crossing the sky as you scroll, with stars after dusk
+  float arcW = max(0.3, uRes.x / uRes.y * 0.5 - 0.12);
+  vec2 bodyPos = vec2(mix(-1.0, 1.0, P) * arcW, -0.02 + 0.42 * sin(P * 3.14159));
+  float bd = length(uv - bodyPos);
+  col += orb * exp(-bd * bd * 14.0) * 0.55;
+  col = mix(col, orb, (1.0 - smoothstep(0.042, 0.05, bd)) * 0.9);
+  float starW = smoothstep(2.6, 3.8, K);
+  vec2 sg = uv * 34.0;
+  vec2 sid = floor(sg);
+  float sh = hash(sid);
+  vec2 soff = (vec2(hash(sid + 1.3), hash(sid + 7.7)) - 0.5) * 0.5;
+  float star = step(0.94, sh) * (1.0 - smoothstep(0.0, 0.14, length(fract(sg) - 0.5 - soff)));
+  col += vec3(0.8, 0.9, 1.0) * star * (0.6 + 0.4 * sin(T * 2.0 + sh * 50.0)) * starW * smoothstep(-0.15, 0.45, uv.y);
 
   // guide stream: particles flow from the subject down into the portal as you scroll
   float trail = smoothstep(0.3, 0.85, P) * 0.6 + E;
@@ -498,6 +531,7 @@ void main() {
   col = col / (1.0 + col);
   col = pow(col, vec3(0.85));
   col *= 1.0 - 0.35 * dot(uv * 0.7, uv * 0.7);
+  col *= mix(1.0, mix(0.78, 1.0, smoothstep(-0.7, 0.25, uv.x)), step(0.05, uShift.x));
   gl_FragColor = vec4(col, 1.0);
 }
 `;

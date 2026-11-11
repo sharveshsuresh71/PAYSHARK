@@ -213,7 +213,7 @@ export function PagePager({ className }: { className?: string }) {
 /* pull its subject into the portal at the same time.                           */
 /* -------------------------------------------------------------------------- */
 export const guideState = { pull: 0 };
-const PULL_DISTANCE = 520; // px of wheel travel past the end of the page
+const PULL_DISTANCE = 260; // px of wheel travel past the end of the page
 
 /** Can `el` (or an ancestor below the page) scroll further vertically in the direction of `dy`? */
 function canScrollY(start: EventTarget | null, dy: number) {
@@ -243,7 +243,6 @@ export function NextPageGuide() {
     let releaseTimer = 0;
     let raf = 0;
     let lastWheel = 0;
-    let gestureAtBottom = false;
     let touchStartY: number | null = null;
 
     const atBottom = () =>
@@ -275,14 +274,13 @@ export function NextPageGuide() {
     const onWheel = (e: WheelEvent) => {
       if (locked || e.ctrlKey || Math.abs(e.deltaY) <= Math.abs(e.deltaX)) return;
       const now = performance.now();
-      // A new gesture only counts if it starts at the bottom, so momentum from
-      // scrolling down the page doesn't carry straight into the next page.
-      if (now - lastWheel > 180) gestureAtBottom = atBottom();
+      // One continuous scroll is enough: as soon as the bottom is reached, the
+      // same scroll keeps filling the guide line (no second gesture needed).
       lastWheel = now;
       const dy = e.deltaY * (e.deltaMode === 1 ? 16 : 1);
       if (blocked(e.target, dy)) return;
       if (dy < 0) { if (acc > 0) { cancelAnimationFrame(raf); set(acc + dy * 2); } return; }
-      if (!gestureAtBottom || !atBottom()) return;
+      if (!atBottom()) return;
       cancelAnimationFrame(raf);
       set(acc + Math.min(dy, 80));
       window.clearTimeout(releaseTimer);
@@ -293,8 +291,14 @@ export function NextPageGuide() {
       touchStartY = !locked && e.touches.length === 1 && atBottom() && !blocked(e.target, 1) ? e.touches[0].clientY : null;
     };
     const onTouchMove = (e: TouchEvent) => {
-      if (touchStartY === null) return;
-      const dy = touchStartY - e.touches[0].clientY;
+      if (locked || e.touches.length !== 1) return;
+      const y = e.touches[0].clientY;
+      // reached the bottom during the same swipe: start pulling from here
+      if (touchStartY === null) {
+        if (atBottom() && !blocked(e.target, 1)) touchStartY = y;
+        return;
+      }
+      const dy = touchStartY - y;
       if (dy > 0) { cancelAnimationFrame(raf); set(dy * 3); }
     };
     const onTouchEnd = () => {
