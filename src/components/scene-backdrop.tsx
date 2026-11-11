@@ -79,14 +79,6 @@ function nextConfigFor(path: string): SceneConfig {
 
 const VERT = `
 attribute vec2 aPos;
-/* time of day: 5 stops (morning · noon · dusk · evening · night), k runs 0..4 */
-vec3 ramp5(float k, vec3 a, vec3 b, vec3 c, vec3 d, vec3 e) {
-  vec3 r = mix(a, b, smoothstep(0.0, 1.0, k));
-  r = mix(r, c, smoothstep(1.0, 2.0, k));
-  r = mix(r, d, smoothstep(2.0, 3.0, k));
-  return mix(r, e, smoothstep(3.0, 4.0, k));
-}
-
 void main() { gl_Position = vec4(aPos, 0.0, 1.0); }
 `;
 
@@ -437,6 +429,14 @@ vec3 shade(vec3 p, vec3 rd, float mat) {
     return vec3(0.03, 0.05, 0.12) + env(r) * 0.5 + holoTint(fres * 0.8 + p.y * 0.15) * (0.1 + fres * 0.55) + HUE * fres * 0.3;
   }
   return HUE * 1.4 + vec3(0.25) + vec3(0.5) * fres;
+}
+
+/* time of day: 5 stops (morning · noon · dusk · evening · night), k runs 0..4 */
+vec3 ramp5(float k, vec3 a, vec3 b, vec3 c, vec3 d, vec3 e) {
+  vec3 r = mix(a, b, smoothstep(0.0, 1.0, k));
+  r = mix(r, c, smoothstep(1.0, 2.0, k));
+  r = mix(r, d, smoothstep(2.0, 3.0, k));
+  return mix(r, e, smoothstep(3.0, 4.0, k));
 }
 
 void main() {
