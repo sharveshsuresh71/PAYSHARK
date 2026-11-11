@@ -1,61 +1,74 @@
 import Link from "next/link";
-import { ArrowRight, CreditCard, Database, Globe, Play, ShieldAlert, ShieldCheck, ShieldX, Sparkles } from "lucide-react";
+import { ArrowRight, CreditCard, Database, Globe, Nfc, Play, Sparkles } from "lucide-react";
 import { MagneticLink, Reveal } from "./primitives";
 import { cn } from "@/lib/cn";
 
 /*
  * Landing hero — dark stage with a light beam, a giant faded wordmark,
- * a floating 3D stack of live payment decisions (allowed / held / blocked)
- * with callouts, and a highlights + "built on" panel underneath.
- * Merchants, amounts and limits are illustrative sample data.
+ * a floating 3D stack of agent payment cards with callouts, and a
+ * highlights + "built on" panel underneath.
+ * Card numbers/limits are illustrative sample data.
  */
 
-type Verdict = "allowed" | "review" | "blocked";
+type CardTone = "emerald" | "frost" | "ink";
 
-const VERDICTS: Record<Verdict, { icon: typeof ShieldCheck; label: string; tone: string; chip: string }> = {
-  allowed: { icon: ShieldCheck, label: "Allowed", tone: "text-success", chip: "border-success/30 bg-success/10" },
-  review: { icon: ShieldAlert, label: "Held for review", tone: "text-warning", chip: "border-warning/30 bg-warning/10" },
-  blocked: { icon: ShieldX, label: "Blocked", tone: "text-danger", chip: "border-danger/30 bg-danger/10" }
+const CARD_TONES: Record<CardTone, string> = {
+  emerald: "bg-[linear-gradient(135deg,#FAFAFA_0%,#A1A1AA_45%,#3F3F46_100%)] text-[#09090B] shadow-[0_40px_60px_-20px_rgb(0_0_0/.8)]",
+  frost: "bg-[linear-gradient(135deg,rgb(255_255_255/.95),rgb(214_224_236/.85))] text-[#0E182A] shadow-[0_30px_50px_-20px_rgb(20_32_54/.45)]",
+  ink: "bg-[linear-gradient(135deg,#1E2E48,#0B111C)] text-white ring-1 ring-white/10 shadow-[0_30px_50px_-20px_rgb(10_20_40/.7)]"
 };
 
-function DecisionSlip({ verdict, merchant, agent, amount, reason }: { verdict: Verdict; merchant: string; agent: string; amount: string; reason: string }) {
-  const v = VERDICTS[verdict];
-  const Icon = v.icon;
+function PayCard({ tone, agent, number, limit }: { tone: CardTone; agent: string; number: string; limit: string }) {
   return (
-    <div className="popover flex w-[clamp(250px,28vw,390px)] items-center gap-3.5 px-4 py-3.5">
-      <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-[14px] border", v.chip, v.tone)}>
-        <Icon size={22} />
-      </span>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-baseline justify-between gap-3">
-          <span className="truncate text-[14px] font-semibold text-fg">{merchant}</span>
-          <span className="font-mono text-[13px] tabular-nums text-fg">{amount}</span>
-        </div>
-        <div className="text-[11.5px] text-fg-subtle">{agent}</div>
-        <div className={cn("mt-1.5 text-[12.5px] font-semibold", v.tone)}>{v.label}</div>
-        <div className="text-[11.5px] text-fg-muted">{reason}</div>
+    <div className={cn("grain relative flex aspect-[1.586] w-[clamp(220px,25vw,320px)] flex-col justify-between overflow-hidden rounded-[18px] p-5", CARD_TONES[tone])}>
+      <div className="flex items-center justify-between">
+        <span className="font-display text-[13px] font-bold tracking-[0.18em]">PAYSHARK</span>
+        <Nfc size={20} className="opacity-80" />
+      </div>
+      <div>
+        <span className="block h-7 w-9 rounded-[16px] bg-[linear-gradient(135deg,#F1F8D8,#A9BC86)] shadow-[inset_0_0_0_1px_rgb(0_0_0/.15)]" />
+        <div className="mt-3 font-mono text-[clamp(13px,1.35vw,17px)] tracking-[0.14em]">{number}</div>
+      </div>
+      <div className="flex items-end justify-between text-[10.5px] font-semibold uppercase tracking-[0.08em]">
+        <span>
+          <span className="block opacity-60">Agent</span>
+          {agent}
+        </span>
+        <span>
+          <span className="block opacity-60">Limit</span>
+          {limit}
+        </span>
+        <span className="flex" aria-hidden>
+          <span className="h-6 w-6 rounded-full bg-current opacity-70" />
+          <span className="-ml-2.5 h-6 w-6 rounded-full bg-current opacity-35" />
+        </span>
       </div>
     </div>
   );
 }
 
-function DecisionStack() {
+function CardStack() {
   return (
     <div className="relative h-[clamp(340px,38vw,480px)] w-full" aria-hidden>
-      {/* 3D stack of payment decisions */}
+      {/* 3D card stack */}
       <div className="absolute inset-0 [perspective:1400px]">
-        <div className="absolute inset-0 [transform-style:preserve-3d] [transform:rotateX(14deg)_rotateY(-22deg)_rotateZ(-3deg)]">
-          <div className="hero-card absolute left-[2%] top-[52%] [transform:translateZ(0px)]" style={{ "--d": "-2s" } as React.CSSProperties}>
-            <DecisionSlip verdict="blocked" merchant="quick-vendor.io" agent="Ops-bot" amount="$90.00" reason="Merchant is not on the allow-list" />
+        <div className="absolute inset-0 [transform-style:preserve-3d] [transform:rotateX(18deg)_rotateY(-24deg)_rotateZ(-4deg)]">
+          <div className="hero-card absolute left-[2%] top-[46%] [transform:translateZ(0px)_rotateZ(-7deg)]" style={{ "--d": "-2s" } as React.CSSProperties}>
+            <PayCard tone="ink" agent="Ops-bot" number="5021 •••• •••• 7730" limit="$250/day" />
           </div>
-          <div className="hero-card absolute left-[9%] top-[28%] [transform:translateZ(70px)]" style={{ "--d": "-4s" } as React.CSSProperties}>
-            <DecisionSlip verdict="review" merchant="SkyLine Air" agent="Travel-bot" amount="$1,950.00" reason="Above the $1,200 trip ceiling" />
+          <div className="hero-card absolute left-[9%] top-[25%] [transform:translateZ(70px)_rotateZ(-7deg)]" style={{ "--d": "-4s" } as React.CSSProperties}>
+            <PayCard tone="frost" agent="Travel-bot" number="4417 •••• •••• 0093" limit="$1,200/trip" />
           </div>
-          <div className="hero-card absolute left-[16%] top-[4%] [transform:translateZ(140px)]" style={{ "--d": "0s" } as React.CSSProperties}>
-            <DecisionSlip verdict="allowed" merchant="Acme Supplies" agent="Procure-bot" amount="$480.00" reason="Matches agreement v3, under $500/day" />
+          <div className="hero-card absolute left-[16%] top-[4%] [transform:translateZ(140px)_rotateZ(-7deg)]" style={{ "--d": "0s" } as React.CSSProperties}>
+            <PayCard tone="emerald" agent="Procure-bot" number="4821 •••• •••• 1950" limit="$500/day" />
           </div>
         </div>
       </div>
+
+      {/* sparkle badge */}
+      <span className="absolute left-0 top-[2%] grid h-14 w-14 place-items-center rounded-full bg-white/[0.06] text-accent ring-1 ring-white/10 backdrop-blur">
+        <Sparkles size={22} />
+      </span>
 
       {/* callouts */}
       <div className="absolute right-0 top-[4%] hidden sm:block">
@@ -175,7 +188,7 @@ export function LandingHero() {
 
         {/* visual */}
         <Reveal delay={160} className="relative">
-          <DecisionStack />
+          <CardStack />
         </Reveal>
       </div>
 
