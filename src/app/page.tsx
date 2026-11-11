@@ -8,6 +8,7 @@ import { LandingHero, StatementSection } from "@/components/landing/hero";
 import { DashboardPreview } from "@/components/landing/dashboard-preview";
 import { SceneBackdrop } from "@/components/scene-backdrop";
 import { BrandMark } from "@/components/sidebar";
+import { AiAssistant } from "@/components/ai-assistant";
 
 /*
  * Public landing page — editorial direction.
@@ -394,6 +395,8 @@ const { data } = await res.json();
           <span className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-accent" /> All systems sandboxed</span>
         </div>
       </footer>
+
+      <AiAssistant variant="public" />
     </div>
   );
 }

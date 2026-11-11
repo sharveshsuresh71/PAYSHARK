@@ -12,6 +12,10 @@ import { cn } from "@/lib/cn";
  * computed deterministically from verified records (GET /api/payment-requests)
  * and labelled "Verified data". The app's real generative-AI feature
  * (agreement analysis) is linked and labelled separately as "AI".
+ *
+ * variant="public" is used on the landing page, where there is no signed-in
+ * workspace: it answers questions about how the product works from fixed,
+ * product-level facts and never reads payment records.
  */
 
 interface Message {
@@ -29,6 +33,38 @@ const SUGGESTIONS = [
   "What's my success rate?",
   "What's my largest payment?"
 ];
+
+const PUBLIC_SUGGESTIONS = [
+  "How does PAYSHARK work?",
+  "What are the 13 rules?",
+  "Can an agent approve itself?",
+  "Is it secure?",
+  "Where does AI fit in?",
+  "Does real money move?"
+];
+
+function publicAnswer(q: string): Omit<Message, "id" | "from"> {
+  const t = q.toLowerCase();
+  if (/approve itself|self.?approv|own payment|human|authori[sz]/.test(t)) {
+    return { text: "No. An agent can request a payment, but only a person can approve it. The approval is single-use and bound to the exact amount, merchant and agreement version, so it can't be reused or altered.", source: "info", action: { href: "/approvals", label: "See the Review Center" } };
+  }
+  if (/13|rule|polic|limit|ceiling|allow/.test(t)) {
+    return { text: "Every request is checked against 13 deterministic rules: spending ceilings, merchant allow-lists, currency precision, purpose match and more. The rules are plain code, not a language model, so the same request always gets the same answer.", source: "info", action: { href: "/policies", label: "Open Policies" } };
+  }
+  if (/secur|safe|attack|hack|waf|csrf|audit|chain|tamper/.test(t)) {
+    return { text: "Requests pass an edge firewall, origin checks and rate limits. Every decision is appended to a SHA-256 hash chain, so any change to the history can be detected.", source: "info", action: { href: "/security", label: "Open Security centre" } };
+  }
+  if (/\bai\b|groq|model|llm|generat|intelligen/.test(t)) {
+    return { text: "AI reads agreements and summarises them for you. It never decides whether a payment goes through. That is done by the rules, and a person gives the final approval.", source: "info", action: { href: "/agreements/new", label: "Analyze an agreement" } };
+  }
+  if (/money|real|sandbox|paypal|fund|live/.test(t)) {
+    return { text: "Not yet. The workspace runs in PayPal Sandbox, so no real funds move until you decide to go live.", source: "info", action: { href: "/dashboard", label: "Open the workspace" } };
+  }
+  if (/work|how|what is|start|begin|overview|flow|step/.test(t)) {
+    return { text: "Four steps: 1) both parties confirm an agreement and its terms are locked, 2) the policy engine checks each request, 3) a person authorizes it, 4) PayPal captures the payment and the event is added to the audit chain.", source: "info", action: { href: "/demo", label: "Watch the live demo" } };
+  }
+  return { text: "I can explain how PAYSHARK works, the 13 policy rules, human approval, security, where AI is used, and sandbox mode. Try one of the suggestions below.", source: "info" };
+}
 
 function median(nums: number[]) {
   if (!nums.length) return 0;
@@ -101,9 +137,10 @@ function answer(q: string, a: PaymentAnalytics, rows: PaymentRequest[]): Omit<Me
   };
 }
 
-export function AiAssistant() {
+export function AiAssistant({ variant = "workspace" }: { variant?: "workspace" | "public" }) {
+  const isPublic = variant === "public";
   const [open, setOpen] = useState(false);
-  const [rows, setRows] = useState<PaymentRequest[] | null>(null);
+  const [rows, setRows] = useState<PaymentRequest[] | null>(isPublic ? [] : null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
@@ -126,10 +163,10 @@ export function AiAssistant() {
 
   useEffect(() => {
     if (open) {
-      load();
+      if (!isPublic) load();
       requestAnimationFrame(() => inputRef.current?.focus());
     }
-  }, [open, load]);
+  }, [open, load, isPublic]);
 
   useEffect(() => {
     if (!open) return;
@@ -150,18 +187,19 @@ export function AiAssistant() {
     setMessages(m => [...m, { id: idRef.current++, from: "user", text }]);
     setInput("");
     setThinking(true);
-    const result = answer(text, analyze(rows), rows);
+    const result = isPublic ? publicAnswer(text) : answer(text, analyze(rows), rows);
     setTimeout(() => {
       setMessages(m => [...m, { id: idRef.current++, from: "assistant", ...result }]);
       setThinking(false);
     }, 450);
   }
 
-  const a = rows ? analyze(rows) : null;
+  const a = !isPublic && rows ? analyze(rows) : null;
+  const suggestions = isPublic ? PUBLIC_SUGGESTIONS : SUGGESTIONS;
 
   return (
     <>
-      {/* Launcher orb */}
+      {/* Launcher: orb + label, pinned to the bottom of every page */}
       <button
         ref={triggerRef}
         type="button"
@@ -169,11 +207,14 @@ export function AiAssistant() {
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-label={open ? "Close PAYSHARK assistant" : "Open PAYSHARK assistant"}
-        className="group fixed bottom-4 right-4 z-[60] grid h-14 w-14 place-items-center rounded-full transition-transform duration-300 hover:scale-105 active:scale-95 sm:bottom-6 sm:right-6"
+        className="group fixed bottom-4 right-4 z-[60] flex h-14 items-center gap-2.5 rounded-full border border-white/10 bg-[rgb(8_14_30/.72)] p-1 shadow-[0_18px_40px_-14px_rgb(0_0_0/.8)] backdrop-blur-xl transition-transform duration-300 hover:scale-[1.03] active:scale-95 sm:bottom-6 sm:right-6 sm:pr-5"
       >
-        <span className="absolute inset-0 rounded-full bg-accent/20 blur-xl transition-opacity group-hover:opacity-100 sm:opacity-60" aria-hidden />
-        <span className="ai-orb h-12 w-12" aria-hidden />
-        {open && <X size={18} className="absolute text-white drop-shadow" aria-hidden />}
+        <span className="relative grid h-12 w-12 shrink-0 place-items-center">
+          <span className="absolute inset-0 rounded-full bg-accent/20 blur-xl transition-opacity group-hover:opacity-100 sm:opacity-60" aria-hidden />
+          <span className="ai-orb h-11 w-11" aria-hidden />
+          {open && <X size={18} className="absolute text-white drop-shadow" aria-hidden />}
+        </span>
+        <span className="hidden text-[13.5px] font-medium text-fg sm:inline">{open ? "Close" : "Ask PAYSHARK"}</span>
       </button>
 
       {open && (
@@ -190,7 +231,7 @@ export function AiAssistant() {
             <span className="ai-orb h-9 w-9 shrink-0" aria-hidden />
             <div className="relative min-w-0 flex-1">
               <h2 id={titleId} className="text-[14px] font-semibold text-fg">PAYSHARK Assistant</h2>
-              <p className="text-[11.5px] text-fg-muted">Answers from your verified payment records</p>
+              <p className="text-[11.5px] text-fg-muted">{isPublic ? "Ask how PAYSHARK keeps agent payments safe" : "Answers from your verified payment records"}</p>
             </div>
             <button type="button" onClick={() => setOpen(false)} className="icon-btn relative h-8 w-8" aria-label="Close assistant">
               <X size={15} />
@@ -199,7 +240,7 @@ export function AiAssistant() {
 
           <div ref={scrollRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto p-4">
             {/* Insight cards */}
-            <div className="grid grid-cols-3 gap-2">
+            {!isPublic && <div className="grid grid-cols-3 gap-2">
               {a ? (
                 [
                   { label: "Pending", value: a.counts.pending, cls: "text-warning" },
@@ -214,14 +255,16 @@ export function AiAssistant() {
               ) : (
                 [0, 1, 2].map(i => <div key={i} className="skeleton h-[58px] rounded-[12px]" />)
               )}
-            </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-fg-subtle">
+            </div>}
+            {!isPublic && <div className="flex items-center gap-1.5 text-[11px] text-fg-subtle">
               <ShieldCheck size={12} className="text-success" /> Verified data · {a ? `${a.total} payment requests` : "loading…"}
-            </div>
+            </div>}
 
             {messages.length === 0 && (
               <div className="rounded-[12px] border border-white/[0.07] bg-white/[0.02] p-3 text-[13px] leading-[1.55] text-fg-muted">
-                Hi! Ask about your review queue, blocked payments or payment performance. Every answer is calculated from your own records. Nothing is generated.
+                {isPublic
+                  ? "Hi! Ask how PAYSHARK works: the policy rules, human approval, security or sandbox mode. Answers describe the product. Nothing here is generated or read from an account."
+                  : "Hi! Ask about your review queue, blocked payments or payment performance. Every answer is calculated from your own records. Nothing is generated."}
               </div>
             )}
 
@@ -264,7 +307,7 @@ export function AiAssistant() {
           {/* Suggestions + input */}
           <div className="border-t border-white/[0.07] p-3">
             <div className="mb-2.5 flex gap-1.5 overflow-x-auto pb-0.5">
-              {SUGGESTIONS.map(s => (
+              {suggestions.map(s => (
                 <button
                   key={s}
                   type="button"
@@ -283,7 +326,7 @@ export function AiAssistant() {
                 id={`${titleId}-q`}
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Ask about your payments…"
+                placeholder={isPublic ? "Ask about PAYSHARK…" : "Ask about your payments…"}
                 className="field h-10 pr-11 text-[13px]"
                 autoComplete="off"
               />
